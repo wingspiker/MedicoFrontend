@@ -1,14 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
 import './App.css';
 
+// Components
+import Home from './Components/Home';
+import Register from './Components/Register';
+import Login from './Components/Login';
+import Welcome from './Components/Welcome';
+
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
-    <div className="bg-gray-100 h-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded shadow-lg">
-        <h1 className="text-2xl font-bold mb-4">Welcome to My Tailwind CSS App</h1>
-        <p className="text-gray-600">Tailwind CSS is configured and ready to use!</p>
+    <Router>
+      <div className="bg-gray-100 h-screen">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          {/* Protected Route: Only logged-in users can access the Welcome page */}
+          <Route
+            path="/welcome"
+            element={isLoggedIn ? <Welcome /> : <Navigate to="/login" replace />}
+          />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 }
 
