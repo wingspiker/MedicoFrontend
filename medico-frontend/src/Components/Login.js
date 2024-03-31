@@ -1,9 +1,16 @@
 import React, { useState } from "react";
+import { loginService } from "../Services/auth";
 
-const Login = () => {
+import {useNavigate} from 'react-router-dom'
+
+const Login = (props) => {
+  const {changeLogin} = props
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate()
 
   const validateEmail = (email) => {
     if (!email.trim()) {
@@ -43,14 +50,30 @@ const Login = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).every((key) => !newErrors[key])) {
-      console.log("Form submitted");
-      // Submit form or call API here
-
+      setLoading(true); // Set loading to true when form is submitted
       const loginData = {
         email: email,
-        password: password
+        password: password,
       };
-      console.log(loginData);
+
+      loginService(loginData)
+        .then((response) => {
+          console.log(response);
+          setLoading(false); // Set loading to false after API response
+          // Handle successful login response
+          console.log("rrr");
+          changeLogin(true)
+          navigate('/welcome')
+          
+        })
+        .catch((error) => {
+          console.error(error);
+          setLoading(false); // Set loading to false after API response
+          // Handle error response
+          setErrors({ ...errors, common: error.response.data.detail });
+          setEmail('');
+          setPassword('')
+        });
     }
   };
 
@@ -106,11 +129,20 @@ const Login = () => {
             </div>
             <button
               type="submit"
-              className="block mx-auto w-full px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-500 hover:bg-blue-600 rounded-lg sm:w-auto hover:bg-primary-700 focus:ring-4 focus:ring-primary-300"
+              className="block mx-auto w-full px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-500 hover:bg-blue-600 rounded-lg sm:w-auto hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 relative" // Added relative class
             >
+              {loading && (
+                <div className="absolute inset-0 flex items-center justify-center z-10 bg-gray-900 opacity-50">
+                  <div className="loader ease-linear rounded-full border-4  h-6 w-6 border-gradient-to-r from-green-300 to-gray-400"></div>
+                </div>
+              )}
               Login
             </button>
           </form>
+
+          {errors.common && (
+            <p className="text-red-500 text-sm mt-1">{errors.common}</p>
+          )}
         </div>
         <div className="text-center mt-4 text-sm text-gray-300">
           Don't have an account?{" "}
