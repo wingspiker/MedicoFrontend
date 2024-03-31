@@ -53,6 +53,12 @@ const Register = () => {
       error = "Passwords do not match";
     }
 
+    if (name === "username") {
+      if (!/^[a-z]+$/.test(value)) {
+        error = "Username must contain only lowercase alphabets";
+      }
+    }
+
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: error,
@@ -90,6 +96,25 @@ const Register = () => {
         mobile: "Please provide a mobile number",
       });
     }
+  };
+
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    // You may want to perform further validation or processing of the file here
+    setFormData((prevState) => ({
+      ...prevState,
+      logo: file,
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    const name = e.target.name;
+    // Update form data with the selected file
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: file,
+    }));
   };
 
   const nextStep = () => {
@@ -130,7 +155,12 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col justify-center items-center">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+      {/* <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg"> */}
+      <div
+        className={`w-full ${
+          step === 3 || step == 4 ? "max-w-full max-h-full" : "max-w-md "
+        }  text-white p-8 `}
+      >
         <h2 className="text-2xl mb-4 text-center text-gray-900">Register</h2>
         {step === 1 && (
           <form>
@@ -285,12 +315,12 @@ const Register = () => {
               )}
             </div>
             <div className="flex justify-between mt-4">
-              <button
+              {/* <button
                 onClick={prevStep}
                 className="w-1/2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
               >
                 Previous
-              </button>
+              </button> */}
               <button
                 onClick={nextStep}
                 className="w-1/2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
@@ -302,8 +332,34 @@ const Register = () => {
         )}
 
         {step === 3 && (
-          <form>
-            <div className="mb-4">
+          <form className="flex flex-wrap m-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block text-gray-700 bg-gray-900 inline"
+              >
+                Email Id
+              </label>
+              <input
+                type="text"
+                name="email"
+                placeholder="Email Id"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:border-blue-500"
+              />
+
+              {errors.companyName && (
+                <span className="text-red-500">{errors.email}</span>
+              )}
+            </div>
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                Company Name
+              </label>
               <input
                 type="text"
                 name="companyName"
@@ -316,7 +372,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.companyName}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2 ">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                License Number
+              </label>
               <input
                 type="text"
                 name="licenseNumber"
@@ -329,7 +391,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.licenseNumber}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                GST Number
+              </label>
               <input
                 type="text"
                 name="gstNumber"
@@ -342,9 +410,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.gstNumber}</span>
               )}
             </div>
-            {/* Add other Step 3 form fields */}
-
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                Pan Card Number
+              </label>
               <input
                 type="text"
                 name="panCardNumber"
@@ -357,7 +429,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.panCardNumber}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                Display Name
+              </label>
               <input
                 type="text"
                 name="displayName"
@@ -370,7 +448,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.displayName}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                State
+              </label>
               <input
                 type="text"
                 name="state"
@@ -383,7 +467,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.state}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                District
+              </label>
               <input
                 type="text"
                 name="district"
@@ -396,7 +486,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.district}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                Taluks
+              </label>
               <input
                 type="text"
                 name="taluka"
@@ -409,7 +505,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.taluka}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                Company Address 1
+              </label>
               <input
                 type="text"
                 name="companyAddress1"
@@ -422,7 +524,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.companyAddress1}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                Company Address 2
+              </label>
               <input
                 type="text"
                 name="companyAddress2"
@@ -435,8 +543,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.companyAddress2}</span>
               )}
             </div>
-
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                Pincode
+              </label>
               <input
                 type="text"
                 name="pincode"
@@ -449,20 +562,30 @@ const Register = () => {
                 <span className="text-red-500">{errors.pincode}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                LOGO
+              </label>
               <input
-                type="text"
+                type="file"
                 name="logo"
-                placeholder="Logo"
-                value={formData.logo}
-                onChange={handleChange}
+                onChange={handleLogoChange}
                 className="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:border-blue-500"
               />
               {errors.logo && (
                 <span className="text-red-500">{errors.logo}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                Drug License Number
+              </label>
               <input
                 type="text"
                 name="drugLicenseNumber"
@@ -475,7 +598,13 @@ const Register = () => {
                 <span className="text-red-500">{errors.drugLicenseNumber}</span>
               )}
             </div>
-            <div className="mb-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="email"
+                className="block bg-gray-900 text-gray-700"
+              >
+                Whole Sales License Number
+              </label>
               <input
                 type="text"
                 name="wholesaleLicenseNumber"
@@ -490,8 +619,11 @@ const Register = () => {
                 </span>
               )}
             </div>
-            <div className="mb-4">
-              <label htmlFor="companyType" className="block text-gray-700">
+            <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+              <label
+                htmlFor="companyType"
+                className="block bg-gray-900 text-gray-700"
+              >
                 Company Type
               </label>
               <select
@@ -509,10 +641,12 @@ const Register = () => {
                 <span className="text-red-500">{errors.companyType}</span>
               )}
             </div>
-
             {formData.companyType === "selfSelling" && (
-              <div className="mb-4">
-                <label htmlFor="chargeType" className="block text-gray-700">
+              <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+                <label
+                  htmlFor="chargeType"
+                  className="block bg-gray-900 text-gray-700"
+                >
                   Charge Type
                 </label>
                 <select
@@ -531,17 +665,10 @@ const Register = () => {
                 )}
               </div>
             )}
-
-            <div className="flex justify-between mt-4">
-              <button
-                onClick={prevStep}
-                className="w-1/2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
-              >
-                Previous
-              </button>
+            <div className="mt-4 w-full">
               <button
                 onClick={nextStep}
-                className="w-1/2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
               >
                 Next
               </button>
@@ -550,7 +677,128 @@ const Register = () => {
         )}
 
         {step === 4 && (
-          <form onSubmit={handleSubmit}>{/* Remaining form fields */}</form>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4 border border-gray-300">
+              <label
+                htmlFor="aadharCardFile"
+                className="block text-gray-700 bg-gray-900 inline-block w-1/4"
+              >
+                Aadhar Card
+              </label>
+              <input
+                type="file"
+                id="aadharCardFile"
+                name="aadharCardFile"
+                onChange={handleFileChange}
+                className="inline-block w-3/4 px-3 py-2 rounded  focus:outline-none focus:border-blue-500"
+              />
+              {errors.aadharCardFile && (
+                <span className="text-red-500">{errors.aadharCardFile}</span>
+              )}
+            </div>
+            <div className="mb-4 border border-gray-300">
+              <label
+                htmlFor="panCardFile"
+                className="block text-gray-700  bg-gray-900 inline-block w-1/4"
+              >
+                PAN Card
+              </label>
+              <input
+                type="file"
+                id="panCardFile"
+                name="panCardFile"
+                onChange={handleFileChange}
+                className="inline-block w-3/4 px-3 py-2 rounded  focus:outline-none focus:border-blue-500"
+              />
+              {errors.panCardFile && (
+                <span className="text-red-500">{errors.panCardFile}</span>
+              )}
+            </div>
+            <div className="mb-4 border border-gray-300">
+              <label
+                htmlFor="gstLicenseFile"
+                className="block text-gray-700 bg-gray-900 inline-block w-1/4"
+              >
+                GST Number
+              </label>
+              <input
+                type="file"
+                id="gstLicenseFile"
+                name="gstLicenseFile"
+                onChange={handleFileChange}
+                className="inline-block w-3/4 px-3 py-2 rounded  focus:outline-none focus:border-blue-500"
+              />
+              {errors.gstLicenseFile && (
+                <span className="text-red-500">{errors.gstLicenseFile}</span>
+              )}
+            </div>
+            <div className="mb-4 border border-gray-300">
+              <label
+                htmlFor="wholesaleDrugLicenseFile"
+                className="block text-gray-700 bg-gray-900 inline-block w-1/4"
+              >
+                Wholesale Drug License
+              </label>
+              <input
+                type="file"
+                id="wholesaleDrugLicenseFile"
+                name="wholesaleDrugLicenseFile"
+                onChange={handleFileChange}
+                className="inline-block w-3/4 px-3 py-2 rounded  focus:outline-none focus:border-blue-500"
+              />
+              {errors.wholesaleDrugLicenseFile && (
+                <span className="text-red-500">
+                  {errors.wholesaleDrugLicenseFile}
+                </span>
+              )}
+            </div>
+            <div className="mb-4 border border-gray-300">
+              <label
+                htmlFor="retailDrugLicenseFile"
+                className="block text-gray-700 bg-gray-900 inline-block w-1/4"
+              >
+                Retail Drug License
+              </label>
+              <input
+                type="file"
+                id="retailDrugLicenseFile"
+                name="retailDrugLicenseFile"
+                onChange={handleFileChange}
+                className="inline-block w-3/4 px-3 py-2 rounded  focus:outline-none focus:border-blue-500"
+              />
+              {errors.retailDrugLicenseFile && (
+                <span className="text-red-500">
+                  {errors.retailDrugLicenseFile}
+                </span>
+              )}
+            </div>
+            <div className="mb-4 border border-gray-300">
+              <label
+                htmlFor="companyRegistrationLicenseFile"
+                className="block text-gray-700 bg-gray-900 inline-block w-1/4"
+              >
+                Company Registration License
+              </label>
+              <input
+                type="file"
+                id="companyRegistrationLicenseFile"
+                name="companyRegistrationLicenseFile"
+                onChange={handleFileChange}
+                className="inline-block w-3/4 px-3 py-2 rounded  focus:outline-none focus:border-blue-500"
+              />
+              {errors.companyRegistrationLicenseFile && (
+                <span className="text-red-500">
+                  {errors.companyRegistrationLicenseFile}
+                </span>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+            >
+              Submit
+            </button>
+          </form>
         )}
       </div>
     </div>
