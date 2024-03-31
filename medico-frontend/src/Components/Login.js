@@ -45,6 +45,12 @@ const Login = () => {
     if (Object.keys(newErrors).every((key) => !newErrors[key])) {
       console.log("Form submitted");
       // Submit form or call API here
+
+      const loginData = {
+        email: email,
+        password: password
+      };
+      console.log(loginData);
     }
   };
 
@@ -69,7 +75,7 @@ const Login = () => {
                 className={`block w-full p-2.5 text-gray-900 bg-gray-50 border ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 } rounded-lg focus:border-primary-500 focus:ring-primary-500 sm:text-sm`}
-                placeholder="name@example.com"
+                placeholder="Enter Email"
                 value={email}
                 onChange={handleEmailChange}
               />
