@@ -1,4 +1,5 @@
 import React from "react";
+import Loader from "../../Loader";
 
 const StepOne = ({
   formData,
@@ -13,6 +14,8 @@ const StepOne = ({
   changeMobile,
   mobileVerified,
   verifyMobile,
+  otpEmailLoading,
+  otpMobileLoading
 }) => {
   return (
     <form>
@@ -31,7 +34,7 @@ const StepOne = ({
           className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none disabled:bg-[#72d3a6]`}
           disabled={errors.email || formData.email === "" || emailVerified}
         >
-          Send OTP
+          {otpEmailLoading?<Loader/>:'Send OTP'}
         </button>
       </div>
       {emailVerified && (
@@ -51,6 +54,7 @@ const StepOne = ({
             }
             className={` px-4 py-2 bg-green-500 text-white  hover:bg-green-600 focus:outline-none disabled:bg-green-300`}
           >
+            
             Verify Email
           </button>
           <button
@@ -77,7 +81,7 @@ const StepOne = ({
           className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none disabled:bg-[#72d3a6]`}
           disabled={errors.mobile || formData.mobile === "" || mobileVerified}
         >
-          Send OTP
+          {otpMobileLoading? <Loader/>: "Send OTP"}
         </button>
       </div>
       {mobileVerified && (

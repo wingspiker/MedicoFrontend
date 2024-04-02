@@ -6,6 +6,8 @@ import StepTwo from "./RegisterComponents/StepTwo";
 import StepThree from "./RegisterComponents/StepThree";
 import StepFour from "./RegisterComponents/StepFour";
 import BuyerStepThree from "./RegisterComponents/BuyerStepThree";
+import { getEmailOtp, getMobileOtp } from "../Services/auth";
+import { Toaster, toast } from "sonner";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -48,6 +50,10 @@ const Register = () => {
   const [formData, setFormData] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [emailVerified, setEmailVerified] = useState(false);
+  const [otpEmailLoading, setOtpEmailLoading] = useState(false);
+  const [e, sE] = useState(false);
+  const [m, sM] = useState(false);
+  const [otpMobileLoading, setOtpMobileLoading] = useState(false);
   const [mobileVerified, setMobileVerified] = useState(false);
   const [isBuyer, setIsBuyer] = useState(false);
 
@@ -100,28 +106,33 @@ const Register = () => {
     e.preventDefault();
     // Simulate email verification
     // You can replace this with actual verification logic
-    if (formData.email) {
-      setEmailVerified(true);
-    } else {
-      setErrors({
-        ...errors,
-        email: "Please provide an email address",
-      });
-    }
+    setOtpEmailLoading(true)  
+
+    getEmailOtp(formData.email).then((res) => {
+      console.log("OTP: ", res);
+      setEmailVerified(true)
+      setOtpEmailLoading(false)
+    }).catch(()=>{
+      toast.error('Invalid Email');
+      setOtpEmailLoading(false);
+    })
+
+    
   };
 
   const verifyMobile = (e) => {
     e.preventDefault();
     // Simulate mobile verification
     // You can replace this with actual verification logic
-    if (formData.mobile) {
-      setMobileVerified(true);
-    } else {
-      setErrors({
-        ...errors,
-        mobile: "Please provide a mobile number",
-      });
-    }
+    setOtpMobileLoading(true);
+    getMobileOtp(formData.mobile).then((res) => {
+      console.log("OTP: ", res);
+      setMobileVerified(true)
+      setOtpMobileLoading(false)
+    }).catch(()=>{
+      toast.error('Invalid Mobile');
+      setOtpMobileLoading(false);
+    })
   };
 
   const handleLogoChange = (e) => {
@@ -188,6 +199,12 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-cyan-900 flex flex-col justify-center items-center">
+      <Toaster
+            position="top-center"
+            toastOptions={{
+              style: { color: "red"},
+            }}
+          />
       {/* <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg"> */}
       <div
         className={`md:w-full ${
@@ -228,6 +245,8 @@ const Register = () => {
             changeMobile={changeMobile}
             mobileVerified={mobileVerified}
             verifyMobile={verifyMobile}
+            otpMobileLoading={otpMobileLoading}
+            otpEmailLoading={otpEmailLoading}
           />
         )}
 
