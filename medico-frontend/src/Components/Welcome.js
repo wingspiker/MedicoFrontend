@@ -1,12 +1,17 @@
 // Welcome.js
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Header from './SafeComponents/Header';
 
-const Welcome = () => {
+
+const Welcome = (props) => {
+  const {changeLogin} = props
   return (
-    <div>
-      <h1>Welcome Page</h1>
-      {/* Add your welcome page content here */}
+    <>
+    <div className='bg-cyan-900 h-screen text-white'>
+    <Header changeLogin={changeLogin}/>
     </div>
+    </>
   );
 }
 

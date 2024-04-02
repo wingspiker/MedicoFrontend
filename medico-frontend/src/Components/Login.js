@@ -78,7 +78,7 @@ const Login = (props) => {
   };
 
   return (
-    <section className="h-screen flex items-center justify-center bg-gray-900">
+    <section className="h-screen flex items-center justify-center bg-cyan-900">
       <div className="max-w-md w-full mx-auto">
         <div className="bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-3xl font-semibold text-center text-gray-900 mb-6">
@@ -132,7 +132,7 @@ const Login = (props) => {
               className="block mx-auto w-full px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-500 hover:bg-blue-600 rounded-lg sm:w-auto hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 relative" // Added relative class
             >
               {loading && (
-                <div className="absolute inset-0 flex items-center justify-center z-10 bg-gray-900 opacity-50">
+                <div className="absolute inset-0 flex items-center justify-center z-10 bg-cyan-900 opacity-50">
                   <div className="loader ease-linear rounded-full border-4  h-6 w-6 border-gradient-to-r from-green-300 to-gray-400"></div>
                 </div>
               )}
