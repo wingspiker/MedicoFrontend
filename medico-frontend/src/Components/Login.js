@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { loginService } from "../Services/auth";
-
-import {useNavigate} from 'react-router-dom'
+import { Toaster, toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Login = (props) => {
-  const {changeLogin} = props
+  const { changeLogin } = props;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     if (!email.trim()) {
@@ -61,23 +61,22 @@ const Login = (props) => {
           console.log(response);
           setLoading(false); // Set loading to false after API response
           // Handle successful login response
-          console.log("rrr");
-          changeLogin(true)
-          navigate('/welcome')
-          
+          changeLogin(true);
+          navigate("/Home");
         })
         .catch((error) => {
           console.error(error);
           setLoading(false); // Set loading to false after API response
           // Handle error response
           setErrors({ ...errors, common: error.response.data.detail });
-          setEmail('');
-          setPassword('')
+          toast.error(error.response.data.detail);
+          setEmail("");
+          setPassword("");
         });
 
-        // Remove this
-        // changeLogin(true)
-        // navigate('/welcome')
+      // Remove this
+      // changeLogin(true)
+      // navigate('/welcome')
     }
   };
 
@@ -88,6 +87,12 @@ const Login = (props) => {
           <h2 className="text-3xl font-semibold text-center text-gray-900 mb-6">
             Login
           </h2>
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: { color: "red"},
+            }}
+          />
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
               <label
@@ -143,10 +148,6 @@ const Login = (props) => {
               Login
             </button>
           </form>
-
-          {errors.common && (
-            <p className="text-red-500 text-sm mt-1">{errors.common}</p>
-          )}
         </div>
         <div className="text-center mt-4 text-sm text-gray-300">
           Don't have an account?{" "}

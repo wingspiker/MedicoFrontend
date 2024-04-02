@@ -7,9 +7,6 @@ const Welcome = (props) => {
 
   return (
     <div className="flex h-screen bg-cyan-900 text-white">
-      
-      {/* <Sidebar /> Add the Sidebar component */}
-      <Sidebar changeLogin={changeLogin}/>
       <div className="flex-1">
         {/* ...rest of your welcome page content */}
       </div>

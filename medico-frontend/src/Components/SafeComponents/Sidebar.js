@@ -6,6 +6,7 @@ import { SiProducthunt } from "react-icons/si";
 import { BiSolidOffer } from "react-icons/bi";
 import { FaUserCircle } from "react-icons/fa";
 import { BsFillCartCheckFill } from "react-icons/bs";
+import { NavLink  } from 'react-router-dom';
 // import logo from './logo.svg'; // Update the path as necessary
 
 const navItems = ['Home', 'Product', 'Group', 'Offer', 'Salesman', 'Order', 'Profile']; 
@@ -19,7 +20,7 @@ export const Sidebar = (props) => {
   const buttonText = isOpen ? <IoCloseSharp /> : <HiMenuAlt1 />;
 
   return (
-    <aside className={`fixed inset-y-0 left-0 z-30 overflow-hidden bg-black bg-opacity-30 text-white transition-all duration-300 ease-in-out ${sidebarWidth}`}>
+    <aside className={`fixed inset-y-0 left-0 z-30 overflow-hidden bg-black bg-opacity-30 text-white transition-all duration-300 ease-in-out ${sidebarWidth} rounded-xl rounded-l-none`}>
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200">
             {
@@ -39,18 +40,18 @@ export const Sidebar = (props) => {
         </div>
         <nav className="flex-1 mt-2">
           {navItems.map((item, index) => (
-            <a
+            <NavLink
+            to={`/${item}`}
               key={item}
-            //   href={`/${}`}
-              className="block px-4 py-2 rounded hover:bg-purple-800 text-xl flex items-center gap-4"
+              className="px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4"
             >
              {navItemsIcons[index]} { isOpen? item:''}
-            </a>
+            </NavLink>
           ))}
 
           <div className={`absolute bottom-4 w-full flex justify-end px-1`}>
 
-            <button onClick={()=>{changeLogin(false)}} className={`${isOpen?'me-4':'me-2'} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}>
+            <button onClick={()=>{changeLogin(false)}} className={`${isOpen?'mx-4 w-full':'me-2'} cursor-pointer bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}>
                <IoLogOut /> {isOpen?'Logout':''}
                 
             </button>

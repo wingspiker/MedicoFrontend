@@ -8,6 +8,9 @@ import Home from './Components/Home';
 import Register from './Components/Register';
 import Login from './Components/Login';
 import Welcome from './Components/Welcome';
+import Product from './Components/SafeComponents/Product';
+import AddProduct from './Components/SafeComponents/AddProduct';
+import { Sidebar } from './Components/SafeComponents/Sidebar';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -17,6 +20,8 @@ function App() {
   return (
     <Router>
       <div className="bg-gray-100 h-screen">
+        {isLoggedIn?<Sidebar changeLogin={setIsLoggedIn} />:''}
+   
         
         <Routes>
           <Route path="/" element={<Home />} />
@@ -24,8 +29,16 @@ function App() {
           <Route path="/login" element={<Login changeLogin={setIsLoggedIn} />} />
           {/* Protected Route: Only logged-in users can access the Welcome page */}
           <Route
-            path="/welcome"
+            path="/Home"
             element={isLoggedIn ? <Welcome changeLogin={setIsLoggedIn}/> : <Navigate to="/login" replace />}
+          />
+          <Route
+            path="/Product"
+            element={isLoggedIn ? <Product changeLogin={setIsLoggedIn}/> : <Navigate to="/login" replace />}
+          />
+          <Route
+            path="/Product/add"
+            element={isLoggedIn ? <AddProduct changeLogin={setIsLoggedIn}/> : <Navigate to="/login" replace />}
           />
         </Routes>
       </div>
