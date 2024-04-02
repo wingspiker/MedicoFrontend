@@ -22,6 +22,19 @@ const StepTwo = ({ formData, handleChange, errors, nextStep }) => {
           readOnly
           className="text-gray-900 bg-green-200 flex-1 w-full px-3 py-2 rounded-l border border-gray-300 mb-4 focus:outline-none focus:border-green-500"
         />
+        <div className="mb-4">
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="text-gray-900 w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:border-green-500"
+          >
+            <option value="">Select Role</option>
+            <option value="0">Company</option>
+            <option value="1">Buyer</option>
+          </select>
+          {errors.role && <span className="text-red-500">{errors.role}</span>}
+        </div>
         <input
           type="text"
           name="username"
