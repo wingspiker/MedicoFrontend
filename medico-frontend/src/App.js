@@ -12,6 +12,8 @@ import Welcome from './Components/Welcome';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
+
+
   return (
     <Router>
       <div className="bg-gray-100 h-screen">
