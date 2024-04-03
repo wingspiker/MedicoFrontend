@@ -37,6 +37,7 @@ export const getEmailOtp = async  (email) => {
 }
 
 export const verifyEmailOtp = async  (otpData) => {
+    console.log(otpData);
     return axios.post(url+ `/api/newuser/email/verify-otp`, otpData)
         .then(response => {
             // Handle successful response
@@ -49,8 +50,10 @@ export const verifyEmailOtp = async  (otpData) => {
         });    
 }
 
-export const getMobileOtp = async  (mobile) => {
-    return axios.get(url+ `/api/newuser/email/get-otp?Mobile=${mobile}`)
+export const getMobileOtp = async  (otpData) => {
+    console.log(otpData);
+    const e = otpData.email.replace('@','%40')
+    return axios.get(url+ `/api/newuser/phone/get-otp?Email=${e}&PhoneNumber=${otpData.mobile}`)
         .then(response => {
             // Handle successful response
             return response.data; // Return data if needed
@@ -63,7 +66,7 @@ export const getMobileOtp = async  (mobile) => {
 }
 
 export const verifyMobileOtp = async  (mobileData) => {
-    return axios.post(url+ `/api/newuser/email/verify-otp`, mobileData)
+    return axios.post(url+ `/api/newuser/phone/verify-otp`, mobileData)
         .then(response => {
             // Handle successful response
             return response.data; // Return data if needed

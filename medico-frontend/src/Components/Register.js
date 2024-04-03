@@ -6,7 +6,7 @@ import StepTwo from "./RegisterComponents/StepTwo";
 import StepThree from "./RegisterComponents/StepThree";
 import StepFour from "./RegisterComponents/StepFour";
 import BuyerStepThree from "./RegisterComponents/BuyerStepThree";
-import { getEmailOtp, getMobileOtp } from "../Services/auth";
+import { getEmailOtp, getMobileOtp, verifyEmailOtp, verifyMobileOtp } from "../Services/auth";
 import { Toaster, toast } from "sonner";
 
 const Register = () => {
@@ -71,7 +71,7 @@ const Register = () => {
     }
 
     if (name === "confirmPassword" && value !== formData.password) {
-      error = "Passwords do not match";
+      error = "Passwords do not match";
     }
 
     if (name === "username") {
@@ -123,16 +123,24 @@ const Register = () => {
   const verifyMobile = (e) => {
     e.preventDefault();
     // Simulate mobile verification
-    // You can replace this with actual verification logic
-    setOtpMobileLoading(true);
-    getMobileOtp(formData.mobile).then((res) => {
-      console.log("OTP: ", res);
-      setMobileVerified(true)
-      setOtpMobileLoading(false)
-    }).catch(()=>{
-      toast.error('Invalid Mobile');
-      setOtpMobileLoading(false);
-    })
+    // You can replace this with actual verification logic    
+
+    const {email, mobile} = formData;
+    if(!email.length){
+      toast.error( 'Please verify your email first' );
+    }
+    else{
+      setOtpMobileLoading(true);
+      getMobileOtp({email, mobile}).then((res) => {
+        console.log("OTP: ", res);
+        setMobileVerified(true)
+        setOtpMobileLoading(false)
+      }).catch((e)=>{
+        console.log(e);
+        toast.error('Invalid Mobile');
+        setOtpMobileLoading(false);
+      })
+    }
   };
 
   const handleLogoChange = (e) => {
@@ -174,13 +182,32 @@ const Register = () => {
   const confirmEmailOtp = (e) => {
     e.preventDefault();
     // Handle email OTP confirmation logic here
-    console.log("Email OTP confirmed:", formData.emailOtp);
+    const {email, emailOtp} = formData;
+    verifyEmailOtp({email, emailOtp})
+      .then((d) => {
+        console.log(d);
+        sE(true);
+        setEmailVerified(false)
+      })
+      .catch((err) => {
+      toast.error(err.response.data.detail)
+    })
   };
 
   const confirmMobileOtp = (e) => {
     e.preventDefault();
     // Handle mobile OTP confirmation logic here
-    console.log("Mobile OTP confirmed:", formData.mobileOtp);
+    const {mobile, mobileOtp} = formData;
+    const phoneOtpData = {phoneNumber:mobile, phoneNumberOtp:mobileOtp}
+    verifyMobileOtp(phoneOtpData)
+      .then((d) => {
+        console.log(d);
+        sM(true);
+        setMobileVerified(false)
+      })
+      .catch((err) => {
+      toast.error(err.response.data.detail)
+    })
   };
 
   const changeEmail = () => {
@@ -200,11 +227,11 @@ const Register = () => {
   return (
     <div className="min-h-screen bg-cyan-900 flex flex-col justify-center items-center">
       <Toaster
-            position="top-center"
-            toastOptions={{
-              style: { color: "red"},
-            }}
-          />
+        position="top-center"
+        toastOptions={{
+          style: { color: "red"},
+        }}
+      />
       {/* <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg"> */}
       <div
         className={`md:w-full ${
@@ -247,6 +274,8 @@ const Register = () => {
             verifyMobile={verifyMobile}
             otpMobileLoading={otpMobileLoading}
             otpEmailLoading={otpEmailLoading}
+            E={e}
+            M={m}
           />
         )}
 

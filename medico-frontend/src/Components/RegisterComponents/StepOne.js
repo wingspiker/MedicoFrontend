@@ -1,5 +1,6 @@
 import React from "react";
 import Loader from "../../Loader";
+import { MdVerified } from "react-icons/md";
 
 const StepOne = ({
   formData,
@@ -15,7 +16,9 @@ const StepOne = ({
   mobileVerified,
   verifyMobile,
   otpEmailLoading,
-  otpMobileLoading
+  otpMobileLoading,
+  E,
+  M
 }) => {
   return (
     <form>
@@ -26,15 +29,16 @@ const StepOne = ({
           placeholder="Email"
           value={formData.email}
           onChange={handleChange}
-          readOnly={emailVerified}
+          readOnly={emailVerified || E}
           className="text-gray-900 flex-1 w-full px-3 py-2 rounded-l border border-gray-300 focus:outline-none focus:border-green-500"
         />
         <button
           onClick={verifyEmail}
-          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none disabled:bg-[#72d3a6]`}
-          disabled={errors.email || formData.email === "" || emailVerified}
+          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none ${E?'disabled:bg-green-600':'disabled:bg-[#72d3a6]'} `}
+          disabled={errors.email || formData.email === "" || emailVerified || E}
         >
-          {otpEmailLoading?<Loader/>:'Send OTP'}
+          {E ? <MdVerified/>:otpEmailLoading?<Loader/>:'Send OTP'}
+          
         </button>
       </div>
       {emailVerified && (
@@ -50,7 +54,7 @@ const StepOne = ({
           <button
             onClick={confirmEmailOtp}
             disabled={
-              formData.emailOtp.length !== 4 || isNaN(formData.emailOtp)
+              formData.emailOtp.length !== 6 || isNaN(formData.emailOtp)
             }
             className={` px-4 py-2 bg-green-500 text-white  hover:bg-green-600 focus:outline-none disabled:bg-green-300`}
           >
@@ -73,15 +77,15 @@ const StepOne = ({
           placeholder="Mobile Number"
           value={formData.mobile}
           onChange={handleChange}
-          readOnly={mobileVerified}
+          readOnly={mobileVerified || M}
           className="text-gray-900 flex-1 w-full px-3 py-2 rounded-l border border-gray-300 focus:outline-none focus:border-green-500"
         />
         <button
           onClick={verifyMobile}
-          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none disabled:bg-[#72d3a6]`}
-          disabled={errors.mobile || formData.mobile === "" || mobileVerified}
+          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none ${M?'disabled:bg-green-600':'disabled:bg-[#72d3a6]'}`}
+          disabled={errors.mobile || formData.mobile === "" || mobileVerified || M}
         >
-          {otpMobileLoading? <Loader/>: "Send OTP"}
+          {M ? <MdVerified/>:otpMobileLoading?<Loader/>:'Send OTP'}
         </button>
       </div>
       {mobileVerified && (
@@ -97,7 +101,7 @@ const StepOne = ({
           <button
             onClick={confirmMobileOtp}
             disabled={
-              formData.mobileOtp.length !== 4 || isNaN(formData.mobileOtp)
+              formData.mobileOtp.length !== 6 || isNaN(formData.mobileOtp)
             }
             className={` px-4 py-2 bg-green-500 text-white hover:bg-green-600 focus:outline-none disabled:bg-green-300`}
           >
@@ -114,7 +118,8 @@ const StepOne = ({
       {errors.mobile && <span className="text-red-500">{errors.mobile}</span>}
       <button
         onClick={nextStep}
-        className="w-full mt-4 px-4 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600"
+        disabled={!(E && M)}
+        className="w-full mt-4 px-4 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 disabled:bg-[#72d3a6] focus:outline-none focus:bg-green-600"
       >
         Next
       </button>
