@@ -1,10 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
+import Subscription from "./Subscription";
+import Modal from "react-modal";
 
 const StepThree = ({ formData, handleChange, errors, nextStep, prevStep }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
+  // Your form state and functions...
+
+  const plans = [
+    { id: 1, name: 'Basic Plan', price: '$10/month' },
+    { id: 2, name: 'Standard Plan', price: '$20/month' },
+    { id: 3, name: 'Premium Plan', price: '$30/month' }
+  ];
+
+  const handleSave = () => {
+    if (selectedPlan) {
+      // Do something with the selected plan
+      console.log("Selected plan:", selectedPlan);
+      // Close the modal
+      setShowModal(false);
+    }
+  };
+
+
   return (
     <div className="text-center border rounded-xl">
       <h1 className="text-3xl text-white mb-4 py-6">Company Basic Details</h1>
-      <form className="m-4 text-left ">
+      <div className="m-4 text-left ">
         <div className="flex flex-wrap">
           <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
             <label htmlFor="email" className="block text-white bg-cyan-900">
@@ -287,6 +310,16 @@ const StepThree = ({ formData, handleChange, errors, nextStep, prevStep }) => {
               )}
             </div>
           )}
+          {formData.chargeType === "subscription" && (
+            <div className="mt-6">
+              <button
+                onClick={() => setShowModal(true)}
+                className="px-4 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600"
+              >
+                View Plans
+              </button>
+            </div>
+          )}
           <div className="mt-4 w-full">
             <button
               onClick={nextStep}
@@ -295,8 +328,51 @@ const StepThree = ({ formData, handleChange, errors, nextStep, prevStep }) => {
               Next
             </button>
           </div>
+
         </div>
-      </form>
+      </div>
+          <Modal
+            isOpen={showModal}
+            onRequestClose={() => setShowModal(false)}
+            className="modal p-6 bg-white rounded-md shadow-lg w-full md:w-1/2 mx-auto"
+            overlayClassName="modal-overlay fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50"
+            contentLabel="Select a Plan"
+          >
+            {/* Close button */}
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-300"
+              onClick={() => setShowModal(false)}
+            >
+              &times;
+            </button>
+
+            {/* Modal content */}
+            <h2 className="text-lg font-bold mb-4">Select a Plan</h2>
+            <div className="grid grid-cols-1 gap-4">
+              {plans.map((plan) => (
+                <div key={plan.id} className="bg-gray-100 rounded-md p-4">
+                  <h3 className="text-lg font-semibold">{plan.name}</h3>
+                  <p className="text-gray-600">{plan.price}</p>
+                  <button
+                    className="mt-2 px-4 py-2 bg-cyan-900 text-white rounded hover:bg-cyan-700 focus:outline-none focus:bg-cyan-700"
+                    onClick={() => setSelectedPlan(plan)}
+                  >
+                    Select
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Save button */}
+            <div className="flex justify-end mt-4">
+              <button
+                className="px-4 py-2 bg-cyan-900 text-white rounded hover:bg-cyan-700 focus:outline-none focus:bg-cyan-700"
+                onClick={handleSave}
+              >
+                Save
+              </button>
+            </div>
+          </Modal>
     </div>
   );
 };

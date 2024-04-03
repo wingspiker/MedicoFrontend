@@ -6,7 +6,7 @@ import StepTwo from "./RegisterComponents/StepTwo";
 import StepThree from "./RegisterComponents/StepThree";
 import StepFour from "./RegisterComponents/StepFour";
 import BuyerStepThree from "./RegisterComponents/BuyerStepThree";
-import { getEmailOtp, getMobileOtp, verifyEmailOtp, verifyMobileOtp } from "../Services/auth";
+import { getEmailOtp, getMobileOtp, signUpService, verifyEmailOtp, verifyMobileOtp } from "../Services/auth";
 import { Toaster, toast } from "sonner";
 
 const Register = () => {
@@ -23,7 +23,7 @@ const Register = () => {
     confirmPassword: "",
 
     //step 3
-
+    companyEmail:"",
     companyName: "",
     licenseNumber: "",
     gstNumber: "",
@@ -163,9 +163,12 @@ const Register = () => {
   };
 
   const nextStep = () => {
-    if (formData.role == 1) {
+    if (formData.role == 0) {      
       setIsBuyer(true);
+    }else{
+      setIsBuyer(false)
     }
+
     setStep((prevStep) => prevStep + 1);
   };
 
@@ -224,6 +227,20 @@ const Register = () => {
     navigate("/");
   };
 
+  const signUp = (registerData) => {
+
+    nextStep()
+
+    // signUpService(registerData)
+    //   .then((res) => {
+    //     toast.success("Account created successfully!");
+    //     setStep(prev=>prev+1);
+    //   })
+    //   .catch((err) => {
+    //     toast.error(err.response.data.detail)
+    //   })
+  }
+
   return (
     <div className="min-h-screen bg-cyan-900 flex flex-col justify-center items-center">
       <Toaster
@@ -234,7 +251,7 @@ const Register = () => {
       />
       {/* <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg"> */}
       <div
-        className={`md:w-full ${
+        className={`md:w-full w-[80%] ${
           step === 3 || step == 4
             ? "max-w-full max-h-full"
             : "max-w-md bg-white rounded-2xl"
@@ -285,10 +302,12 @@ const Register = () => {
             handleChange={handleChange}
             errors={errors}
             nextStep={nextStep}
+            signUp={signUp}
           />
         )}
 
-        {step === 3 && !isBuyer && (
+        {(step === 3 && (!isBuyer)) && (
+          
           <StepThree
             formData={formData}
             handleChange={handleChange}
@@ -298,7 +317,7 @@ const Register = () => {
           />
         )}
 
-        {step === 3 && isBuyer && (
+        {(step === 3 && isBuyer) && (
           <BuyerStepThree
             formData={formData}
             handleChange={handleChange}

@@ -21,7 +21,7 @@ const StepOne = ({
   M,
 }) => {
   return (
-    <form>
+    <>
       <div className="mb-4 flex ">
         <input
           type="email"
@@ -122,12 +122,12 @@ const StepOne = ({
       {errors.mobile && <span className="text-red-500">{errors.mobile}</span>}
       <button
         onClick={nextStep}
-        disabled={!(E && M)}
+        // disabled={!(E && M)}
         className="w-full mt-4 px-4 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 disabled:bg-[#72d3a6] focus:outline-none focus:bg-green-600"
       >
         Next
       </button>
-    </form>
+    </>
   );
 };
 
