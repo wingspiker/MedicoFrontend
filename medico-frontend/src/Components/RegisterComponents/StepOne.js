@@ -18,7 +18,7 @@ const StepOne = ({
   otpEmailLoading,
   otpMobileLoading,
   E,
-  M
+  M,
 }) => {
   return (
     <form>
@@ -34,11 +34,12 @@ const StepOne = ({
         />
         <button
           onClick={verifyEmail}
-          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none ${E?'disabled:bg-green-600':'disabled:bg-[#72d3a6]'} `}
+          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none ${
+            E ? "disabled:bg-green-600" : "disabled:bg-[#72d3a6]"
+          } `}
           disabled={errors.email || formData.email === "" || emailVerified || E}
         >
-          {E ? <MdVerified/>:otpEmailLoading?<Loader/>:'Send OTP'}
-          
+          {E ? <MdVerified /> : otpEmailLoading ? <Loader /> : "Send OTP"}
         </button>
       </div>
       {emailVerified && (
@@ -58,7 +59,6 @@ const StepOne = ({
             }
             className={` px-4 py-2 bg-green-500 text-white  hover:bg-green-600 focus:outline-none disabled:bg-green-300`}
           >
-            
             Verify Email
           </button>
           <button
@@ -82,10 +82,14 @@ const StepOne = ({
         />
         <button
           onClick={verifyMobile}
-          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none ${M?'disabled:bg-green-600':'disabled:bg-[#72d3a6]'}`}
-          disabled={errors.mobile || formData.mobile === "" || mobileVerified || M}
+          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none ${
+            M ? "disabled:bg-green-600" : "disabled:bg-[#72d3a6]"
+          }`}
+          disabled={
+            errors.mobile || formData.mobile === "" || mobileVerified || M
+          }
         >
-          {M ? <MdVerified/>:otpMobileLoading?<Loader/>:'Send OTP'}
+          {M ? <MdVerified /> : otpMobileLoading ? <Loader /> : "Send OTP"}
         </button>
       </div>
       {mobileVerified && (
