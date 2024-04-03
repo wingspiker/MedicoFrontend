@@ -1,6 +1,4 @@
 import React from 'react';
-import Header from './SafeComponents/Header';
-import { Sidebar } from './SafeComponents/Sidebar';
 
 const Welcome = (props) => {
   const { changeLogin } = props;

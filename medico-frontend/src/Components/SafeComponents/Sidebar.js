@@ -22,11 +22,11 @@ export const Sidebar = (props) => {
   return (
     <aside className={`fixed inset-y-0 left-0 z-30 overflow-hidden bg-black bg-opacity-30 text-white transition-all duration-300 ease-in-out ${sidebarWidth} rounded-xl rounded-l-none`}>
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200">
+        <div className="flex items-center justify-between px-2 py-2 border-b border-gray-200">
             {
                 isOpen?                
-                <div className=' flex items-center gap-2'>
-                    <img src="https://images.vexels.com/media/users/3/142777/isolated/lists/84711206e52e0d4ff6c793cb476ea264-heartbeat-star-medical-logo.png" alt="Medico Logo" className="w-10 h-10" />
+                <div className=' flex items-center gap-3'>
+                    <img src="medico-logo.png" alt="Medico Logo" className="w-10 h-10" />
                     <h1 className='text-3xl font-bold'>Medico</h1>
                 </div>:''
             }

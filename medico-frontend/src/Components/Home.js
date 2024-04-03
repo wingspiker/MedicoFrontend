@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { isLoggedIn } from '../Services/auth';
 
 const Home = () => {
   return (
@@ -13,7 +12,7 @@ const Home = () => {
         </div>
       </header>
       <div className="flex justify-center items-center">
-        <img src="https://images.vexels.com/media/users/3/142777/isolated/lists/84711206e52e0d4ff6c793cb476ea264-heartbeat-star-medical-logo.png" alt="Medico Logo" className="w-64 h-64" />
+        <img src="medico-logo.png" alt="Medico Logo" className="w-64 h-64" />
       </div>
     </div>
   );

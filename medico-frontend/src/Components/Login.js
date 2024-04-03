@@ -3,6 +3,7 @@ import { loginService } from "../Services/auth";
 import { Toaster, toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import Loader from "../Loader";
+import { IoClose } from 'react-icons/io5';
 
 
 const Login = (props) => {
@@ -82,10 +83,17 @@ const Login = (props) => {
     }
   };
 
+  const handleClose = () => {
+    navigate('/')
+  }
+
   return (
     <section className="h-screen flex items-center justify-center bg-cyan-900">
       <div className="max-w-md md:w-full mx-auto">
-        <div className="bg-white p-8 rounded-lg shadow-md">
+        <div className="bg-white p-8 rounded-lg shadow-md relative">
+        <button className="absolute top-4 right-4 text-gray-600 hover:text-cyan-700" onClick={handleClose}> {/* Positioning close button */}
+        <IoClose className="text-3xl" /> {/* Close icon */}
+            </button>
           <h2 className="text-3xl font-semibold text-center text-gray-900 mb-6">
             Login
           </h2>
