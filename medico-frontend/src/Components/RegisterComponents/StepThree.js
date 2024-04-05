@@ -313,10 +313,10 @@ const StepThree = (props) => {
               <option value="" className="text-gray-900">
                 Select Company Type
               </option>
-              <option value="selfSelling" className="text-gray-900">
+              <option value="1" className="text-gray-900">
                 Self Selling
               </option>
-              <option value="companySelling" className="text-gray-900">
+              <option value="0" className="text-gray-900">
                 Company Selling
               </option>
             </select>
@@ -324,7 +324,7 @@ const StepThree = (props) => {
               <span className="text-red-500">{errors.companyType}</span>
             )}
           </div>
-          {formData.companyType === "selfSelling" && (
+          {formData.companyType === "1" && (
             <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
               <label
                 htmlFor="chargeType"

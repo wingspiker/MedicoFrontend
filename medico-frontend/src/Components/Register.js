@@ -75,16 +75,17 @@ const Register = () => {
   const [mobileVerified, setMobileVerified] = useState(false);
   const [isBuyer, setIsBuyer] = useState(false);
 
-  const documents=[
-    { id: "logoFile", name: "logoFile", label: "Company Logo" },
-    { id: "aadharCardFile", name: "aadharCardFile", label: "Aadhar Card" },
-    { id: "panCardFile", name: "panCardFile", label: "PAN Card" },
-    { id: "gstLicenseFile", name: "gstLicenseFile", label: "GST Number" },
-    { id: "wholesaleDrugLicenseFile", name: "wholesaleDrugLicenseFile", label: "Wholesale Drug License" },
-    { id: "retailDrugLicenseFile", name: "retailDrugLicenseFile", label: "Retail Drug License" },
-    { id: "companyRegistrationLicenseFile", name: "companyRegistrationLicenseFile", label: "Company Registration License" },
-    // Add more documents as needed
+  let documents=[
+    { id: "logoFile", name: "logoFile", label: "Company Logo", url: "" },
+    { id: "aadharCardFile", name: "aadharCardFile", label: "Aadhar Card", url: "" },
+    { id: "panCardFile", name: "panCardFile", label: "PAN Card", url: "" },
+    { id: "gstLicenseFile", name: "gstLicenseFile", label: "GST Number", url: "" },
+    { id: "wholesaleDrugLicenseFile", name: "wholesaleDrugLicenseFile", label: "Wholesale Drug License", url: "" },
+    { id: "retailDrugLicenseFile", name: "retailDrugLicenseFile", label: "Retail Drug License", url: "" },
+    { id: "companyRegistrationLicenseFile", name: "companyRegistrationLicenseFile", label: "Company Registration License", url: "" }
   ]
+
+  let documentLinks = []
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -234,19 +235,139 @@ const Register = () => {
     // const name = e.target.name;
     // Update form data with the selected file
 
-    handleImageUpload(e).then((url) => {console.log(url)}).catch((err)=>{console.log(err)})
+    // handleImageUpload(e).then((url) => {console.log(url)}).catch((err)=>{console.log(err)})
 
     // setFormData((prevState) => ({
     //   ...prevState,
     //   [name]: file,
     // }));
+
+    console.log(e.target.name);
+
+    const doc = {
+      name: e.target.name,
+      link: "hello"
+    };
+    
+    const existingDocIndex = documentLinks.findIndex(item => item.name === doc.name);
+    
+    if (existingDocIndex !== -1) {
+      documentLinks[existingDocIndex].link = doc.link;
+    } else {
+      documentLinks.push(doc);
+    }
   };
+
+  const ValidateStep3 = () => {
+    if(formData.companyEmail === '' || errors.companyEmail){
+      toast.error(errors.companyEmail ?? 'Company Email is required');
+      return;
+    }
+    
+    if(formData.companyName === '' || errors.companyName){
+      toast.error(errors.companyName ?? 'Company Name is required');
+      return;
+    }
+    
+    if(formData.licenseNumber === '' || errors.licenseNumber){
+      toast.error(errors.licenseNumber ?? 'License Number is required');
+      return;
+    }
+    
+    if(formData.gstNumber === '' || errors.gstNumber){
+      toast.error(errors.gstNumber ?? 'GST Number is required');
+      return;
+    }
+    
+    if(formData.panCardNumber === '' || errors.panCardNumber){
+      toast.error(errors.panCardNumber ?? 'Pan Card Number is required');
+      return;
+    }
+    
+    if(formData.displayName === '' || errors.displayName){
+      toast.error(errors.displayName ?? 'Display Name is required');
+      return;
+    }
+    
+    if(formData.state === '' || errors.state){
+      toast.error(errors.state ?? 'State is required');
+      return;
+    }
+    
+    if(formData.district === '' || errors.district){
+      toast.error(errors.district ?? 'District is required');
+      return;
+    }
+    
+    if(formData.taluka === '' || errors.taluka){
+      toast.error(errors.taluka ?? 'Taluka is required');
+      return;
+    }
+    
+    if(formData.companyAddress1 === '' || errors.companyAddress1){
+      toast.error(errors.companyAddress1 ?? 'Company Address 1 is required');
+      return;
+    }
+    
+    if(formData.companyAddress2 === '' || errors.companyAddress2){
+      toast.error(errors.companyAddress2 ?? 'Company Address 2 is required');
+      return;
+    }
+    
+    if(formData.pincode === '' || errors.pincode){
+      toast.error(errors.pincode ?? 'Pincode is required');
+      return;
+    }
+    
+  
+    
+    if(formData.drugLicenseNumber === '' || errors.drugLicenseNumber){
+      toast.error(errors.drugLicenseNumber ?? 'Drug License Number is required');
+      return;
+    }
+    
+    if(formData.wholesaleLicenseNumber === '' || errors.wholesaleLicenseNumber){
+      toast.error(errors.wholesaleLicenseNumber ?? 'Wholesale License Number is required');
+      return;
+    }
+    
+    if(formData.companyType === '' || errors.companyType){
+      toast.error(errors.companyType ?? 'Company Type is required');
+      return;
+    }
+    
+    if(formData.companyType === 'selfSelling' && formData.chargeType === '' || errors.chargeType){
+      toast.error(errors.chargeType ?? 'Charge Type is required');
+      return;
+    }
+
+  }
+
+  const ValidateStep4 = () => {
+    const names = documents.map(doc => doc.name);
+    const submitNames = documentLinks.map((link) => link?.name);
+    const filteredNames = names.filter(name => !submitNames.includes(name));
+    if(filteredNames.length){
+      toast.error(filteredNames[0]+' is required');      
+    }else{
+      console.log(formData);    console.log(documentLinks);
+      const {email, companyEmail, companyName, companyType, chargeType} = formData;
+    }
+  }
+
+  const submitDetails = () => {
+
+  }
 
   const nextStep = () => {
     if (formData.role == 0) {      
       setIsBuyer(true);
     }else{
       setIsBuyer(false)
+    }
+
+    if(step===3){
+      ValidateStep3();
     }
 
     setStep((prevStep) => prevStep + 1);
@@ -259,7 +380,8 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission here
-    console.log(formData);
+    ValidateStep4()
+    
   };
 
   const confirmEmailOtp = (e) => {
@@ -311,17 +433,19 @@ const Register = () => {
 
     // nextStep()
 
-    signUpService(registerData)
-      .then((res) => {
-        isRed(false)
-        toast.success("Account created successfully!");
-        isRed(true)
-        localStorage.setItem('token', res.accessToken);        
-        nextStep();
-      })
-      .catch((err) => {
-        toast.error(err.response.data.detail)
-      })
+    // signUpService(registerData)
+    //   .then((res) => {
+    //     isRed(false)
+    //     toast.success("Account created successfully!");
+    //     isRed(true)
+    //     localStorage.setItem('token', res.accessToken);        
+    //     nextStep();
+    //   })
+    //   .catch((err) => {
+    //     toast.error(err.response.data.detail)
+    //   })
+
+      nextStep();
   }
 
   return (

@@ -123,7 +123,7 @@ export const decodeToken = () => {
     return token()? jwt_decode(token()) : null;
 }
 
-export let currStep = 3;
+export let currStep = 1;
 
 export const  setCurrStep = (stepNum) =>{
     currStep=stepNum;
