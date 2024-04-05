@@ -16,6 +16,8 @@ import Welcome from "./Components/Welcome";
 import Product from "./Components/SafeComponents/Product";
 import AddProduct from "./Components/SafeComponents/AddProduct";
 import { Sidebar } from "./Components/SafeComponents/Sidebar";
+import AddOffer from "./Components/OfferComponents/AddOffer";
+import Offer from "./Components/OfferComponents/Offers";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -60,6 +62,28 @@ function App() {
             element={
               isLoggedIn ? (
                 <AddProduct changeLogin={setIsLoggedIn} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/Offer"
+            exact
+            element={
+              isLoggedIn ? (
+                <Offer changeLogin={setIsLoggedIn} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/Offer/add"
+            exact
+            element={
+              isLoggedIn ? (
+                <AddOffer changeLogin={setIsLoggedIn} />
               ) : (
                 <Navigate to="/login" replace />
               )
