@@ -465,9 +465,10 @@ function AddProduct() {
   const allowReturn = watch("allowReturn");
   const pricingMethod = watch("pricingMethod");
   const retailPrice = watch("retailPrice");
-  const margin = watch("margin");
+  const margin = watch("marginOnRetail");
   const mrp = watch("mrp");
   const discount = watch("discountOnMRP");
+  // const marginOnRetail = watch("marginOnRetail");
 
   const validateRetailPrice = (value) => {
     return value <= mrp || "Retail price must be less than or equal to MRP";
@@ -487,9 +488,9 @@ function AddProduct() {
     switch (currentStep) {
       case 1:
         return (
-          <div className="flex justify-center items-center min-h-screen ">
+          <div className="flex justify-center items-center min-h-screen bg-cyan-900">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <h1>Product</h1>
+              <h1 className=" text-4xl text-white">Product</h1>
               <ProductInformation
                 register={register}
                 watch={watch}
@@ -509,7 +510,15 @@ function AddProduct() {
                 validateRetailPrice={validateRetailPrice}
                 pricingMethod={pricingMethod}
               />
-              <button type="submit">Next</button>
+
+              <div className=" p-2 flex justify-end">
+                <button
+                  type="submit"
+                  className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+                >
+                  Next
+                </button>
+              </div>
             </form>
           </div>
         );
