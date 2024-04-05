@@ -1,13 +1,21 @@
 import { development } from "../Environment/environment";
 import axios from 'axios'
 import {jwtDecode as jwt_decode} from 'jwt-decode';
+import env from "react-dotenv";
 
-const url = development.url
+
+const url = env.API_URL
+// console.log(env);
+
+// require('dotenv').config()
+// console.log(process.env)
+
 
 export const loginService = async (login) => {
     // const url = development.url + '/api/auth/login';
 
     // console.log(login);
+    
 
     return axios.post(url+ '/api/auth/login', login)
         .then(response => {

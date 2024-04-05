@@ -307,7 +307,7 @@ function AddOffer() {
   const allowedUser = watch("allowedUser");
   const offerDiscount = watch("offerDiscount");
 
-  const renderStep = () => {
+  const renderStep = () => {  
     switch (currentStep) {
       case 1:
         return (
