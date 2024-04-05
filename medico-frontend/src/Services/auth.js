@@ -1,5 +1,6 @@
 import { development } from "../Environment/environment";
 import axios from 'axios'
+import {jwtDecode as jwt_decode} from 'jwt-decode';
 
 const url = development.url
 
@@ -11,7 +12,6 @@ export const loginService = async (login) => {
     return axios.post(url+ '/api/auth/login', login)
         .then(response => {
             // Handle successful response
-            console.log('Login successful:', response.data);
             return response.data; // Return data if needed
         })
         .catch(error => {
@@ -99,3 +99,33 @@ export const signUpService = async (signUpDto) => {
     
 }
 
+// signout
+
+export const signOut = () => {
+    localStorage.removeItem("token");
+}
+
+export const token = () => localStorage.getItem("token");
+
+export const decodeToken = () => {
+    const currUser = token()? jwt_decode(token()) : null;
+    if(currUser && currUser.exp * 1000 < Date.now()){
+        signOut();
+    }
+    return token()? jwt_decode(token()) : null;
+}
+
+export let currStep = 3;
+
+export const  setCurrStep = (stepNum) =>{
+    currStep=stepNum;
+};
+
+
+// /formdata 
+
+export let formdata  = null;
+
+export const setFormData = (f) =>{
+    formdata=f;
+};

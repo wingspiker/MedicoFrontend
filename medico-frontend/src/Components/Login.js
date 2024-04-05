@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { loginService } from "../Services/auth";
 import { Toaster, toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loader from "../Loader";
-import { IoClose } from 'react-icons/io5';
-
+import { IoClose } from "react-icons/io5";
 
 const Login = (props) => {
-  const { changeLogin } = props;
+  const { changeLogin, setShowSidebar } = props;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -65,6 +64,8 @@ const Login = (props) => {
           setLoading(false); // Set loading to false after API response
           // Handle successful login response
           changeLogin(true);
+          setShowSidebar(true);
+          localStorage.setItem('token', response.accessToken);
           navigate("/Home");
         })
         .catch((error) => {
@@ -84,23 +85,28 @@ const Login = (props) => {
   };
 
   const handleClose = () => {
-    navigate('/')
-  }
+    navigate("/");
+  };
 
   return (
     <section className="h-screen flex items-center justify-center bg-cyan-900">
       <div className="max-w-md md:w-full mx-auto">
         <div className="bg-white p-8 rounded-lg shadow-md relative">
-        <button className="absolute top-4 right-4 text-gray-600 hover:text-cyan-700" onClick={handleClose}> {/* Positioning close button */}
-        <IoClose className="text-3xl" /> {/* Close icon */}
-            </button>
+          <button
+            className="absolute top-4 right-4 text-gray-600 hover:text-cyan-700"
+            onClick={handleClose}
+          >
+            {" "}
+            {/* Positioning close button */}
+            <IoClose className="text-3xl" /> {/* Close icon */}
+          </button>
           <h2 className="text-3xl font-semibold text-center text-gray-900 mb-6">
             Login
           </h2>
           <Toaster
             position="top-center"
             toastOptions={{
-              style: { color: "red"},
+              style: { color: "red" },
             }}
           />
           <form onSubmit={handleSubmit}>
@@ -148,23 +154,20 @@ const Login = (props) => {
             </div>
             <button
               type="submit"
-              className="block mx-auto w-full px-5 py-2.5 text-sm font-medium text-center text-white bg-[#3e9a6f] hover:bg-green-600 rounded-lg sm:w-auto hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 relative" // Added relative class
+              className="block mx-auto w-full px-5 py-2.5 text-sm font-medium text-center text-white bg-[#3e9a6f] hover:bg-green-600 rounded-lg hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 relative" // Added relative class
             >
-              {loading ? (
-                <Loader/>
-              ):'Login'}
-              
+              {loading ? <Loader /> : "Login"}
             </button>
+            <div className="text-center mt-4 text-sm text-cyan-800">
+              Don't have an account?{" "}
+              <Link
+                to={"/register"}
+                className="font-semibold hover:text-cyan-600"
+              >
+                Go to signup
+              </Link>
+            </div>
           </form>
-        </div>
-        <div className="text-center mt-4 text-sm text-gray-300">
-          Don't have an account?{" "}
-          <a
-            href="/register"
-            className="text-primary-600 hover:text-primary-400"
-          >
-            Go to signup
-          </a>
         </div>
       </div>
     </section>

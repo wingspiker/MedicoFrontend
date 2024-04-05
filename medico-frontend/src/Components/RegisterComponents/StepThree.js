@@ -1,17 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Subscription from "./Subscription";
 import Modal from "react-modal";
+import { getStates } from "../../Services/location";
 
-const StepThree = ({ formData, handleChange, errors, nextStep, prevStep }) => {
+const StepThree = (props) => {
+  const {
+    formData,
+    handleChange,
+    errors,
+    nextStep,
+    prevStep,
+    states,
+    districts,
+    talukas,
+  } = props;
   const [showModal, setShowModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
 
-  // Your form state and functions...
-
   const plans = [
-    { id: 1, name: 'Basic Plan', price: '$10/month' },
-    { id: 2, name: 'Standard Plan', price: '$20/month' },
-    { id: 3, name: 'Premium Plan', price: '$30/month' }
+    { id: 1, name: "Basic Plan", price: "$10/month" },
+    { id: 2, name: "Standard Plan", price: "$20/month" },
+    { id: 3, name: "Premium Plan", price: "$30/month" },
   ];
 
   const handleSave = () => {
@@ -23,13 +32,12 @@ const StepThree = ({ formData, handleChange, errors, nextStep, prevStep }) => {
     }
   };
 
-
   return (
     <div className="text-center border rounded-xl">
       <h1 className="text-3xl text-white mb-4 py-6">Company Basic Details</h1>
       <div className="m-4 text-left ">
         <div className="flex flex-wrap">
-          <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+        <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
             <label htmlFor="email" className="block text-white bg-cyan-900">
               Email Id
             </label>
@@ -39,10 +47,27 @@ const StepThree = ({ formData, handleChange, errors, nextStep, prevStep }) => {
               placeholder="Email Id"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 rounded border text-gray-900 focus:outline-none focus:border-green-500"
+              readOnly
+              className="w-full px-3 py-2 rounded border text-gray-900 focus:outline-none bg-green-300 focus:border-green-500"
             />
             {errors.email && (
               <span className="text-red-500">{errors.email}</span>
+            )}
+          </div>
+          <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
+            <label htmlFor="email" className="block text-white bg-cyan-900">
+              Company Email Id
+            </label>
+            <input
+              type="text"
+              name="companyEmail"
+              placeholder="Email Id"
+              value={formData.companyEmail}
+              onChange={handleChange}
+              className="w-full px-3 py-2 rounded border text-gray-900 focus:outline-none focus:border-green-500"
+            />
+            {errors.companyEmail && (
+              <span className="text-red-500">{errors.companyEmail}</span>
             )}
           </div>
           <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
@@ -126,49 +151,68 @@ const StepThree = ({ formData, handleChange, errors, nextStep, prevStep }) => {
             )}
           </div>
           <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
-            <label htmlFor="email" className="block bg-cyan-900 text-white">
+            <label htmlFor="state" className="block bg-cyan-900 text-white">
               State
             </label>
-            <input
-              type="text"
+            <select
               name="state"
-              placeholder="State"
               value={formData.state}
               onChange={handleChange}
               className="w-full px-3 py-2 rounded border text-gray-900 border-gray-300 focus:outline-none focus:border-green-500"
-            />
+            >
+              <option value="" disabled>
+                Select State
+              </option>
+              {states.map((state) => (
+                <option key={state.id} value={state.id}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
             {errors.state && (
               <span className="text-red-500">{errors.state}</span>
             )}
           </div>
           <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
-            <label htmlFor="email" className="block bg-cyan-900 text-white">
+            <label htmlFor="district" className="block bg-cyan-900 text-white">
               District
             </label>
-            <input
-              type="text"
+            <select
               name="district"
-              placeholder="District"
               value={formData.district}
               onChange={handleChange}
+              disabled={!formData.state}
               className="w-full px-3 py-2 rounded border text-gray-900 border-gray-300 focus:outline-none focus:border-green-500"
-            />
+            >
+              <option value="">Select District</option>
+              {districts.map((district) => (
+                <option key={district.id} value={district.id}>
+                  {district.name}
+                </option>
+              ))}
+            </select>
             {errors.district && (
               <span className="text-red-500">{errors.district}</span>
             )}
           </div>
           <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
-            <label htmlFor="email" className="block bg-cyan-900 text-white">
+            <label htmlFor="taluka" className="block bg-cyan-900 text-white">
               Taluka
             </label>
-            <input
-              type="text"
+            <select
               name="taluka"
-              placeholder="Taluka"
               value={formData.taluka}
+              disabled={!formData.district}
               onChange={handleChange}
               className="w-full px-3 py-2 rounded border text-gray-900 border-gray-300 focus:outline-none focus:border-green-500"
-            />
+            >
+              <option value="">Select Taluka</option>
+              {talukas.map((taluka) => (
+                <option key={taluka.id} value={taluka.name}>
+                  {taluka.name}
+                </option>
+              ))}
+            </select>
             {errors.taluka && (
               <span className="text-red-500">{errors.taluka}</span>
             )}
@@ -328,51 +372,50 @@ const StepThree = ({ formData, handleChange, errors, nextStep, prevStep }) => {
               Next
             </button>
           </div>
-
         </div>
       </div>
-          <Modal
-            isOpen={showModal}
-            onRequestClose={() => setShowModal(false)}
-            className="modal p-6 bg-white rounded-md shadow-lg w-full md:w-1/2 mx-auto"
-            overlayClassName="modal-overlay fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50"
-            contentLabel="Select a Plan"
-          >
-            {/* Close button */}
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-300"
-              onClick={() => setShowModal(false)}
-            >
-              &times;
-            </button>
+      <Modal
+        isOpen={showModal}
+        onRequestClose={() => setShowModal(false)}
+        className="modal p-6 bg-white rounded-md shadow-lg w-full md:w-1/2 mx-auto"
+        overlayClassName="modal-overlay fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50"
+        contentLabel="Select a Plan"
+      >
+        {/* Close button */}
+        <button
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-300"
+          onClick={() => setShowModal(false)}
+        >
+          &times;
+        </button>
 
-            {/* Modal content */}
-            <h2 className="text-lg font-bold mb-4">Select a Plan</h2>
-            <div className="grid grid-cols-1 gap-4">
-              {plans.map((plan) => (
-                <div key={plan.id} className="bg-gray-100 rounded-md p-4">
-                  <h3 className="text-lg font-semibold">{plan.name}</h3>
-                  <p className="text-gray-600">{plan.price}</p>
-                  <button
-                    className="mt-2 px-4 py-2 bg-cyan-900 text-white rounded hover:bg-cyan-700 focus:outline-none focus:bg-cyan-700"
-                    onClick={() => setSelectedPlan(plan)}
-                  >
-                    Select
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* Save button */}
-            <div className="flex justify-end mt-4">
+        {/* Modal content */}
+        <h2 className="text-lg font-bold mb-4">Select a Plan</h2>
+        <div className="grid grid-cols-1 gap-4">
+          {plans.map((plan) => (
+            <div key={plan.id} className="bg-gray-100 rounded-md p-4">
+              <h3 className="text-lg font-semibold">{plan.name}</h3>
+              <p className="text-gray-600">{plan.price}</p>
               <button
-                className="px-4 py-2 bg-cyan-900 text-white rounded hover:bg-cyan-700 focus:outline-none focus:bg-cyan-700"
-                onClick={handleSave}
+                className="mt-2 px-4 py-2 bg-cyan-900 text-white rounded hover:bg-cyan-700 focus:outline-none focus:bg-cyan-700"
+                onClick={() => setSelectedPlan(plan)}
               >
-                Save
+                Select
               </button>
             </div>
-          </Modal>
+          ))}
+        </div>
+
+        {/* Save button */}
+        <div className="flex justify-end mt-4">
+          <button
+            className="px-4 py-2 bg-cyan-900 text-white rounded hover:bg-cyan-700 focus:outline-none focus:bg-cyan-700"
+            onClick={handleSave}
+          >
+            Save
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };

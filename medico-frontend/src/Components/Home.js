@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
+  
+
+
   return (
     <div className="bg-cyan-900 h-screen text-white flex flex-col justify-center items-center">
       <header className="flex justify-between items-center w-full px-8 py-4 absolute top-0">

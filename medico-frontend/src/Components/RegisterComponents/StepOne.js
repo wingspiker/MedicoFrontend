@@ -1,6 +1,7 @@
 import React from "react";
 import Loader from "../../Loader";
 import { MdVerified } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const StepOne = ({
   formData,
@@ -127,6 +128,9 @@ const StepOne = ({
       >
         Next
       </button>
+      <p className=" text-center mt-2 text-cyan-800">
+        Already an User? <Link className=" font-semibold hover:text-cyan-600" to={'/login'}>Login</Link> 
+      </p>
     </>
   );
 };

@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import { Toaster, toast } from "sonner";
+import { setFormData } from "../../Services/auth";
 
 const StepTwo = (props) => {
 
@@ -31,8 +32,9 @@ const StepTwo = (props) => {
     }
 
     const {email, mobile, role, username, password, confirmPassword} = formData;
-    const fD = {email, phoneNumber:mobile, role, username, password, confirmPassword};
-    // console.log(fD);
+    const fD = {email, phoneNumber:mobile, role:Number(role), username, password, confirmPassword};
+    console.log(fD);
+    setFormData(formData)
     signUp(fD)
   }
   return (

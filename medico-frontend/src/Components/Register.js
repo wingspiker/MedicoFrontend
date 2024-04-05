@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import StepOne from "./RegisterComponents/StepOne";
@@ -6,12 +6,30 @@ import StepTwo from "./RegisterComponents/StepTwo";
 import StepThree from "./RegisterComponents/StepThree";
 import StepFour from "./RegisterComponents/StepFour";
 import BuyerStepThree from "./RegisterComponents/BuyerStepThree";
-import { getEmailOtp, getMobileOtp, signUpService, verifyEmailOtp, verifyMobileOtp } from "../Services/auth";
+import { currStep, getEmailOtp, getMobileOtp, signUpService, verifyEmailOtp, verifyMobileOtp } from "../Services/auth";
 import { Toaster, toast } from "sonner";
+import { getDistricts, getStates, getTalukas } from "../Services/location";
+import { handleImageUpload } from "../Services/upload";
 
 const Register = () => {
+
+  const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [talukas, setTalukas] = useState([]);
+
+  // Your form state and functions...
+  useEffect(() => {
+    getStates()
+      .then((res) => {
+        setStates(res);
+      })
+      .catch((err) => console.log("Error: ", err));
+  }, []);
+
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const currSt = currStep
+  const [step, setStep] = useState(currSt);
+  const [red, isRed] = useState(true);
   const initialForm = {
     email: "",
     emailOtp: "",
@@ -57,50 +75,109 @@ const Register = () => {
   const [mobileVerified, setMobileVerified] = useState(false);
   const [isBuyer, setIsBuyer] = useState(false);
 
+  const documents=[
+    { id: "logoFile", name: "logoFile", label: "Company Logo" },
+    { id: "aadharCardFile", name: "aadharCardFile", label: "Aadhar Card" },
+    { id: "panCardFile", name: "panCardFile", label: "PAN Card" },
+    { id: "gstLicenseFile", name: "gstLicenseFile", label: "GST Number" },
+    { id: "wholesaleDrugLicenseFile", name: "wholesaleDrugLicenseFile", label: "Wholesale Drug License" },
+    { id: "retailDrugLicenseFile", name: "retailDrugLicenseFile", label: "Retail Drug License" },
+    { id: "companyRegistrationLicenseFile", name: "companyRegistrationLicenseFile", label: "Company Registration License" },
+    // Add more documents as needed
+  ]
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     let error = "";
 
     // Basic validation example, customize as needed
     if (name === "email" && !/\S+@\S+\.\S+/.test(value)) {
-      error = "Invalid email address";
-    } else if (name === "password" && value.length < 6) {
-      error = "Password must be at least 6 characters long";
+        error = "Invalid email address";
+    } else if (name === "password") {
+        if (value.length < 8) {
+            error = "Password must be at least 8 characters long";
+        } else {
+            // Check if the password contains at least one uppercase letter, one lowercase letter, one numeric digit, and one special character
+            const hasUppercase = /[A-Z]/.test(value);
+            const hasLowercase = /[a-z]/.test(value);
+            const hasNumeric = /[0-9]/.test(value);
+            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // You can adjust the special characters as per your requirement
+
+            if (!hasUppercase || !hasLowercase || !hasNumeric || !hasSpecialChar) {
+                error = "Password must contain at least one uppercase letter, one lowercase letter, one numeric digit, and one special character";
+            }
+        }
     } else if (name === "confirmPassword" && value !== formData.password) {
-      error = "Passwords do not match";
+        error = "Passwords do not match";
+    } else if (name === "companyEmail" && !/\S+@\S+\.\S+/.test(value)) {
+        error = "Invalid company email address";
+    } else if (name === "companyName" && value.trim() === "") {
+        error = "Company name is required";
+    } else if (name === "licenseNumber" && value.trim() === "") {
+        error = "License number is required";
+    } else if (name === "gstNumber" && value.trim() === "") {
+        error = "GST number is required";
+    } else if (name === "panCardNumber" && value.trim() === "") {
+        error = "Pan card number is required";
+    } else if (name === "displayName" && value.trim() === "") {
+        error = "Display name is required";
+    } else if (name === "state" && value.trim() === "") {
+        error = "State is required";
+    } else if (name === "district" && value.trim() === "") {
+        error = "District is required";
+    } else if (name === "taluka" && value.trim() === "") {
+        error = "Taluka is required";
+    } else if (name === "companyAddress1" && value.trim() === "") {
+        error = "Company address 1 is required";
+    } else if (name === "companyAddress2" && value.trim() === "") {
+        error = "Company address 2 is required";
+    } else if (name === "pincode" && (value.length !== 6 || !/^\d+$/.test(value))) {
+        error = "Invalid pincode";
+    } else if (name === "drugLicenseNumber" && value.trim() === "") {
+        error = "Drug license number is required";
+    } else if (name === "wholesaleLicenseNumber" && value.trim() === "") {
+        error = "Wholesale license number is required";
+    } else if (name === "companyType" && value.trim() === "") {
+        error = "Company type is required";
+    } else if (name === "chargeType" && value.trim() === "" && formData.companyType === "selfSelling") {
+        error = "Charge type is required";
     }
 
-    if (name === "confirmPassword" && value !== formData.password) {
-      error = "Passwords do not match";
+    if (name === "state") {
+        if (value === "") {
+            error = "State is required";
+        } else {
+            getDistricts(value)
+                .then((d) => {
+                    setDistricts(d)
+                })
+                .catch((err) => console.log(err))
+        }
     }
 
-    if (name === "username") {
-      if (!/^[a-z]+$/.test(value)) {
-        error = "Username must contain only lowercase alphabets";
-      }
+    if (name === "district") {
+        if (value === "") {
+            error = "District is required";
+        } else {
+            getTalukas(value)
+                .then((d) => {
+                    setTalukas(d)
+                })
+                .catch((err) => console.log(err))
+        }
     }
 
-    if (name === "mobile") {
-      if (!/^\d{10}$/.test(value) && (value.length > 10 || value.length < 10)) {
-        error = "Mobile number must be 10 digits";
-      }
-    }
-
-    if (name === "firstName" || name === "lastName") {
-      if (!/^[a-zA-Z]*$/.test(value)) {
-        error = "Only alphabets are allowed";
-      }
-    }
     setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: error,
+        ...prevErrors,
+        [name]: error,
     }));
 
     setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
+        ...prevState,
+        [name]: value,
     }));
-  };
+};
+
 
   const verifyEmail = (e) => {
     e.preventDefault();
@@ -153,13 +230,16 @@ const Register = () => {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    const name = e.target.name;
+    // const file = e.target.files[0];
+    // const name = e.target.name;
     // Update form data with the selected file
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: file,
-    }));
+
+    handleImageUpload(e).then((url) => {console.log(url)}).catch((err)=>{console.log(err)})
+
+    // setFormData((prevState) => ({
+    //   ...prevState,
+    //   [name]: file,
+    // }));
   };
 
   const nextStep = () => {
@@ -229,16 +309,19 @@ const Register = () => {
 
   const signUp = (registerData) => {
 
-    nextStep()
+    // nextStep()
 
-    // signUpService(registerData)
-    //   .then((res) => {
-    //     toast.success("Account created successfully!");
-    //     setStep(prev=>prev+1);
-    //   })
-    //   .catch((err) => {
-    //     toast.error(err.response.data.detail)
-    //   })
+    signUpService(registerData)
+      .then((res) => {
+        isRed(false)
+        toast.success("Account created successfully!");
+        isRed(true)
+        localStorage.setItem('token', res.accessToken);        
+        nextStep();
+      })
+      .catch((err) => {
+        toast.error(err.response.data.detail)
+      })
   }
 
   return (
@@ -246,7 +329,7 @@ const Register = () => {
       <Toaster
         position="top-center"
         toastOptions={{
-          style: { color: "red"},
+          style: { color: `${red?'red':'green'}`},
         }}
       />
       {/* <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg"> */}
@@ -314,6 +397,9 @@ const Register = () => {
             errors={errors}
             nextStep={nextStep}
             prevStep={prevStep}
+            states={states}
+            districts={districts}
+            talukas={talukas}
           />
         )}
 
@@ -335,6 +421,7 @@ const Register = () => {
             prevStep={prevStep}
             handleSubmit={handleSubmit}
             handleFileChange={handleFileChange}
+            documents={documents}
           />
         )}
       </div>
