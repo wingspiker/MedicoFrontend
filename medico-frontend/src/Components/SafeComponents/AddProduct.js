@@ -477,7 +477,7 @@ function AddProduct() {
     if (pricingMethod === "discountOnMRP" && mrp && discount) {
       return (mrp - (mrp * discount) / 100).toFixed(2);
     } else if (pricingMethod === "marginOnRetail" && retailPrice && margin) {
-      console.log(retailPrice, margin);
+      // console.log(retailPrice, margin);
       return (retailPrice * (1 + margin * 0.01)).toFixed(2);
     }
     return 0;
@@ -490,7 +490,12 @@ function AddProduct() {
           <div className="flex justify-center items-center min-h-screen ">
             <form onSubmit={handleSubmit(onSubmit)}>
               <h1>Product</h1>
-              <ProductInformation register={register} errors={errors} />
+              <ProductInformation
+                register={register}
+                watch={watch}
+                errors={errors}
+                prescription={prescription}
+              />
               <ManufacturerInformation
                 register={register}
                 errors={errors}
@@ -502,6 +507,7 @@ function AddProduct() {
                 errors={errors}
                 calculateSellingPrice={calculateSellingPrice}
                 validateRetailPrice={validateRetailPrice}
+                pricingMethod={pricingMethod}
               />
               <button type="submit">Next</button>
             </form>
