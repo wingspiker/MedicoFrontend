@@ -276,7 +276,7 @@ function removeUndefinedEntries(array) {
 }
 
 function AddOffer() {
-  const [currentStep, setCurrentStep] = React.useState(2);
+  const [currentStep, setCurrentStep] = React.useState(1);
   const {
     register,
     handleSubmit,
