@@ -7,7 +7,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
-import CustomInput from "./Input";
+import { CustomInput } from "./Input";
 
 const ProductCard = ({ product, boxBase, defaultSizeX = 10 }) => {
   const { register, setValue, watch, errors } = useFormContext();

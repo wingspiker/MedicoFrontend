@@ -1,5 +1,10 @@
 import React from "react";
 import {
+  CustomInput,
+  CustomSelect,
+  CustomTextArea,
+} from "../../OfferComponents/Input";
+import {
   TextField,
   FormControl,
   InputLabel,
@@ -14,14 +19,16 @@ import {
 
 function ManufacturerInformation({ register, errors, allowReturn }) {
   return (
-    <fieldset>
-      <legend>Manufacturer Information</legend>
-      <div className="form-group">
-        <TextField
+    <fieldset className="p-4 border rounded-md flex flex-col md:flex-row md:justify-between mt-4 max-w-5xl">
+      <legend className="text-2xl text-white mb-4 md:mb-0 md:mr-4">
+        Manufacturer Information
+      </legend>
+
+      <div className="form-group flex md:w-1/4 flex-col">
+        <CustomInput
           label="Manufacturer Name"
-          variant="outlined"
-          fullWidth
-          {...register("manufacturerName", {
+          placeholder="Enter manufacturer name"
+          inputProps={register("manufacturerName", {
             required: "Manufacturer name is required",
             pattern: {
               value: /^[A-Za-z\s]+$/,
@@ -29,19 +36,15 @@ function ManufacturerInformation({ register, errors, allowReturn }) {
                 "Manufacturer name can only contain alphabets and spaces",
             },
           })}
-          error={!!errors.manufacturerName}
-          helperText={
-            errors.manufacturerName && errors.manufacturerName.message
-          }
+          error={errors.manufacturerName}
         />
       </div>
-      <div className="form-group">
-        <TextField
+
+      <div className="form-group flex  flex-col">
+        <CustomInput
           label="Manufacturer License Number"
-          type="number"
-          variant="outlined"
-          fullWidth
-          {...register("manufacturerLicenseNumber", {
+          placeholder="Enter license number"
+          inputProps={register("manufacturerLicenseNumber", {
             required: "Manufacturer license number is required",
             pattern: {
               value: /^[0-9]+$/,
@@ -49,43 +52,44 @@ function ManufacturerInformation({ register, errors, allowReturn }) {
                 "Manufacturer license number can only contain numeric values",
             },
           })}
-          error={!!errors.manufacturerLicenseNumber}
-          helperText={
-            errors.manufacturerLicenseNumber &&
-            errors.manufacturerLicenseNumber.message
-          }
+          error={errors.manufacturerLicenseNumber}
         />
       </div>
-      <div className="form-group">
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Allow Exchange</FormLabel>
-          <RadioGroup row {...register("allowExchange")}>
-            <FormControlLabel value="true" control={<Radio />} label="True" />
-            <FormControlLabel value="false" control={<Radio />} label="False" />
-          </RadioGroup>
-        </FormControl>
+
+      {/* Assuming CustomSelect or a similar component is not suitable for Yes/No selection, using radios directly */}
+      <div className="form-group flex flex-col">
+        <label>Allow Exchange</label>
+        <div className="flex">
+          <input type="radio" value="true" {...register("allowExchange")} />{" "}
+          <span className="mr-4">True</span>
+          <input
+            type="radio"
+            value="false"
+            {...register("allowExchange")}
+          />{" "}
+          <span>False</span>
+        </div>
       </div>
-      <div className="form-group">
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Allow Return</FormLabel>
-          <RadioGroup row {...register("allowReturn")}>
-            <FormControlLabel value="true" control={<Radio />} label="True" />
-            <FormControlLabel value="false" control={<Radio />} label="False" />
-          </RadioGroup>
-        </FormControl>
+
+      <div className="form-group flex flex-col">
+        <label>Allow Return</label>
+        <div className="flex">
+          <input type="radio" value="true" {...register("allowReturn")} />{" "}
+          <span className="mr-4">True</span>
+          <input type="radio" value="false" {...register("allowReturn")} />{" "}
+          <span>False</span>
+        </div>
       </div>
+
       {allowReturn === "true" && (
-        <div className="form-group">
-          <TextField
+        <div className="form-group flex flex-col">
+          <CustomInput
             label="Return Days"
-            type="number"
-            variant="outlined"
-            fullWidth
-            {...register("returnDays", {
+            placeholder="Enter return days"
+            inputProps={register("returnDays", {
               required: "Return days is required",
             })}
-            error={!!errors.returnDays}
-            helperText={errors.returnDays && errors.returnDays.message}
+            error={errors.returnDays}
           />
         </div>
       )}

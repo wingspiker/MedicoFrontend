@@ -468,7 +468,6 @@ function AddProduct() {
   const margin = watch("marginOnRetail");
   const mrp = watch("mrp");
   const discount = watch("discountOnMRP");
-  // const marginOnRetail = watch("marginOnRetail");
 
   const validateRetailPrice = (value) => {
     return value <= mrp || "Retail price must be less than or equal to MRP";

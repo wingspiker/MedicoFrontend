@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm, Controller, FormProvider } from "react-hook-form";
-import CustomInput from "./Input";
+import { CustomInput } from "./Input";
 import {
   Checkbox,
   FormControlLabel,
@@ -307,7 +307,7 @@ function AddOffer() {
   const allowedUser = watch("allowedUser");
   const offerDiscount = watch("offerDiscount");
 
-  const renderStep = () => {  
+  const renderStep = () => {
     switch (currentStep) {
       case 1:
         return (

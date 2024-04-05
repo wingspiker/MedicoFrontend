@@ -1,11 +1,18 @@
 import React from "react";
 import {
+  CustomInput,
+  CustomSelect,
+  CustomTextArea,
+} from "../../OfferComponents/Input";
+import {
   TextField,
   FormControl,
   FormLabel,
   RadioGroup,
   Radio,
   FormControlLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 function PricingInformation({
@@ -17,32 +24,31 @@ function PricingInformation({
   pricingMethod,
 }) {
   return (
-    <fieldset>
-      <legend>Pricing Information</legend>
-      <div className="form-group">
-        <TextField
+    <fieldset className="p-4 border rounded-md mt-4 flex flex-col md:flex-row md:justify-between max-w-5xl">
+      <legend className="text-2xl text-white mb-4 md:mb-0 md:mr-4">
+        Pricing Information
+      </legend>
+
+      <div className="form-group flex flex-col md:w-1/4">
+        <CustomInput
           label="MRP"
-          type="number"
-          variant="outlined"
-          fullWidth
-          {...register("mrp", {
+          placeholder="Enter MRP"
+          inputProps={register("mrp", {
             required: "MRP is required",
             pattern: {
               value: /^[0-9]+$/,
               message: "MRP can only contain numeric values",
             },
           })}
-          error={!!errors.mrp}
-          helperText={errors.mrp && errors.mrp.message}
+          error={errors.mrp}
         />
       </div>
-      <div className="form-group">
-        <TextField
+
+      <div className="form-group flex flex-col md:w-1/4">
+        <CustomInput
           label="Retail Price"
-          type="number"
-          variant="outlined"
-          fullWidth
-          {...register("retailPrice", {
+          placeholder="Enter Retail Price"
+          inputProps={register("retailPrice", {
             required: "Retail price is required",
             pattern: {
               value: /^[0-9]+$/,
@@ -50,67 +56,59 @@ function PricingInformation({
             },
             validate: { validateRetailPrice },
           })}
-          error={!!errors.retailPrice}
-          helperText={errors.retailPrice && errors.retailPrice.message}
+          error={errors.retailPrice}
         />
       </div>
-      <div className="form-group">
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Pricing Method Preference</FormLabel>
-          <RadioGroup row {...register("pricingMethod")}>
-            <FormControlLabel
-              value="discountOnMRP"
-              control={<Radio />}
-              label="Discount on MRP"
-            />
-            <FormControlLabel
-              value="marginOnRetail"
-              control={<Radio />}
-              label="Margin on Retail Price"
-            />
-          </RadioGroup>
-        </FormControl>
+
+      <div className="form-group flex flex-col md:w-1/4">
+        <CustomSelect
+          label="Pricing Preference"
+          inputProps={register("pricingMethod")}
+          options={[
+            { value: "discountOnMRP", label: "Discount on MRP" },
+            { value: "marginOnRetail", label: "Margin on Retail Price" },
+          ]}
+          error={errors.pricingMethod}
+        />
       </div>
-      {console.log(pricingMethod)}
-      {pricingMethod === "discountOnMRP" && (
-        <div className="form-group">
-          <TextField
+
+      <div className="form-group flex flex-col md:w-1/4">
+        {pricingMethod === "discountOnMRP" && (
+          <CustomInput
             label="Discount on MRP (%)"
-            type="number"
-            variant="outlined"
-            fullWidth
-            {...register("discountOnMRP", {
+            placeholder="Enter Discount on MRP"
+            inputProps={register("discountOnMRP", {
               required: "Discount on MRP is required",
+              pattern: {
+                value: /^[0-9]+$/,
+                message: "Discount on MRP can only contain numeric values",
+              },
             })}
-            error={!!errors.discountOnMRP}
-            helperText={errors.discountOnMRP && errors.discountOnMRP.message}
+            error={errors.discountOnMRP}
           />
-        </div>
-      )}
-      {pricingMethod === "marginOnRetail" && (
-        <div className="form-group">
-          <h2>asdads</h2>
-          <TextField
-            label="Margin (%)"
-            type="number"
-            variant="outlined"
-            fullWidth
-            {...register("marginOnRetail", {
-              required: "Margin is required",
+        )}
+
+        {pricingMethod === "marginOnRetail" && (
+          <CustomInput
+            label="Margin on Retail Price (%)"
+            placeholder="Enter Margin on Retail Price"
+            inputProps={register("marginOnRetail", {
+              required: "Margin on Retail Price is required",
+              pattern: {
+                value: /^[0-9]+$/,
+                message:
+                  "Margin on Retail Price can only contain numeric values",
+              },
             })}
-            error={!!errors.marginOnRetail}
-            helperText={errors.marginOnRetail && errors.marginOnRetail.message}
+            error={errors.marginOnRetail}
           />
-        </div>
-      )}
-      <div className="form-group">
-        <TextField
+        )}
+
+        <CustomInput
           label="Selling Price"
-          type="text"
-          value={calculateSellingPrice()}
-          variant="outlined"
-          fullWidth
-          InputProps={{
+          placeholder="Calculated Selling Price"
+          inputProps={{
+            value: calculateSellingPrice(),
             readOnly: true,
           }}
         />

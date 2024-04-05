@@ -1,5 +1,9 @@
 import React from "react";
-// import { useForm, Controller } from "react-hook-form";
+import {
+  CustomInput,
+  CustomSelect,
+  CustomTextArea,
+} from "../../OfferComponents/Input";
 import {
   TextField,
   Select,
@@ -15,119 +19,118 @@ import {
 
 function ProductInformation({ register, watch, errors, prescription }) {
   return (
-    <fieldset className="p-4 border rounded-md max-w-2xl">
-      <legend className=" text-2xl text-white">Product Information</legend>
+    <fieldset className="p-4 border rounded-md mt-5 max-w-5xl">
+      <legend className="text-2xl text-white">Product Information</legend>
 
-      <div className="flex flex-wrap -mx-2 mb-4">
-        <div className="w-full md:w-1/3 px-2 mb-4 md:mb-0">
-          <TextField
+      <div className="flex flex-wrap -mx-2 items-center gap-y-6">
+        <div className="w-full md:w-1/4 px-2 md:mb-0">
+          <CustomInput
             label="Product Name"
-            variant="outlined"
-            fullWidth
-            {...register("productName", {
-              required: "This field is required",
+            placeholder="Enter product name"
+            inputProps={register("productName", {
+              required: "Product Name is required",
               pattern: {
                 value: /^[A-Za-z]+[A-Za-z0-9]*$/,
                 message:
                   "Product name must start with a letter and can contain letters and numbers.",
               },
             })}
-            error={!!errors.productName}
-            helperText={errors.productName && errors.productName.message}
+            error={errors.productName}
           />
         </div>
 
-        <div className="w-full md:w-1/3 px-2 mb-4 md:mb-0">
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel id="product-type-label">Product Type</InputLabel>
-            <Select
-              labelId="product-type-label"
-              label="Product Type"
-              {...register("productType")}
-            >
-              <MenuItem value="">Select a product type</MenuItem>
-              <MenuItem value="Tablet">Tablet</MenuItem>
-              <MenuItem value="Capsule">Capsule</MenuItem>
-              {/* Add more product types as needed */}
-            </Select>
-          </FormControl>
+        <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+          <CustomSelect
+            label="Product Type"
+            options={[
+              { value: "", label: "Select a product type" },
+              { value: "Tablet", label: "Tablet" },
+              { value: "Capsule", label: "Capsule" },
+              // Add more product types as needed
+            ]}
+            inputProps={register("productType", {
+              required: "Product Type is required",
+            })}
+            error={errors.productType}
+          />
         </div>
 
-        <div className="w-full md:w-1/3 px-2 mb-4 md:mb-0">
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel id="division-label">Division</InputLabel>
-            <Select
-              labelId="division-label"
-              label="Division"
-              {...register("division")}
-            >
-              <MenuItem value="">Select a division</MenuItem>
-              <MenuItem value="Division 1">Division 1</MenuItem>
-              <MenuItem value="Division 2">Division 2</MenuItem>
-              {/* Add more divisions as needed */}
-            </Select>
-          </FormControl>
+        <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+          <CustomSelect
+            label="Division"
+            options={[
+              { value: "", label: "Select a division" },
+              { value: "Division 1", label: "Division 1" },
+              { value: "Division 2", label: "Division 2" },
+              // Add more divisions as needed
+            ]}
+            inputProps={register("division", {
+              required: "Division is required",
+            })}
+            error={errors.division}
+          />
         </div>
 
-        <div className="w-full md:w-1/5 px-2 mb-4 md:mb-0">
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel id="prescription-label">Prescription</InputLabel>
-            <Select
-              labelId="prescription-label"
-              label="Prescription"
-              {...register("prescription")}
-            >
-              <MenuItem value="Rx">Rx</MenuItem>
-              <MenuItem value="nRx">nRx</MenuItem>
-              <MenuItem value="G">G</MenuItem>
-            </Select>
-          </FormControl>
+        <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+          <CustomSelect
+            label="Prescription"
+            options={[
+              { value: "Rx", label: "Rx" },
+              { value: "nRx", label: "nRx" },
+              { value: "G", label: "G" },
+            ]}
+            inputProps={register("prescription", {
+              required: "Prescription is required",
+            })}
+            error={errors.prescription}
+          />
         </div>
 
         {prescription === "nRx" && (
-          <div className="w-4 md:w-1/5 p-2 mb-4 md:mb-0">
+          <div className="w-full md:w-1/4 p-2 mb-4 md:mb-0">
             <div className="form-group">
               <input
                 type="file"
                 className="mt-1 block w-full file:border file:border-gray-300 file:rounded-md file:text-sm file:font-medium file:bg-white file:text-indigo-500 hover:file:bg-indigo-50"
-                {...register("letterPadDocument")}
+                {...register("letterPadDocument", {
+                  required: "This field is required",
+                })}
               />
             </div>
           </div>
         )}
 
-        <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
-          <TextField
+        <div className="w-full md:w-1/4 px-2 mb-4  md:mb-0">
+          <CustomInput
             label="Size X"
-            type="number"
-            variant="outlined"
-            fullWidth
-            {...register("sizeX", { required: "This field is required" })}
-            error={!!errors.sizeX}
-            helperText={errors.sizeX && errors.sizeX.message}
+            placeholder="Enter size X"
+            inputProps={register("sizeX", {
+              required: "Size X is required",
+            })}
+            error={errors.sizeX}
           />
         </div>
 
         <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
-          <TextField
+          <CustomInput
             label="Size Y"
-            type="number"
-            variant="outlined"
-            fullWidth
-            {...register("sizeY", { required: "This field is required" })}
-            error={!!errors.sizeY}
-            helperText={errors.sizeY && errors.sizeY.message}
+            placeholder="Enter size Y"
+            inputProps={register("sizeY", {
+              required: "Size Y is required",
+            })}
+            error={errors.sizeY}
           />
         </div>
 
-        <div className="w-full px-2 mb-4">
-          <TextField
+        {/* Assuming you want to use CustomTextArea instead of TextField for the 'Contains' field */}
+        <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+          <CustomTextArea
             label="Contains"
-            multiline
-            rows={4}
-            variant="outlined"
-            fullWidth
-            {...register("contains")}
+            placeholder="Details of the content"
+            inputProps={register("contains", {
+              required: "Contains is required",
+            })}
+            error={errors.contains}
           />
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React from "react";
 
-const CustomInput = ({ label, placeholder, inputProps, error }) => {
+export const CustomInput = ({ label, placeholder, inputProps, error }) => {
   return (
     <div className="flex flex-col">
       <label className="text-black text-lg">{label}</label>
@@ -18,4 +18,43 @@ const CustomInput = ({ label, placeholder, inputProps, error }) => {
   );
 };
 
-export default CustomInput;
+export const CustomSelect = ({ label, options, inputProps, error }) => {
+  return (
+    <div className="flex flex-col">
+      <label className="text-black text-lg">{label}</label>
+      <select
+        {...inputProps}
+        className={
+          "w-52 h-10 bg-gray-400 py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900" +
+          " " +
+          inputProps?.className
+        }
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      {error && <span className="text-red mt-1">{error.message}</span>}
+    </div>
+  );
+};
+
+export const CustomTextArea = ({ label, placeholder, inputProps, error }) => {
+  return (
+    <div className="flex flex-col">
+      <label className="text-black text-lg">{label}</label>
+      <textarea
+        {...inputProps}
+        className={
+          "w-52 h-20 bg-gray-400 py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900" +
+          " " +
+          inputProps?.className
+        }
+        placeholder={placeholder}
+      />
+      {error && <span className="text-red mt-1">{error.message}</span>}
+    </div>
+  );
+};
