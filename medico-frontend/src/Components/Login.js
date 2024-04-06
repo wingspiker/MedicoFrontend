@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loginService } from "../Services/auth";
+import { loginService, setMessage } from "../Services/auth";
 import { Toaster, toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../Loader";
@@ -70,6 +70,7 @@ const Login = (props) => {
           changeLogin(true);
           setShowSidebar(true);
           localStorage.setItem('token', response.accessToken);
+          setMessage(true)
           navigate("/Home");
         })
         .catch((error) => {

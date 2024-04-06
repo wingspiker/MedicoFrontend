@@ -131,3 +131,9 @@ export let formdata  = null;
 export const setFormData = (f) =>{
     formdata=f;
 };
+
+export let showMessage = false;
+
+export const setMessage = (b) => {
+    showMessage = b;
+}

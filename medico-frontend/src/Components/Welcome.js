@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
-import { decodeToken, signOut } from '../Services/auth';
+import React, { useEffect, useState } from 'react';
+import { decodeToken, signOut, showMessage } from '../Services/auth';
 import { useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'sonner';
 
 const Welcome = (props) => {
   const { changeLogin, setShowSidebar } = props;  
   const navigate = useNavigate();
+
+  const [isRed, setIsRed] = useState(true)
 
   useEffect(() => {
     const user = decodeToken();
@@ -20,6 +22,13 @@ const Welcome = (props) => {
       setShowSidebar(false)
       navigate('/complete-details')
     }
+    if(showMessage){
+    setIsRed(false)
+      toast.success("Logged in successfully!");
+    }
+    setTimeout(() => {
+      setIsRed(true)
+    }, 6000);
   }, [])
 
   return (
@@ -28,7 +37,7 @@ const Welcome = (props) => {
       <Toaster
         position="top-center"
         toastOptions={{
-          style: { color: `red`},
+          style: { color: `${isRed?'red':'green'}`},
         }}
       />
         

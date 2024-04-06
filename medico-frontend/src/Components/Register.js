@@ -341,6 +341,8 @@ const Register = () => {
       return;
     }
 
+    setStep((prevStep) => prevStep + 1);
+
   }
 
   const ValidateStep4 = () => {
@@ -352,6 +354,9 @@ const Register = () => {
     }else{
       console.log(formData);    console.log(documentLinks);
       const {email, companyEmail, companyName, companyType, chargeType} = formData;
+
+      const submitData = {email, companyEmail, companyName, companyType, chargeType,documentLinks}
+      console.log(submitData);
     }
   }
 
@@ -368,6 +373,7 @@ const Register = () => {
 
     if(step===3){
       ValidateStep3();
+      return;
     }
 
     setStep((prevStep) => prevStep + 1);

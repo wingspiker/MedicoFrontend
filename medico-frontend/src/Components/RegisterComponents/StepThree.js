@@ -18,9 +18,9 @@ const StepThree = (props) => {
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   const plans = [
-    { id: 1, name: "Basic Plan", price: "$10/month" },
-    { id: 2, name: "Standard Plan", price: "$20/month" },
-    { id: 3, name: "Premium Plan", price: "$30/month" },
+    { id: 1, name: "Monthly Plan", price: "₹ 3000/month" },
+    { id: 2, name: "Standard Plan", price: "₹ 15,000/six months" },
+    { id: 3, name: "Premium Plan", price: "₹ 25,000 Annually" },
   ];
 
   const handleSave = () => {
@@ -393,14 +393,15 @@ const StepThree = (props) => {
         <h2 className="text-lg font-bold mb-4">Select a Plan</h2>
         <div className="grid grid-cols-1 gap-4">
           {plans.map((plan) => (
-            <div key={plan.id} className="bg-gray-100 rounded-md p-4">
+            <div key={plan.id} className={`${(selectedPlan!==null && selectedPlan.id===plan.id)?'bg-cyan-200':'bg-gray-100'} bg-gray-100 rounded-md p-4`}>
               <h3 className="text-lg font-semibold">{plan.name}</h3>
+              {/* {console.log(selectedPlan)} */}
               <p className="text-gray-600">{plan.price}</p>
               <button
                 className="mt-2 px-4 py-2 bg-cyan-900 text-white rounded hover:bg-cyan-700 focus:outline-none focus:bg-cyan-700"
                 onClick={() => setSelectedPlan(plan)}
               >
-                Select
+                {(selectedPlan!==null && selectedPlan.id === plan.id)?'Selected':'Select'} 
               </button>
             </div>
           ))}
