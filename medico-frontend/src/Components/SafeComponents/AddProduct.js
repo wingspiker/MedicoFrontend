@@ -442,7 +442,7 @@ import { useForm } from "react-hook-form";
 import ProductInformation from "../ProductComponents/CaseOne/ProductInfo";
 import ManufacturerInformation from "../ProductComponents/CaseOne/ManufacturerInfo";
 import PricingInformation from "../ProductComponents/CaseOne/PricingInfo";
-
+import SelectExistingGroup from "../ProductComponents/CaseTwo/SelectGroup";
 function AddProduct() {
   const [currentStep, setCurrentStep] = React.useState(1);
   const {
@@ -469,8 +469,13 @@ function AddProduct() {
   const mrp = watch("mrp");
   const discount = watch("discountOnMRP");
 
+  const existingGroupNo = watch("existingGroupNo");
+
   const validateRetailPrice = (value) => {
-    return value <= mrp || "Retail price must be less than or equal to MRP";
+    return (
+      Number(value) <= Number(mrp) ||
+      "Retail price must be less than or equal to MRP"
+    );
   };
 
   const calculateSellingPrice = () => {
@@ -523,11 +528,31 @@ function AddProduct() {
         );
       case 2:
         return (
-          <div>
-            <h2>Step 2: [Demo Purpose Only]</h2>
-            <button onClick={() => setCurrentStep(currentStep + 1)}>
-              Next
-            </button>
+          // <div>
+          //   <h2>Step 2: [Demo Purpose Only]</h2>
+          //   <SelectExistingGroup />
+          //   <button onClick={() => setCurrentStep(currentStep + 1)}>
+          //     Next
+          //   </button>
+          // </div>
+
+          <div className="flex justify-center items-center min-h-screen bg-cyan-900">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <h1 className=" text-4xl text-white">Select Existing Group</h1>
+              <SelectExistingGroup
+                register={register}
+                watch={watch}
+                existingGroupNo={existingGroupNo}
+              />
+              <div className=" p-2 flex justify-end">
+                <button
+                  type="submit"
+                  className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+                >
+                  Next
+                </button>
+              </div>
+            </form>
           </div>
         );
       case 3:
