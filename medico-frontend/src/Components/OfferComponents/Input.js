@@ -41,14 +41,22 @@ export const CustomSelect = ({ label, options, inputProps, error }) => {
   );
 };
 
-export const CustomTextArea = ({ label, placeholder, inputProps, error }) => {
+export const CustomTextArea = ({
+  label,
+  placeholder,
+  inputProps,
+  error,
+  small,
+}) => {
   return (
     <div className="flex flex-col">
       <label className="text-black text-lg">{label}</label>
       <textarea
         {...inputProps}
         className={
-          "w-52 h-20 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900" +
+          `w-52 ${
+            small ? "h-10" : "h-20"
+          }  bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900` +
           " " +
           inputProps?.className
         }

@@ -443,6 +443,9 @@ import ProductInformation from "../ProductComponents/CaseOne/ProductInfo";
 import ManufacturerInformation from "../ProductComponents/CaseOne/ManufacturerInfo";
 import PricingInformation from "../ProductComponents/CaseOne/PricingInfo";
 import SelectExistingGroup from "../ProductComponents/CaseTwo/SelectGroup";
+import Occupation from "../ProductComponents/CaseFour/Occupation";
+import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
+
 function AddProduct() {
   const [currentStep, setCurrentStep] = React.useState(1);
   const {
@@ -455,12 +458,12 @@ function AddProduct() {
   const onSubmit = (data) => {
     console.log("Form Data:", data);
     if (currentStep < 6) {
-      setCurrentStep(currentStep + 1);
-      if (currentStep === 2 && !data.existingGroupNo) {
+      if (currentStep === 2 && data.existingGroupNo) {
         setCurrentStep(5); // Move to step 5 if no group is selected
       } else {
         setCurrentStep(currentStep + 1); // Move to the next step
       }
+      setCurrentStep(currentStep + 1);
     } else {
       console.log("Final Submission", data);
     }
@@ -478,6 +481,10 @@ function AddProduct() {
   const allowExchange = watch("allowExchange");
   const returnDays = watch("returnDays");
 
+  const existingGroupNo = watch("existingGroupNo");
+
+  const occupation = watch("occupation");
+  const degree = watch("degree");
   //watch PRiceInfo Selling price is remaining
 
   const prescription = watch("prescription");
@@ -487,8 +494,6 @@ function AddProduct() {
   const margin = watch("marginOnRetail");
   const mrp = watch("mrp");
   const discount = watch("discountOnMRP");
-
-  const existingGroupNo = watch("existingGroupNo");
 
   console.log(existingGroupNo);
   const validateRetailPrice = (value) => {
@@ -548,22 +553,16 @@ function AddProduct() {
         );
       case 2:
         return (
-          // <div>
-          //   <h2>Step 2: [Demo Purpose Only]</h2>
-          //   <SelectExistingGroup />
-          //   <button onClick={() => setCurrentStep(currentStep + 1)}>
-          //     Next
-          //   </button>
-          // </div>
-
-          <div className="flex justify-center items-center min-h-screen bg-cyan-900">
+          <div className="flex justify-start items-top min-h-screen  bg-cyan-900 ps-44">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <h1 className=" text-4xl text-white">Select Existing Group</h1>
-              <SelectExistingGroup register={register} watch={watch} />
-              <div className=" p-2 flex justify-end">
+              <h1 className="text-4xl text-white mt-2">
+                Select Existhhing Group
+              </h1>
+              <div className="p-2 flex items-center my-3">
+                <SelectExistingGroup register={register} errors={errors} />
                 <button
                   type="submit"
-                  className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
                   Next
                 </button>
@@ -573,29 +572,50 @@ function AddProduct() {
         );
       case 3:
         return (
-          <div>
-            <h2>Step 3: [Demo Purpose Only]</h2>
-            <button onClick={() => setCurrentStep(currentStep + 1)}>
-              Next
-            </button>
+          <div className="flex justify-start items-top min-h-screen  bg-cyan-900 ps-44">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <h1 className="text-4xl text-white mt-2">Select Location</h1>
+              <div className="p-2 flex items-center mt-3 my-3">
+                <SelectLocation register={register} errors={errors} />
+              </div>
+              <button
+                type="submit"
+                className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+              >
+                Next
+              </button>
+            </form>
           </div>
         );
       case 4:
         return (
-          <div>
-            <h2>Step 4: [Demo Purpose Only]</h2>
-            <button onClick={() => setCurrentStep(currentStep + 1)}>
-              Next
-            </button>
+          <div className="flex justify-start items-top min-h-screen  bg-cyan-900 ps-44">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+              <h1 className="text-4xl text-white mt-2">Occupation</h1>
+              <div className="p-2 flex items-center my-3">
+                <Occupation
+                  register={register}
+                  errors={errors}
+                  occupation={occupation}
+                />
+                <button
+                  type="submit"
+                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+                >
+                  Next
+                </button>
+              </div>
+            </form>
           </div>
         );
       case 5:
         return (
-          <div>
-            <h2>Step 5: [Demo Purpose Only]</h2>
-            <button onClick={() => setCurrentStep(currentStep + 1)}>
-              Next
-            </button>
+          <div className="flex justify-start items-top min-h-screen  bg-cyan-900 ps-44">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <h1 className="text-4xl text-white mt-2">
+                Select Existhhing Group
+              </h1>
+            </form>
           </div>
         );
       case 6:
