@@ -1,8 +1,6 @@
 import axios from 'axios';
-import env from "react-dotenv";
 
-const cloudineryUrl = env.CLOUDINARY_URL;
-console.log(cloudineryUrl );
+const cloudineryUrl = process.env.REACT_APP_CLOUDINERY_URL
 
 export const handleImageUpload = async (e) => {
     const file = e.target.files[0];

@@ -1,15 +1,9 @@
 import { development } from "../Environment/environment";
 import axios from 'axios'
 import {jwtDecode as jwt_decode} from 'jwt-decode';
-import env from "react-dotenv";
 
 
-const url = env.API_URL
-// console.log(env);
-
-// require('dotenv').config()
-// console.log(process.env)
-
+const url = process.env.REACT_APP_API_BASE_URL
 
 export const loginService = async (login) => {
     // const url = development.url + '/api/auth/login';

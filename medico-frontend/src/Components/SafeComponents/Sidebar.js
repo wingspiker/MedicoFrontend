@@ -48,7 +48,7 @@ export const Sidebar = (props) => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0  flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded-md w-4/12">
+          <div className="bg-white p-4 rounded-md mx-4 md:w-4/12">
             <p className="text-lg text-cyan-900">Are you sure you want to sign out?</p>
             <div className="mt-4 flex justify-end gap-4">
               

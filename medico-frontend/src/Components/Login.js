@@ -4,8 +4,12 @@ import { Toaster, toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../Loader";
 import { IoClose } from "react-icons/io5";
+// import env from 'react-dotenv'
 
 const Login = (props) => {
+
+  // console.log(env);
+  
   const { changeLogin, setShowSidebar } = props;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
