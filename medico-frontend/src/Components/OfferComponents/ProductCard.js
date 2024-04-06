@@ -9,11 +9,11 @@ import {
 import { useFormContext } from "react-hook-form";
 import { CustomInput } from "./Input";
 
-const ProductCard = ({ product, boxBase, defaultSizeX = 10 }) => {
+const ProductCard = ({ product, boxBase  }) => {
   const { register, setValue, watch, errors } = useFormContext();
   const watchSelectedProducts = watch("selectedProducts") || [];
   const checked = watchSelectedProducts.some(
-    (selectedProduct) => selectedProduct?.id === product?.id
+    (selectedProduct) => selectedProduct?.productId === product?.id
   );
   const [expanded, setExpanded] = useState(checked);
 
@@ -30,15 +30,15 @@ const ProductCard = ({ product, boxBase, defaultSizeX = 10 }) => {
     if (event.target.checked) {
       if (boxBase)
         updatedSelectedProducts[product.id] = {
-          ...product,
-          sizeX: defaultSizeX,
+          productId: product.id,
+          sizeX: product?.packSize?.x,
           sizeY: "",
           quantity: "",
           unitBoxQuantity: 0,
         };
       else
         updatedSelectedProducts[product.id] = {
-          ...product,
+          productId: product.id,
         };
       setExpanded(true);
     } else {
@@ -157,10 +157,10 @@ const ProductCard = ({ product, boxBase, defaultSizeX = 10 }) => {
                   <CustomInput
                     label={"Size X"}
                     inputProps={{
-                      defaultValue: defaultSizeX,
+                      defaultValue: product.packSize.x,
                       disabled: true,
                       variant: "outlined",
-                      className: "w-36",
+                      className: "!w-36",
                     }}
                     style={{ marginBottom: "8px" }}
                   />
@@ -173,7 +173,7 @@ const ProductCard = ({ product, boxBase, defaultSizeX = 10 }) => {
                       variant: "outlined",
                       type: "number",
                       onChange: (e) => handleInputChange(e, "sizeY"),
-                      className: "w-36",
+                      className: "!w-36",
                     }}
                     error={errors?.selectedProducts?.[product?.id]?.sizeY}
                     style={{ marginBottom: "8px" }}
@@ -187,7 +187,7 @@ const ProductCard = ({ product, boxBase, defaultSizeX = 10 }) => {
                       variant: "outlined",
                       type: "number",
                       onChange: (e) => handleInputChange(e, "quantity"),
-                      className: "w-36",
+                      className: "!w-36",
                     }}
                     error={errors?.selectedProducts?.[product?.id]?.quantity}
                     style={{ marginBottom: "8px" }}
@@ -210,15 +210,20 @@ const ProductCard = ({ product, boxBase, defaultSizeX = 10 }) => {
                   <CustomInput
                     label={"Quantity"}
                     inputProps={{
-                      ...register(`selectedProducts.${product?.id}.requiredQuantity`, {
-                        required: "Quantity is required",
-                      }),
+                      ...register(
+                        `selectedProducts.${product?.id}.requiredQuantity`,
+                        {
+                          required: "Quantity is required",
+                        }
+                      ),
                       variant: "outlined",
                       type: "number",
                       onChange: (e) => handleInputChange(e, "requiredQuantity"),
-                      className: "w-36",
+                      className: "!w-36",
                     }}
-                    error={errors?.selectedProducts?.[product?.id]?.requiredQuantity}
+                    error={
+                      errors?.selectedProducts?.[product?.id]?.requiredQuantity
+                    }
                     style={{ marginBottom: "8px" }}
                   />
                 </div>

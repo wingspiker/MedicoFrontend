@@ -103,41 +103,17 @@ const PreviewCard = ({ product, boxBase }) => {
                 }}
               >
                 <CustomInput
-                  label={"Size X"}
+                  label={"UnitBoxQuantity"}
                   inputProps={{
-                    defaultValue: product.packSize.x,
-                    disabled: true,
-                    variant: "outlined",
-                    className: "w-36",
-                  }}
-                  style={{ marginBottom: "8px" }}
-                />
-                <CustomInput
-                  label={"Size Y"}
-                  inputProps={{
-                    ...register(`selectedProducts.${product?.id}.sizeY`, {
-                      required: "Size Y is required",
-                    }),
+                    value: product.unitBoxQuantity,
                     variant: "outlined",
                     type: "number",
                     className: "w-36",
                     disabled: true,
                   }}
-                  error={errors?.selectedProducts?.[product?.id]?.sizeY}
-                  style={{ marginBottom: "8px" }}
-                />
-                <CustomInput
-                  label={"Quantity"}
-                  inputProps={{
-                    ...register(`selectedProducts.${product?.id}.quantity`, {
-                      required: "Quantity is required",
-                    }),
-                    variant: "outlined",
-                    type: "number",
-                    className: "w-36",
-                    disabled: true,
-                  }}
-                  error={errors?.selectedProducts?.[product?.id]?.quantity}
+                  error={
+                    errors?.selectedProducts?.[product?.id]?.unitBoxQuantity
+                  }
                   style={{ marginBottom: "8px" }}
                 />
               </div>
@@ -156,13 +132,15 @@ const PreviewCard = ({ product, boxBase }) => {
                 <CustomInput
                   label={"Quantity"}
                   inputProps={{
-                    value: product.quantity,
+                    value: product.requiredQuantity,
                     variant: "outlined",
                     type: "number",
                     className: "w-36",
                     disabled: true,
                   }}
-                  error={errors?.selectedProducts?.[product?.id]?.quantity}
+                  error={
+                    errors?.selectedProducts?.[product?.id]?.requiredQuantity
+                  }
                   style={{ marginBottom: "8px" }}
                 />
               </div>

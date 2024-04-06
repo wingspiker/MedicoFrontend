@@ -39,7 +39,7 @@ const DEMO_PRODUCTS = [
     sellingPrice: 35,
     packSize: {
       id: "1",
-      x: 10,
+      x: 50,
       y: 20,
     },
     returnPolicy: {
@@ -89,7 +89,7 @@ const DEMO_PRODUCTS = [
     sellingPrice: 45,
     packSize: {
       id: "2",
-      x: 5,
+      x: 50,
       y: 10,
     },
     returnPolicy: {
@@ -311,7 +311,7 @@ function removeUndefinedEntries(array) {
 }
 
 function AddOffer() {
-  const [currentStep, setCurrentStep] = React.useState(2);
+  const [currentStep, setCurrentStep] = React.useState(1);
   const {
     register,
     handleSubmit,
@@ -325,8 +325,9 @@ function AddOffer() {
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
-    if (currentStep < 2) {
-      setCurrentStep(currentStep + 1);
+    if (currentStep < 3) {
+      if (offerType === "Price Centric" && currentStep === 1) setCurrentStep(3);
+      else setCurrentStep(currentStep + 1);
     } else {
       console.log("Final Submission", data);
     }
@@ -336,7 +337,7 @@ function AddOffer() {
   const offerCode = watch("offerCode");
   const offerPhoto = watch("offerPhoto");
   const offerDescription = watch("offerDescription");
-  const offerType = watch("offerType", "Product Centric");
+  const offerType = watch("offerType");
   const expiryDate = watch("expiryDate");
   const allowedUser = watch("allowedUser");
   const offerDiscount = watch("offerDiscount");
@@ -443,6 +444,18 @@ function AddOffer() {
                     </span>
                   )}
                 </div>
+                {offerType === "Price Centric" && (
+                  <div className="flex">
+                    <CustomInput
+                      label={"Offer discount"}
+                      placeholder={"Enter discount"}
+                      inputProps={register("offerDiscount", {
+                        required: "Offer discount is required",
+                      })}
+                      error={errors?.offerDiscount}
+                    />
+                  </div>
+                )}
                 <div className="flex flex-col">
                   <label className="text-black text-lg">Expiry Date</label>
                   <Controller
@@ -457,9 +470,7 @@ function AddOffer() {
                         minDate={new Date()}
                         selected={field.value ? new Date(field.value) : null}
                         showTimeSelect={false}
-                        todayButton="Today"
                         dropdownMode="select"
-                        isClearable
                         placeholderText="Select expiry date"
                         shouldCloseOnSelect
                         onChange={(date) => field.onChange(date)}
@@ -544,36 +555,24 @@ function AddOffer() {
             setValue={setValue}
             getValues={getValues}
           >
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs
-                value={values}
-                onChange={handleChange}
-                aria-label="basic tabs example"
-              >
-                <Tab label="Group" {...a11yProps(0)} />
-                <Tab label="Preview" {...a11yProps(1)} />
-              </Tabs>
-            </Box>
             <div className="flex justify-start">
               <form onSubmit={handleSubmit(onSubmit)} className="w-full">
                 <h1 className="text-2xl font-semibold mb-4">
                   {offerType === "Product Centric"
-                    ? "Step 2: Add Discount Info"
-                    : "Step 2: Add Product Info"}
+                    ? "Step 2: Create product centrics"
+                    : "Step 2: Create box basis"}
                 </h1>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                  <Tabs
+                    value={values}
+                    onChange={handleChange}
+                    aria-label="basic tabs example"
+                  >
+                    <Tab label="Group" {...a11yProps(0)} />
+                    <Tab label="Preview" {...a11yProps(1)} />
+                  </Tabs>
+                </Box>
                 <CustomTabPanel value={values} index={0}>
-                  {offerType === "Price Centric" && (
-                    <div className="flex justify-center w-full">
-                      <CustomInput
-                        label={"Offer discount"}
-                        placeholder={"Enter discount"}
-                        inputProps={register("offerDiscount", {
-                          required: "Offer discount is required",
-                        })}
-                        error={errors?.offerDiscount}
-                      />
-                    </div>
-                  )}
                   {offerType === "Product Centric" && (
                     <div className="flex gap-5 flex-wrap">
                       {DEMO_PRODUCTS.map((product) => (
@@ -624,7 +623,33 @@ function AddOffer() {
                   </Box>
                 </CustomTabPanel>
                 <CustomTabPanel value={values} index={1}>
-                  {offerType === "Product Centric" && (
+                  {/* {offerType === "Product Centric" && ( */}
+                  <div className="flex flex-col gap-5">
+                    {conditions.map(({ productOffers }, idx) => {
+                      return (
+                        <>
+                          <div className="w-full justify-center text-xl text-center">
+                            Group {idx + 1}
+                          </div>
+                          <div className="flex flex-wrap gap-5">
+                            {productOffers.map((product, index) => (
+                              <PreviewCard
+                                boxBase={offerType === "Box Base"}
+                                product={{
+                                  ...DEMO_PRODUCTS.find(
+                                    (el) => el.id === product.productId
+                                  ),
+                                  ...product,
+                                }}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      );
+                    })}
+                  </div>
+                  {/* )} */}
+                  {/* {offerType === "Product Centric" && (
                     <div className="flex flex-col gap-5">
                       {conditions.map(({ productOffers }, idx) => {
                         return (
@@ -634,14 +659,21 @@ function AddOffer() {
                             </div>
                             <div className="flex flex-wrap gap-5">
                               {productOffers.map((product, index) => (
-                                <PreviewCard product={product} />
+                                <PreviewCard
+                                  product={{
+                                    ...DEMO_PRODUCTS.find(
+                                      (el) => el.id === product.productId
+                                    ),
+                                    ...product,
+                                  }}
+                                />
                               ))}
                             </div>
                           </>
                         );
                       })}
                     </div>
-                  )}
+                  )} */}
                 </CustomTabPanel>
                 <div className="w-full flex justify-center mt-12">
                   <button

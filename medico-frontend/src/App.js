@@ -113,11 +113,11 @@ function App() {
             path="/Offer/add"
             exact
             element={
-              isLoggedIn ? (
+              // isLoggedIn ? (
                 <AddOffer changeLogin={setIsLoggedIn} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
+              // ) : (
+              //   <Navigate to="/login" replace />
+              // )
             }
           />
         </Routes>
