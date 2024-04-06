@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Subscription from "./Subscription";
 import Modal from "react-modal";
 import { getStates } from "../../Services/location";
+import { setFormData } from "../../Services/auth";
 
 const StepThree = (props) => {
   const {
@@ -19,14 +20,15 @@ const StepThree = (props) => {
 
   const plans = [
     { id: 1, name: "Monthly Plan", price: "₹ 3000/month" },
-    { id: 2, name: "Standard Plan", price: "₹ 15,000/six months" },
-    { id: 3, name: "Premium Plan", price: "₹ 25,000 Annually" },
+    { id: 2, name: "Six Months Plan", price: "₹ 15,000/six months" },
+    { id: 3, name: "Annual Plan", price: "₹ 25,000 Annually" },
   ];
 
   const handleSave = () => {
     if (selectedPlan) {
       // Do something with the selected plan
       console.log("Selected plan:", selectedPlan);
+      setFormData({...formData, subscription:selectedPlan.id})
       // Close the modal
       setShowModal(false);
     }
@@ -342,10 +344,10 @@ const StepThree = (props) => {
                 <option className="text-gray-900" value="">
                   Select Charge Type
                 </option>
-                <option value="percentage" className="text-gray-900">
+                <option value="1" className="text-gray-900">
                   Percentage
                 </option>
-                <option value="subscription" className="text-gray-900">
+                <option value="0" className="text-gray-900">
                   Subscription
                 </option>
               </select>
@@ -354,7 +356,7 @@ const StepThree = (props) => {
               )}
             </div>
           )}
-          {formData.chargeType === "subscription" && (
+          {formData.chargeType === "0" && (
             <div className="mt-6">
               <button
                 onClick={() => setShowModal(true)}

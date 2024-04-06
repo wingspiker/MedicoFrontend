@@ -1,4 +1,5 @@
 import React from "react";
+import Loader from "../../Loader";
 
 const StepFour = ({
   formData,
@@ -7,11 +8,12 @@ const StepFour = ({
   prevStep,
   handleSubmit,
   handleFileChange,
-  documents
+  documents,
+  submitLoading
 }) => {
 
   return (
-    <form onSubmit={handleSubmit} className="border p-6 rounded-2xl">
+    <div className="border p-6 rounded-2xl">
       {documents.map((document, index) => (
         <div key={index} className="mb-4 border-b pb-4">
           <label
@@ -33,11 +35,11 @@ const StepFour = ({
         </div>
       ))}
       <div className="mt-4 text-center">
-        <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600">
-          Submit
+        <button onClick={handleSubmit} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600">
+          {submitLoading?<Loader/>:'Submit'}
         </button>
       </div>
-    </form>
+    </div>
   );
 };
 

@@ -35,17 +35,18 @@ function App() {
     signOut();
     setIsLoggedIn(false)
   };
+  
   return (
     <Router>
       <div className="bg-gray-100 h-screen">
-        {isLoggedIn ? showSidebar ? <Sidebar changeLogin={logout}  /> : "" : ""}
+        {(isLoggedIn && showSidebar) ? <Sidebar changeLogin={logout}  /> : ""}
 
         <Routes>
           {isLoggedIn && (
             <>
               <Route path="/" element={<Navigate to="/Home" />} />
               <Route path="/login" element={<Navigate to="/Home" />} />
-              {/* <Route path="/register" element={<Navigate to="/Home" />} /> */}
+              <Route path="/register" element={<Navigate to="/Home" />} />
             </>
           )}
           <Route path="/" element={<Home />} />
@@ -113,11 +114,11 @@ function App() {
             path="/Offer/add"
             exact
             element={
-              // isLoggedIn ? (
+              isLoggedIn ? (
                 <AddOffer changeLogin={setIsLoggedIn} />
-              // ) : (
-              //   <Navigate to="/login" replace />
-              // )
+              ) : (
+                <Navigate to="/login" replace />
+              )
             }
           />
         </Routes>

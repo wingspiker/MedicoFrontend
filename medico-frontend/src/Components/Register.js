@@ -6,16 +6,27 @@ import StepTwo from "./RegisterComponents/StepTwo";
 import StepThree from "./RegisterComponents/StepThree";
 import StepFour from "./RegisterComponents/StepFour";
 import BuyerStepThree from "./RegisterComponents/BuyerStepThree";
-import { currStep, getEmailOtp, getMobileOtp, signUpService, verifyEmailOtp, verifyMobileOtp } from "../Services/auth";
+import {
+  currStep,
+  getEmailOtp,
+  getMobileOtp,
+  signUpService,
+  verifyEmailOtp,
+  verifyMobileOtp,
+} from "../Services/auth";
 import { Toaster, toast } from "sonner";
 import { getDistricts, getStates, getTalukas } from "../Services/location";
 import { handleImageUpload } from "../Services/upload";
+import { registerBuyer, registerCompany } from "../Services/user";
 
 const Register = () => {
-
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [talukas, setTalukas] = useState([]);
+
+  const [currState, setCurrState] = useState('');
+  const [currDistricts, setCurrDistrict] = useState('');
+  const [currTaluka, setCurrTaluka] = useState('');
 
   // Your form state and functions...
   useEffect(() => {
@@ -27,7 +38,7 @@ const Register = () => {
   }, []);
 
   const navigate = useNavigate();
-  const currSt = currStep
+  const currSt = currStep;
   const [step, setStep] = useState(currSt);
   const [red, isRed] = useState(true);
   const initialForm = {
@@ -41,7 +52,7 @@ const Register = () => {
     confirmPassword: "",
 
     //step 3
-    companyEmail:"",
+    companyEmail: "",
     companyName: "",
     licenseNumber: "",
     gstNumber: "",
@@ -58,6 +69,7 @@ const Register = () => {
     wholesaleLicenseNumber: "",
     companyType: "",
     chargeType: "",
+    subscription: "",
 
     //Buyer
     degree: "",
@@ -74,18 +86,44 @@ const Register = () => {
   const [otpMobileLoading, setOtpMobileLoading] = useState(false);
   const [mobileVerified, setMobileVerified] = useState(false);
   const [isBuyer, setIsBuyer] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
-  let documents=[
+  let documents = [
     { id: "logoFile", name: "logoFile", label: "Company Logo", url: "" },
-    { id: "aadharCardFile", name: "aadharCardFile", label: "Aadhar Card", url: "" },
+    {
+      id: "aadharCardFile",
+      name: "aadharCardFile",
+      label: "Aadhar Card",
+      url: "",
+    },
     { id: "panCardFile", name: "panCardFile", label: "PAN Card", url: "" },
-    { id: "gstLicenseFile", name: "gstLicenseFile", label: "GST Number", url: "" },
-    { id: "wholesaleDrugLicenseFile", name: "wholesaleDrugLicenseFile", label: "Wholesale Drug License", url: "" },
-    { id: "retailDrugLicenseFile", name: "retailDrugLicenseFile", label: "Retail Drug License", url: "" },
-    { id: "companyRegistrationLicenseFile", name: "companyRegistrationLicenseFile", label: "Company Registration License", url: "" }
-  ]
+    {
+      id: "gstLicenseFile",
+      name: "gstLicenseFile",
+      label: "GST Number",
+      url: "",
+    },
+    {
+      id: "wholesaleDrugLicenseFile",
+      name: "wholesaleDrugLicenseFile",
+      label: "Wholesale Drug License",
+      url: "",
+    },
+    {
+      id: "retailDrugLicenseFile",
+      name: "retailDrugLicenseFile",
+      label: "Retail Drug License",
+      url: "",
+    },
+    {
+      id: "companyRegistrationLicenseFile",
+      name: "companyRegistrationLicenseFile",
+      label: "Company Registration License",
+      url: "",
+    },
+  ];
 
-  let documentLinks = []
+  let documentLinks = [];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,131 +131,151 @@ const Register = () => {
 
     // Basic validation example, customize as needed
     if (name === "email" && !/\S+@\S+\.\S+/.test(value)) {
-        error = "Invalid email address";
+      error = "Invalid email address";
     } else if (name === "password") {
-        if (value.length < 8) {
-            error = "Password must be at least 8 characters long";
-        } else {
-            // Check if the password contains at least one uppercase letter, one lowercase letter, one numeric digit, and one special character
-            const hasUppercase = /[A-Z]/.test(value);
-            const hasLowercase = /[a-z]/.test(value);
-            const hasNumeric = /[0-9]/.test(value);
-            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // You can adjust the special characters as per your requirement
+      if (value.length < 8) {
+        error = "Password must be at least 8 characters long";
+      } else {
+        // Check if the password contains at least one uppercase letter, one lowercase letter, one numeric digit, and one special character
+        const hasUppercase = /[A-Z]/.test(value);
+        const hasLowercase = /[a-z]/.test(value);
+        const hasNumeric = /[0-9]/.test(value);
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // You can adjust the special characters as per your requirement
 
-            if (!hasUppercase || !hasLowercase || !hasNumeric || !hasSpecialChar) {
-                error = "Password must contain at least one uppercase letter, one lowercase letter, one numeric digit, and one special character";
-            }
+        if (!hasUppercase || !hasLowercase || !hasNumeric || !hasSpecialChar) {
+          error =
+            "Password must contain at least one uppercase letter, one lowercase letter, one numeric digit, and one special character";
         }
+      }
     } else if (name === "confirmPassword" && value !== formData.password) {
-        error = "Passwords do not match";
+      error = "Passwords do not match";
     } else if (name === "companyEmail" && !/\S+@\S+\.\S+/.test(value)) {
-        error = "Invalid company email address";
+      error = "Invalid company email address";
     } else if (name === "companyName" && value.trim() === "") {
-        error = "Company name is required";
+      error = "Company name is required";
     } else if (name === "licenseNumber" && value.trim() === "") {
-        error = "License number is required";
+      error = "License number is required";
     } else if (name === "gstNumber" && value.trim() === "") {
-        error = "GST number is required";
+      error = "GST number is required";
     } else if (name === "panCardNumber" && value.trim() === "") {
-        error = "Pan card number is required";
+      error = "Pan card number is required";
     } else if (name === "displayName" && value.trim() === "") {
-        error = "Display name is required";
+      error = "Display name is required";
     } else if (name === "state" && value.trim() === "") {
-        error = "State is required";
+      error = "State is required";
     } else if (name === "district" && value.trim() === "") {
-        error = "District is required";
+      error = "District is required";
     } else if (name === "taluka" && value.trim() === "") {
-        error = "Taluka is required";
+      error = "Taluka is required";
     } else if (name === "companyAddress1" && value.trim() === "") {
-        error = "Company address 1 is required";
+      error = "Company address 1 is required";
     } else if (name === "companyAddress2" && value.trim() === "") {
-        error = "Company address 2 is required";
-    } else if (name === "pincode" && (value.length !== 6 || !/^\d+$/.test(value))) {
-        error = "Invalid pincode";
+      error = "Company address 2 is required";
+    } else if (
+      name === "pincode" &&
+      (value.length !== 6 || !/^\d+$/.test(value))
+    ) {
+      error = "Invalid pincode";
     } else if (name === "drugLicenseNumber" && value.trim() === "") {
-        error = "Drug license number is required";
+      error = "Drug license number is required";
     } else if (name === "wholesaleLicenseNumber" && value.trim() === "") {
-        error = "Wholesale license number is required";
+      error = "Wholesale license number is required";
     } else if (name === "companyType" && value.trim() === "") {
-        error = "Company type is required";
-    } else if (name === "chargeType" && value.trim() === "" && formData.companyType === "selfSelling") {
-        error = "Charge type is required";
+      error = "Company type is required";
+    } else if (
+      name === "chargeType" &&
+      value.trim() === "" &&
+      formData.companyType === "selfSelling"
+    ) {
+      error = "Charge type is required";
     }
 
     if (name === "state") {
-        if (value === "") {
-            error = "State is required";
-        } else {
-            getDistricts(value)
-                .then((d) => {
-                    setDistricts(d)
-                })
-                .catch((err) => console.log(err))
-        }
+      if (value === "") {
+        error = "State is required";
+      } else {
+        getDistricts(value)
+          .then((d) => {
+            setDistricts(d);
+          })
+          .catch((err) => console.log(err));
+      }
     }
 
     if (name === "district") {
-        if (value === "") {
-            error = "District is required";
-        } else {
-            getTalukas(value)
-                .then((d) => {
-                    setTalukas(d)
-                })
-                .catch((err) => console.log(err))
-        }
+      if (value === "") {
+        error = "District is required";
+      } else {
+        getTalukas(value)
+          .then((d) => {
+            setTalukas(d);
+          })
+          .catch((err) => console.log(err));
+      }
     }
 
     setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: error,
+      ...prevErrors,
+      [name]: error,
     }));
 
     setFormData((prevState) => ({
-        ...prevState,
-        [name]: value,
+      ...prevState,
+      [name]: value,
     }));
-};
-
+    if(name==='state'){
+      const currState = states.find(e=> e.id == value).name;
+      setCurrState(currState)
+    }
+    if(name==='district'){
+      const currDistrict = districts.find(e=> e.id == value).name;
+      setCurrDistrict(currDistrict)
+    }
+    if(name=='taluka'){
+      const currTaluka = talukas.find(e=> e.id == value).name;
+      setCurrTaluka(currTaluka)
+    }
+  };
 
   const verifyEmail = (e) => {
     e.preventDefault();
     // Simulate email verification
     // You can replace this with actual verification logic
-    setOtpEmailLoading(true)  
+    setOtpEmailLoading(true);
 
-    getEmailOtp(formData.email).then((res) => {
-      console.log("OTP: ", res);
-      setEmailVerified(true)
-      setOtpEmailLoading(false)
-    }).catch(()=>{
-      toast.error('Invalid Email');
-      setOtpEmailLoading(false);
-    })
-
-    
+    getEmailOtp(formData.email)
+      .then((res) => {
+        console.log("OTP: ", res);
+        setEmailVerified(true);
+        setOtpEmailLoading(false);
+      })
+      .catch(() => {
+        toast.error("Invalid Email");
+        setOtpEmailLoading(false);
+      });
   };
 
   const verifyMobile = (e) => {
     e.preventDefault();
     // Simulate mobile verification
-    // You can replace this with actual verification logic    
+    // You can replace this with actual verification logic
 
-    const {email, mobile} = formData;
-    if(!email.length){
-      toast.error( 'Please verify your email first' );
-    }
-    else{
+    const { email, mobile } = formData;
+    if (!email.length) {
+      toast.error("Please verify your email first");
+    } else {
       setOtpMobileLoading(true);
-      getMobileOtp({email, mobile}).then((res) => {
-        console.log("OTP: ", res);
-        setMobileVerified(true)
-        setOtpMobileLoading(false)
-      }).catch((e)=>{
-        console.log(e);
-        toast.error('Invalid Mobile');
-        setOtpMobileLoading(false);
-      })
+      getMobileOtp({ email, mobile })
+        .then((res) => {
+          console.log("OTP: ", res);
+          setMobileVerified(true);
+          setOtpMobileLoading(false);
+        })
+        .catch((e) => {
+          console.log(e);
+          toast.error("Invalid Mobile");
+          setOtpMobileLoading(false);
+        });
     }
   };
 
@@ -246,11 +304,13 @@ const Register = () => {
 
     const doc = {
       name: e.target.name,
-      link: "hello"
+      link: "hello",
     };
-    
-    const existingDocIndex = documentLinks.findIndex(item => item.name === doc.name);
-    
+
+    const existingDocIndex = documentLinks.findIndex(
+      (item) => item.name === doc.name
+    );
+
     if (existingDocIndex !== -1) {
       documentLinks[existingDocIndex].link = doc.link;
     } else {
@@ -259,120 +319,252 @@ const Register = () => {
   };
 
   const ValidateStep3 = () => {
-    if(formData.companyEmail === '' || errors.companyEmail){
-      toast.error(errors.companyEmail ?? 'Company Email is required');
+    if (formData.companyEmail === "" || errors.companyEmail) {
+      toast.error(errors.companyEmail ?? "Company Email is required");
       return;
     }
-    
-    if(formData.companyName === '' || errors.companyName){
-      toast.error(errors.companyName ?? 'Company Name is required');
+
+    if (formData.companyName === "" || errors.companyName) {
+      toast.error(errors.companyName ?? "Company Name is required");
       return;
     }
-    
-    if(formData.licenseNumber === '' || errors.licenseNumber){
-      toast.error(errors.licenseNumber ?? 'License Number is required');
+
+    if (formData.licenseNumber === "" || errors.licenseNumber) {
+      toast.error(errors.licenseNumber ?? "License Number is required");
       return;
     }
-    
-    if(formData.gstNumber === '' || errors.gstNumber){
-      toast.error(errors.gstNumber ?? 'GST Number is required');
+
+    if (formData.gstNumber === "" || errors.gstNumber) {
+      toast.error(errors.gstNumber ?? "GST Number is required");
       return;
     }
-    
-    if(formData.panCardNumber === '' || errors.panCardNumber){
-      toast.error(errors.panCardNumber ?? 'Pan Card Number is required');
+
+    if (formData.panCardNumber === "" || errors.panCardNumber) {
+      toast.error(errors.panCardNumber ?? "Pan Card Number is required");
       return;
     }
-    
-    if(formData.displayName === '' || errors.displayName){
-      toast.error(errors.displayName ?? 'Display Name is required');
+
+    if (formData.displayName === "" || errors.displayName) {
+      toast.error(errors.displayName ?? "Display Name is required");
       return;
     }
-    
-    if(formData.state === '' || errors.state){
-      toast.error(errors.state ?? 'State is required');
+
+    if (formData.state === "" || errors.state) {
+      toast.error(errors.state ?? "State is required");
       return;
     }
-    
-    if(formData.district === '' || errors.district){
-      toast.error(errors.district ?? 'District is required');
+
+    if (formData.district === "" || errors.district) {
+      toast.error(errors.district ?? "District is required");
       return;
     }
-    
-    if(formData.taluka === '' || errors.taluka){
-      toast.error(errors.taluka ?? 'Taluka is required');
+
+    if (formData.taluka === "" || errors.taluka) {
+      toast.error(errors.taluka ?? "Taluka is required");
       return;
     }
-    
-    if(formData.companyAddress1 === '' || errors.companyAddress1){
-      toast.error(errors.companyAddress1 ?? 'Company Address 1 is required');
+
+    if (formData.companyAddress1 === "" || errors.companyAddress1) {
+      toast.error(errors.companyAddress1 ?? "Company Address 1 is required");
       return;
     }
-    
-    if(formData.companyAddress2 === '' || errors.companyAddress2){
-      toast.error(errors.companyAddress2 ?? 'Company Address 2 is required');
+
+    if (formData.companyAddress2 === "" || errors.companyAddress2) {
+      toast.error(errors.companyAddress2 ?? "Company Address 2 is required");
       return;
     }
-    
-    if(formData.pincode === '' || errors.pincode){
-      toast.error(errors.pincode ?? 'Pincode is required');
+
+    if (formData.pincode === "" || errors.pincode) {
+      toast.error(errors.pincode ?? "Pincode is required");
       return;
     }
-    
-  
-    
-    if(formData.drugLicenseNumber === '' || errors.drugLicenseNumber){
-      toast.error(errors.drugLicenseNumber ?? 'Drug License Number is required');
+
+    if (formData.drugLicenseNumber === "" || errors.drugLicenseNumber) {
+      toast.error(
+        errors.drugLicenseNumber ?? "Drug License Number is required"
+      );
       return;
     }
-    
-    if(formData.wholesaleLicenseNumber === '' || errors.wholesaleLicenseNumber){
-      toast.error(errors.wholesaleLicenseNumber ?? 'Wholesale License Number is required');
+
+    if (
+      formData.wholesaleLicenseNumber === "" ||
+      errors.wholesaleLicenseNumber
+    ) {
+      toast.error(
+        errors.wholesaleLicenseNumber ?? "Wholesale License Number is required"
+      );
       return;
     }
-    
-    if(formData.companyType === '' || errors.companyType){
-      toast.error(errors.companyType ?? 'Company Type is required');
+
+    if (formData.companyType === "" || errors.companyType) {
+      toast.error(errors.companyType ?? "Company Type is required");
       return;
     }
-    
-    if(formData.companyType === 'selfSelling' && formData.chargeType === '' || errors.chargeType){
-      toast.error(errors.chargeType ?? 'Charge Type is required');
+
+    if (
+      (formData.companyType === "selfSelling" && formData.chargeType === "") ||
+      errors.chargeType
+    ) {
+      toast.error(errors.chargeType ?? "Charge Type is required");
+      return;
+    }
+
+    setStep((prevStep) => prevStep + 1);
+  };
+
+  const ValidateStep3Buyer = () => {
+    console.log("Validating Step 3 - Buyer");
+
+    if (formData.firstName === "" || errors.firstName) {
+      toast.error(errors.firstName ?? "First Name is required");
+      return;
+    }
+
+    if (formData.lastName === "" || errors.lastName) {
+      toast.error(errors.lastName ?? "Last Name is required");
+      return;
+    }
+
+    if (formData.state === "" || errors.state) {
+      toast.error(errors.state ?? "State is required");
+      return;
+    }
+
+    if (formData.district === "" || errors.district) {
+      toast.error(errors.district ?? "District is required");
+      return;
+    }
+
+    if (formData.taluka === "" || errors.taluka) {
+      toast.error(errors.taluka ?? "Taluka is required");
+      return;
+    }
+    if (formData.occupation === "" || errors.occupation) {
+      toast.error(errors.occupation ?? "Occupation is required");
+      return;
+    }
+    if (
+      formData.occupation === "Doctor" &&
+      (formData.degree === "" || errors.degree)
+    ) {
+      toast.error(errors.degree ?? "Degree is required");
       return;
     }
 
     setStep((prevStep) => prevStep + 1);
 
-  }
+    // console.log(formData);
+    // console.log(documentLinks);
+    // const {email, companyEmail, companyName, companyType, chargeType} = formData;
+
+    // let submitData = {email, companyEmail, companyName, companyType:Number(companyType), chargeType:Number(chargeType),documentLinks}
+
+    // if(chargeType==0){
+    //   const {subscription} = formData;
+    //   submitData.subscription = Number(subscription)
+    // }
+    // console.log(submitData);
+    // const {email, companyEmail, companyName, companyType, chargeType} = formData;
+
+    // let submitData = {email, companyEmail, companyName, companyType:Number(companyType), chargeType:Number(chargeType),documentLinks}
+
+    // if(chargeType==0){
+    //   const {subscription} = formData;
+    //   submitData.subscription = Number(subscription)
+    // }
+    // console.log(submitData);
+  };
 
   const ValidateStep4 = () => {
-    const names = documents.map(doc => doc.name);
+    const names = documents.map((doc) => doc.name);
     const submitNames = documentLinks.map((link) => link?.name);
-    const filteredNames = names.filter(name => !submitNames.includes(name));
-    if(filteredNames.length){
-      toast.error(filteredNames[0]+' is required');      
-    }else{
-      console.log(formData);    console.log(documentLinks);
-      const {email, companyEmail, companyName, companyType, chargeType} = formData;
+    const filteredNames = names.filter((name) => !submitNames.includes(name));
+    if (filteredNames.length) {
+      toast.error(filteredNames[0] + " is required");
+    } else {
+      if (formData.role == 1) {
+        const { email, companyEmail, displayName, companyName, companyType, chargeType, licenseNumber, gstNumber,panCardNumber, drugLicenseNumber, wholesaleLicenseNumber, companyAddress1, companyAddress2, pincode,  } =
+          formData;
 
-      const submitData = {email, companyEmail, companyName, companyType, chargeType,documentLinks}
-      console.log(submitData);
+        let submitData = {
+          emailAddress:email,
+          companyName,
+          companyEmail,
+          companyType: Number(companyType),
+          chargesType: Number(chargeType),
+          documentLinks,
+          licenseNumber,
+          gstNumber,
+          panNumber:panCardNumber,
+          displayName,
+          pincode,
+          drugLicenseNumber,
+          wholesaleLicenseNumber,
+          address1:companyAddress1,
+          address2:companyAddress2   
+        };
+
+        if (chargeType == 0) {
+          const { subscription } = formData;
+          submitData.subscription = Number(subscription);
+        }
+        console.log(submitData);
+        saveCompanyData(submitData)
+      }else if(formData.role ==0){
+        const { email, firstName, lastName, state, district, taluka, occupation } =
+          formData;  
+        let buyerSubmitData = {emailAddress:email, firstName, lastName, occupation, address:{state:currState,district:currDistricts,taluka:currTaluka}, documentLinks, talukaId:Number(taluka)}
+        if(occupation=="Doctor"){
+          buyerSubmitData.degree = formData.degree;
+        }
+        console.log(buyerSubmitData);
+        saveBuyerData(buyerSubmitData)
+      }
     }
+  };
+
+  const saveCompanyData = (cData)=>{
+    setSubmitLoading(true)
+
+    registerCompany(cData).then((resp)=>{
+      console.log(resp);
+      navigate('/Home')
+      setSubmitLoading(false)
+    }).catch((err)=>{
+      console.log(err)
+      setSubmitLoading(false)
+    })
+
   }
 
-  const submitDetails = () => {
+  const saveBuyerData = (bData)=>{
+    setSubmitLoading(true)
+
+    registerBuyer(bData).then((resp)=>{
+      console.log(resp);
+      navigate('/Home')
+      setSubmitLoading(false)
+    }).catch((err)=>{
+      console.log(err)
+      setSubmitLoading(false)
+    })
 
   }
 
   const nextStep = () => {
-    if (formData.role == 0) {      
+    if (formData.role == 0) {
       setIsBuyer(true);
-    }else{
-      setIsBuyer(false)
+    } else {
+      setIsBuyer(false);
     }
 
-    if(step===3){
+    if (step === 3 && !isBuyer) {
       ValidateStep3();
+      return;
+    }
+
+    if (step === 3 && isBuyer) {
+      ValidateStep3Buyer();
       return;
     }
 
@@ -386,39 +578,38 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission here
-    ValidateStep4()
-    
+    ValidateStep4();
   };
 
   const confirmEmailOtp = (e) => {
     e.preventDefault();
     // Handle email OTP confirmation logic here
-    const {email, emailOtp} = formData;
-    verifyEmailOtp({email, emailOtp})
+    const { email, emailOtp } = formData;
+    verifyEmailOtp({ email, emailOtp })
       .then((d) => {
         console.log(d);
         sE(true);
-        setEmailVerified(false)
+        setEmailVerified(false);
       })
       .catch((err) => {
-      toast.error(err.response.data.detail)
-    })
+        toast.error(err.response.data.detail);
+      });
   };
 
   const confirmMobileOtp = (e) => {
     e.preventDefault();
     // Handle mobile OTP confirmation logic here
-    const {mobile, mobileOtp} = formData;
-    const phoneOtpData = {phoneNumber:mobile, phoneNumberOtp:mobileOtp}
+    const { mobile, mobileOtp } = formData;
+    const phoneOtpData = { phoneNumber: mobile, phoneNumberOtp: mobileOtp };
     verifyMobileOtp(phoneOtpData)
       .then((d) => {
         console.log(d);
         sM(true);
-        setMobileVerified(false)
+        setMobileVerified(false);
       })
       .catch((err) => {
-      toast.error(err.response.data.detail)
-    })
+        toast.error(err.response.data.detail);
+      });
   };
 
   const changeEmail = () => {
@@ -436,30 +627,31 @@ const Register = () => {
   };
 
   const signUp = (registerData) => {
-
     // nextStep()
 
-    // signUpService(registerData)
-    //   .then((res) => {
-    //     isRed(false)
-    //     toast.success("Account created successfully!");
-    //     isRed(true)
-    //     localStorage.setItem('token', res.accessToken);        
-    //     nextStep();
-    //   })
-    //   .catch((err) => {
-    //     toast.error(err.response.data.detail)
-    //   })
+    signUpService(registerData)
+      .then((res) => {
+        isRed(false)
+        toast.success("Account created successfully!");
+        setTimeout(() => {
+          isRed(true)
+        }, 6000);
+        localStorage.setItem('token', res.accessToken);
+        nextStep();
+      })
+      .catch((err) => {
+        toast.error(err.response.data.detail)
+      })
 
-      nextStep();
-  }
+    // nextStep();
+  };
 
   return (
     <div className="min-h-screen bg-cyan-900 flex flex-col justify-center items-center">
       <Toaster
         position="top-center"
         toastOptions={{
-          style: { color: `${red?'red':'green'}`},
+          style: { color: `${red ? "red" : "green"}` },
         }}
       />
       {/* <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg"> */}
@@ -519,8 +711,7 @@ const Register = () => {
           />
         )}
 
-        {(step === 3 && (!isBuyer)) && (
-          
+        {step === 3 && !isBuyer && (
           <StepThree
             formData={formData}
             handleChange={handleChange}
@@ -530,16 +721,25 @@ const Register = () => {
             states={states}
             districts={districts}
             talukas={talukas}
+            setCurrTaluka={setCurrTaluka}
+            setCurrDistrict={setCurrDistrict}
+            setCurrState={setCurrState}
           />
         )}
 
-        {(step === 3 && isBuyer) && (
+        {step === 3 && isBuyer && (
           <BuyerStepThree
             formData={formData}
             handleChange={handleChange}
             errors={errors}
             nextStep={nextStep}
             prevStep={prevStep}
+            states={states}
+            districts={districts}
+            talukas={talukas}
+            setCurrTaluka={setCurrTaluka}
+            setCurrDistrict={setCurrDistrict}
+            setCurrState={setCurrState}
           />
         )}
 
@@ -552,6 +752,7 @@ const Register = () => {
             handleSubmit={handleSubmit}
             handleFileChange={handleFileChange}
             documents={documents}
+            submitLoading={submitLoading}
           />
         )}
       </div>

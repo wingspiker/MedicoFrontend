@@ -1,10 +1,21 @@
 import React from "react";
 
-const BuyerStepThree = ({ formData, handleChange, errors, nextStep }) => {
+const BuyerStepThree = ({
+  formData,
+  handleChange,
+  errors,
+  nextStep,
+  states,
+  districts,
+  talukas,
+  setCurrState,
+  setCurrDistrict,
+  setCurrTaluka
+}) => {
   return (
     <div className="text-center border rounded-xl">
       <h1 className="text-3xl text-white mb-4 py-6">Step Three - Buyer</h1>
-      <form className="m-4 text-left ">
+      <div className="m-4 text-left ">
         <div className="flex flex-wrap">
           <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
             <label htmlFor="email" className="block text-white bg-cyan-900">
@@ -16,7 +27,8 @@ const BuyerStepThree = ({ formData, handleChange, errors, nextStep }) => {
               placeholder="Enter email address"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-3 py-2 rounded border text-gray-900 focus:outline-none focus:border-green-500 ${
+              readOnly
+              className={`w-full px-3 py-2 rounded border bg-green-300 text-gray-900 focus:outline-none focus:border-green-500 ${
                 errors.email ? "border-red-500" : "border-gray-300"
               }`}
             />
@@ -69,52 +81,65 @@ const BuyerStepThree = ({ formData, handleChange, errors, nextStep }) => {
             <label htmlFor="state" className="block bg-cyan-900 text-white">
               State
             </label>
-            <input
-              type="text"
+            <select
               name="state"
-              placeholder="Enter state"
               value={formData.state}
               onChange={handleChange}
-              className={`w-full px-3 py-2 rounded border text-gray-900 focus:outline-none focus:border-green-500 ${
-                errors.state ? "border-red-500" : "border-gray-300"
-              }`}
-            />
+              className="w-full px-3 py-2 rounded border text-gray-900 border-gray-300 focus:outline-none focus:border-green-500"
+            >
+              <option value="" disabled>
+                Select State
+              </option>
+              {states.map((state) => (
+                <option key={state.id} value={state.id}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
             {errors.state && (
               <span className="text-red-500">{errors.state}</span>
             )}
           </div>
           <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
-            <label htmlFor="district" className="block bg-cyan-900 text-white">
+          <label htmlFor="district" className="block bg-cyan-900 text-white">
               District
             </label>
-            <input
-              type="text"
+            <select
               name="district"
-              placeholder="Enter district"
               value={formData.district}
               onChange={handleChange}
-              className={`w-full px-3 py-2 rounded border text-gray-900 focus:outline-none focus:border-green-500 ${
-                errors.district ? "border-red-500" : "border-gray-300"
-              }`}
-            />
+              disabled={!formData.state}
+              className="w-full px-3 py-2 rounded border text-gray-900 border-gray-300 focus:outline-none focus:border-green-500"
+            >
+              <option value="">Select District</option>
+              {districts.map((district) => (
+                <option key={district.id} value={district.id}>
+                  {district.name}
+                </option>
+              ))}
+            </select>
             {errors.district && (
               <span className="text-red-500">{errors.district}</span>
             )}
           </div>
           <div className="w-full sm:w-1/2 md:w-1/3 mb-4 px-2">
-            <label htmlFor="taluka" className="block bg-cyan-900 text-white">
+          <label htmlFor="taluka" className="block bg-cyan-900 text-white">
               Taluka
             </label>
-            <input
-              type="text"
+            <select
               name="taluka"
-              placeholder="Enter taluka"
               value={formData.taluka}
+              disabled={!formData.district}
               onChange={handleChange}
-              className={`w-full px-3 py-2 rounded border text-gray-900 focus:outline-none focus:border-green-500 ${
-                errors.taluka ? "border-red-500" : "border-gray-300"
-              }`}
-            />
+              className="w-full px-3 py-2 rounded border text-gray-900 border-gray-300 focus:outline-none focus:border-green-500"
+            >
+              <option value="">Select Taluka</option>
+              {talukas.map((taluka) => (
+                <option key={taluka.id} value={taluka.id}>
+                  {taluka.name}
+                </option>
+              ))}
+            </select>
             {errors.taluka && (
               <span className="text-red-500">{errors.taluka}</span>
             )}
@@ -184,7 +209,7 @@ const BuyerStepThree = ({ formData, handleChange, errors, nextStep }) => {
             </button>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
