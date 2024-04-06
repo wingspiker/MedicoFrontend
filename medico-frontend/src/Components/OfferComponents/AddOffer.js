@@ -9,9 +9,17 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Box,
+  Tabs,
+  Tab,
+  Typography,
+  Fab,
 } from "@mui/material";
 import ReactDatePicker from "react-datepicker";
 import ProductCard from "./ProductCard";
+import { MdAddCircleOutline } from "react-icons/md";
+import PreviewCard from "./PreviewCard";
+import { toast, Toaster } from "sonner";
 
 const DEMO_PRODUCTS = [
   {
@@ -271,27 +279,53 @@ const DEMO_PRODUCTS = [
   },
 ];
 
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
 function removeUndefinedEntries(array) {
-  return array.filter((item) => item !== undefined);
+  return array.filter((item) => item !== undefined && !!item);
 }
 
 function AddOffer() {
-  const [currentStep, setCurrentStep] = React.useState(1);
+  const [currentStep, setCurrentStep] = React.useState(2);
   const {
     register,
     handleSubmit,
     watch,
     setValue,
     getValues,
+    trigger,
     control,
     formState: { errors },
   } = useForm();
 
   const onSubmit = (data) => {
-    if (currentStep == 2 && offerType !== "Price Centric")
-      data = removeUndefinedEntries(data.selectedProducts);
     console.log("Form Data:", data);
-    if (currentStep < 3) {
+    if (currentStep < 2) {
       setCurrentStep(currentStep + 1);
     } else {
       console.log("Final Submission", data);
@@ -302,10 +336,18 @@ function AddOffer() {
   const offerCode = watch("offerCode");
   const offerPhoto = watch("offerPhoto");
   const offerDescription = watch("offerDescription");
-  const offerType = watch("offerType", "Box Base");
+  const offerType = watch("offerType", "Product Centric");
   const expiryDate = watch("expiryDate");
   const allowedUser = watch("allowedUser");
   const offerDiscount = watch("offerDiscount");
+  const selectedProducts = watch("selectedProducts");
+  const conditions = watch("conditions", []);
+
+  const [values, setValues] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValues(newValue);
+  };
 
   const renderStep = () => {
     switch (currentStep) {
@@ -502,6 +544,16 @@ function AddOffer() {
             setValue={setValue}
             getValues={getValues}
           >
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={values}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab label="Group" {...a11yProps(0)} />
+                <Tab label="Preview" {...a11yProps(1)} />
+              </Tabs>
+            </Box>
             <div className="flex justify-start">
               <form onSubmit={handleSubmit(onSubmit)} className="w-full">
                 <h1 className="text-2xl font-semibold mb-4">
@@ -509,32 +561,88 @@ function AddOffer() {
                     ? "Step 2: Add Discount Info"
                     : "Step 2: Add Product Info"}
                 </h1>
-                {offerType === "Price Centric" && (
-                  <div className="flex justify-center w-full">
-                    <CustomInput
-                      label={"Offer discount"}
-                      placeholder={"Enter discount"}
-                      inputProps={register("offerDiscount", {
-                        required: "Offer discount is required",
+                <CustomTabPanel value={values} index={0}>
+                  {offerType === "Price Centric" && (
+                    <div className="flex justify-center w-full">
+                      <CustomInput
+                        label={"Offer discount"}
+                        placeholder={"Enter discount"}
+                        inputProps={register("offerDiscount", {
+                          required: "Offer discount is required",
+                        })}
+                        error={errors?.offerDiscount}
+                      />
+                    </div>
+                  )}
+                  {offerType === "Product Centric" && (
+                    <div className="flex gap-5 flex-wrap">
+                      {DEMO_PRODUCTS.map((product) => (
+                        <ProductCard product={product} />
+                      ))}
+                    </div>
+                  )}
+                  {offerType === "Box Base" && (
+                    <div className="flex gap-5 flex-wrap">
+                      {DEMO_PRODUCTS.map((product) => (
+                        <ProductCard product={product} boxBase={true} />
+                      ))}
+                    </div>
+                  )}
+
+                  <Box sx={{ "& > :not(style)": { m: 1 } }}>
+                    <Fab
+                      variant="extended"
+                      style={{
+                        margin: 0,
+                        top: "auto",
+                        right: 40,
+                        bottom: 30,
+                        left: "auto",
+                        position: "fixed",
+                      }}
+                      disabled={
+                        !selectedProducts ||
+                        !removeUndefinedEntries(selectedProducts).length
+                      }
+                      onClick={async () => {
+                        await trigger();
+                        if (Object.keys(errors).length === 0) {
+                          toast.success("Group created");
+                          setValue("conditions", [
+                            ...conditions,
+                            {
+                              id: Math.random(),
+                              productOffers:
+                                removeUndefinedEntries(selectedProducts),
+                            },
+                          ]);
+                        }
+                      }}
+                    >
+                      Create Group
+                    </Fab>
+                  </Box>
+                </CustomTabPanel>
+                <CustomTabPanel value={values} index={1}>
+                  {offerType === "Product Centric" && (
+                    <div className="flex flex-col gap-5">
+                      {conditions.map(({ productOffers }, idx) => {
+                        return (
+                          <>
+                            <div className="w-full justify-center text-xl text-center">
+                              Group {idx + 1}
+                            </div>
+                            <div className="flex flex-wrap gap-5">
+                              {productOffers.map((product, index) => (
+                                <PreviewCard product={product} />
+                              ))}
+                            </div>
+                          </>
+                        );
                       })}
-                      error={errors?.offerDiscount}
-                    />
-                  </div>
-                )}
-                {offerType === "Product Centric" && (
-                  <div className="flex gap-5 flex-wrap">
-                    {DEMO_PRODUCTS.map((product) => (
-                      <ProductCard product={product} />
-                    ))}
-                  </div>
-                )}
-                {offerType === "Box Base" && (
-                  <div className="flex gap-5 flex-wrap">
-                    {DEMO_PRODUCTS.map((product) => (
-                      <ProductCard product={product} boxBase={true} />
-                    ))}
-                  </div>
-                )}
+                    </div>
+                  )}
+                </CustomTabPanel>
                 <div className="w-full flex justify-center mt-12">
                   <button
                     className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
@@ -564,6 +672,7 @@ function AddOffer() {
   return (
     <div className="w-full bg-cyan-900 text-white h-screen overflow-y-auto">
       <div className="pt-10 flex justify-center w-full">
+        <Toaster position="top-center" />
         <Stepper activeStep={currentStep - 1} alternativeLabel>
           <Step key={1}>
             <StepLabel />

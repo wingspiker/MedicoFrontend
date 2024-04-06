@@ -142,7 +142,7 @@ const ProductCard = ({ product, boxBase, defaultSizeX = 10 }) => {
               </Typography>
             </div>
           </div>
-          {boxBase && (
+          {boxBase ? (
             <div className="h-[90px]">
               {expanded && (
                 <div
@@ -194,6 +194,35 @@ const ProductCard = ({ product, boxBase, defaultSizeX = 10 }) => {
                   />
                 </div>
               )}{" "}
+            </div>
+          ) : (
+            <div className="h-[90px]">
+              {expanded && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    gap: "10px",
+                    height: "100%",
+                  }}
+                >
+                  <CustomInput
+                    label={"Quantity"}
+                    inputProps={{
+                      ...register(`selectedProducts.${product?.id}.requiredQuantity`, {
+                        required: "Quantity is required",
+                      }),
+                      variant: "outlined",
+                      type: "number",
+                      onChange: (e) => handleInputChange(e, "requiredQuantity"),
+                      className: "w-36",
+                    }}
+                    error={errors?.selectedProducts?.[product?.id]?.requiredQuantity}
+                    style={{ marginBottom: "8px" }}
+                  />
+                </div>
+              )}
             </div>
           )}
         </CardContent>
