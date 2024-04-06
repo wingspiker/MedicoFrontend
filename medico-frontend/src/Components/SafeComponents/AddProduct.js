@@ -456,10 +456,29 @@ function AddProduct() {
     console.log("Form Data:", data);
     if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
+      if (currentStep === 2 && !data.existingGroupNo) {
+        setCurrentStep(5); // Move to step 5 if no group is selected
+      } else {
+        setCurrentStep(currentStep + 1); // Move to the next step
+      }
     } else {
       console.log("Final Submission", data);
     }
   };
+
+  const productName = watch("productName");
+  const productType = watch("productType");
+  const division = watch("division");
+  const sizeX = watch("sizeX");
+  const sizeY = watch("sizeY");
+  const contains = watch("contains");
+
+  const manufacturerName = watch("manufacturerName");
+  const manufacturerLicenseNumber = watch("manufacturerLicenseNumber");
+  const allowExchange = watch("allowExchange");
+  const returnDays = watch("returnDays");
+
+  //watch PRiceInfo Selling price is remaining
 
   const prescription = watch("prescription");
   const allowReturn = watch("allowReturn");
@@ -471,6 +490,7 @@ function AddProduct() {
 
   const existingGroupNo = watch("existingGroupNo");
 
+  console.log(existingGroupNo);
   const validateRetailPrice = (value) => {
     return (
       Number(value) <= Number(mrp) ||
@@ -539,11 +559,7 @@ function AddProduct() {
           <div className="flex justify-center items-center min-h-screen bg-cyan-900">
             <form onSubmit={handleSubmit(onSubmit)}>
               <h1 className=" text-4xl text-white">Select Existing Group</h1>
-              <SelectExistingGroup
-                register={register}
-                watch={watch}
-                existingGroupNo={existingGroupNo}
-              />
+              <SelectExistingGroup register={register} watch={watch} />
               <div className=" p-2 flex justify-end">
                 <button
                   type="submit"

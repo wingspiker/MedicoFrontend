@@ -7,13 +7,13 @@ export const CustomInput = ({ label, placeholder, inputProps, error }) => {
       <input
         {...inputProps}
         className={
-          "w-52 h-10 bg-gray-400 py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900" +
+          "w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900" +
           " " +
           inputProps?.className
         }
         placeholder={placeholder}
       />
-      {error && <span className="text-[red] mt-1">{error.message}</span>}
+      {error && <span className="text-red-600 mt-1">{error.message}</span>}
     </div>
   );
 };
@@ -25,7 +25,7 @@ export const CustomSelect = ({ label, options, inputProps, error }) => {
       <select
         {...inputProps}
         className={
-          "w-52 h-10 bg-gray-400 py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900" +
+          "w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900" +
           " " +
           inputProps?.className
         }
@@ -36,7 +36,7 @@ export const CustomSelect = ({ label, options, inputProps, error }) => {
           </option>
         ))}
       </select>
-      {error && <span className="text-red mt-1">{error.message}</span>}
+      {error && <span className="text-red-600 mt-1">{error.message}</span>}
     </div>
   );
 };
@@ -48,13 +48,13 @@ export const CustomTextArea = ({ label, placeholder, inputProps, error }) => {
       <textarea
         {...inputProps}
         className={
-          "w-52 h-20 bg-gray-400 py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900" +
+          "w-52 h-20 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900" +
           " " +
           inputProps?.className
         }
         placeholder={placeholder}
       />
-      {error && <span className="text-red mt-1">{error.message}</span>}
+      {error && <span className="text-red-600 mt-1">{error.message}</span>}
     </div>
   );
 };

@@ -1,33 +1,17 @@
 import React from "react";
-import {
-  CustomInput,
-  CustomSelect,
-  CustomTextArea,
-} from "../../OfferComponents/Input";
-import {
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Button,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
-  FormHelperText,
-} from "@mui/material";
+import { CustomSelect } from "../../OfferComponents/Input";
 
-function SelectExistingGroup({ register, errors, existingGroupNo }) {
+function SelectExistingGroup({ register, errors }) {
   return (
     <CustomSelect
       label="Select Existing Group"
       options={[
         { value: "", label: "Select a Existing Group" },
-        { value: "Group1", label: "Group1" },
-        { value: "Group2", label: "Group2" },
+        { value: "Group1", label: "Selcet Group1" },
+        { value: "Group2", label: "Select Group2" },
       ]}
       inputProps={register("existingGroupNo")}
-      error={errors.existingGroupNo}
+      //   error={errors.existingGroupNo}
     />
   );
 }

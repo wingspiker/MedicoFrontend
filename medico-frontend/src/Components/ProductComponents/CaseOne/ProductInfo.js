@@ -28,7 +28,7 @@ function ProductInformation({ register, watch, errors, prescription }) {
             label="Product Name"
             placeholder="Enter product name"
             inputProps={register("productName", {
-              required: "Product Name is required",
+              // required: "Product Name is required",
               pattern: {
                 value: /^[A-Za-z]+[A-Za-z0-9]*$/,
                 message:
@@ -49,7 +49,7 @@ function ProductInformation({ register, watch, errors, prescription }) {
               // Add more product types as needed
             ]}
             inputProps={register("productType", {
-              required: "Product Type is required",
+              // required: "Product Type is required",
             })}
             error={errors.productType}
           />
@@ -65,7 +65,7 @@ function ProductInformation({ register, watch, errors, prescription }) {
               // Add more divisions as needed
             ]}
             inputProps={register("division", {
-              required: "Division is required",
+              // required: "Division is required",
             })}
             error={errors.division}
           />
@@ -80,7 +80,7 @@ function ProductInformation({ register, watch, errors, prescription }) {
               { value: "G", label: "G" },
             ]}
             inputProps={register("prescription", {
-              required: "Prescription is required",
+              // required: "Prescription is required",
             })}
             error={errors.prescription}
           />
@@ -93,7 +93,7 @@ function ProductInformation({ register, watch, errors, prescription }) {
                 type="file"
                 className="mt-1 block w-full file:border file:border-gray-300 file:rounded-md file:text-sm file:font-medium file:bg-white file:text-indigo-500 hover:file:bg-indigo-50"
                 {...register("letterPadDocument", {
-                  required: "This field is required",
+                  // required: "Please Upload the file",
                 })}
               />
             </div>
@@ -105,7 +105,7 @@ function ProductInformation({ register, watch, errors, prescription }) {
             label="Size X"
             placeholder="Enter size X"
             inputProps={register("sizeX", {
-              required: "Size X is required",
+              // required: "Size X is required",
             })}
             error={errors.sizeX}
           />
@@ -116,7 +116,7 @@ function ProductInformation({ register, watch, errors, prescription }) {
             label="Size Y"
             placeholder="Enter size Y"
             inputProps={register("sizeY", {
-              required: "Size Y is required",
+              // required: "Size Y is required",
             })}
             error={errors.sizeY}
           />
@@ -128,7 +128,7 @@ function ProductInformation({ register, watch, errors, prescription }) {
             label="Contains"
             placeholder="Details of the content"
             inputProps={register("contains", {
-              required: "Contains is required",
+              // required: "Contains is required",
             })}
             error={errors.contains}
           />
