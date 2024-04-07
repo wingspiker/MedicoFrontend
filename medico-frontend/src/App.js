@@ -20,6 +20,7 @@ import { decodeToken, formdata, setCurrStep, setFormData, signOut, token } from 
 import CompleteDetails from "./Components/CompleteDetails";
 import AddOffer from "./Components/OfferComponents/AddOffer";
 import Offer from "./Components/OfferComponents/Offers";
+import { Sidebar } from "./Components/SafeComponents/Sidebar";
 
 function App() {
   const loginStatus = token() !== null;
@@ -39,6 +40,11 @@ function App() {
     usrData.role = role;
     usrData.email = email
   }
+
+  const logout = () => {
+    signOut();
+    setIsLoggedIn(false)
+  };
 
 
   
@@ -111,7 +117,12 @@ function App() {
             exact
             element={
               isLoggedIn ? (
+                <>
+                
+                <Sidebar changeLogin={logout}  />
                 <AddProduct changeLogin={setIsLoggedIn} />
+                </>
+                
               ) : (
                 <Navigate to="/login" replace />
               )
@@ -122,7 +133,10 @@ function App() {
             exact
             element={
               isLoggedIn ? (
+                <>
+                <Sidebar changeLogin={logout}  />
                 <Offer changeLogin={setIsLoggedIn} />
+                </>
               ) : (
                 <Navigate to="/login" replace />
               )
@@ -133,7 +147,10 @@ function App() {
             exact
             element={
               isLoggedIn ? (
+                <>
+                <Sidebar changeLogin={logout}  />
                 <AddOffer changeLogin={setIsLoggedIn} />
+                </>
               ) : (
                 <Navigate to="/login" replace />
               )
