@@ -7,7 +7,7 @@ import {
   getTalukas,
 } from "../../../Services/location";
 
-function SelectLocation({ register, errors }) {
+function SelectLocation({ register, errors, setsTaluka }) {
   const [LoadDistrict, setLoadDistrict] = useState(false);
   const [LoadTaluka, setLoadTaluka] = useState(false);
 
@@ -17,6 +17,10 @@ function SelectLocation({ register, errors }) {
 
   const [distActive, setdistActive] = useState(false);
   const [talukaActive, settalukaActive] = useState(false);
+
+  const [selectedTaluka, setselectedTaluka] = useState([]);
+
+  // console.log(selectedTaluka);
 
   useEffect(() => {
     getStates()
@@ -29,56 +33,57 @@ function SelectLocation({ register, errors }) {
       });
   }, []);
 
-  const getDistrictsbyState = (states) => {
+  useEffect(() => {
+    setsTaluka(selectedTaluka);
+  }, [selectedTaluka]);
+
+  const getDistrictsbyState = async (states) => {
     setLoadDistrict(true);
-    states.forEach((s, i) => {
-      getDistricts(s)
-        .then((resp) => {
-          if (
-            districts.length &&
-            resp[0].stateId != districts[districts.length - 1].stateId
-          ) {
-            setDistricts([...districts, ...resp]);
-          } else {
-            setDistricts([...resp]);
-          }
-          //   setDistricts([...resp]);
-          if (i == states.length - 1) {
+    setDistricts([]);
+    try {
+      await Promise.all(
+        states.map(async (s, i) => {
+          try {
+            const resp = await getDistricts(s);
+            setDistricts((prevDistricts) => [...prevDistricts, ...resp]);
+            if (i === states.length - 1) {
+              setLoadDistrict(false);
+              setdistActive(true);
+            }
+            console.log(districts);
+          } catch (err) {
+            console.log(err);
             setLoadDistrict(false);
-            setdistActive(true);
           }
-          console.log(districts);
         })
-        .catch((err) => {
-          console.log(err);
-          setLoadDistrict(false);
-        });
-    });
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const getTalukasByDistrict = (districts) => {
+  const getTalukasByDistrict = async (districts) => {
     setLoadTaluka(true);
-    districts.forEach((s, i) => {
-      getTalukas(s)
-        .then((resp) => {
-          if (
-            talukas.length &&
-            resp[0].districtId != talukas[talukas.length - 1].districtId
-          ) {
-            setTalukas([...talukas, ...resp]);
-          } else {
-            setTalukas([...resp]);
-          }
-          if (i == districts.length - 1) {
-            setLoadTaluka(false);
-            settalukaActive(true);
+    setTalukas([]);
+    try {
+      let temp = [];
+      await Promise.all(
+        districts.map(async (s) => {
+          try {
+            const resp = await getTalukas(s);
+            temp.push(...resp);
+          } catch (err) {
+            console.log(err);
           }
         })
-        .catch((err) => {
-          console.log(err);
-          setLoadTaluka(false);
-        });
-    });
+      );
+      console.log(temp);
+      setTalukas(temp);
+      setLoadTaluka(false);
+      settalukaActive(true);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -111,6 +116,7 @@ function SelectLocation({ register, errors }) {
             isLoading={LoadDistrict}
             data={states}
             next={"Districts"}
+            curr={"State"}
           />
         </div>
         <div className="mt-6">
@@ -120,6 +126,7 @@ function SelectLocation({ register, errors }) {
               data={districts}
               next={"Talukas"}
               loadNext={getTalukasByDistrict}
+              curr={"District"}
             />
           )}
         </div>
@@ -128,7 +135,9 @@ function SelectLocation({ register, errors }) {
             <LocationBox
               isLoading={LoadTaluka}
               data={talukas}
-              //   next={""}
+              curr={"Taluka"}
+              next={""}
+              setselectedTaluka={setselectedTaluka}
               //   loadNext={LoadTaluka}
             />
           )}
