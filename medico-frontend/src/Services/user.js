@@ -6,11 +6,14 @@ const url = process.env.REACT_APP_API_BASE_URL
 const jwtToken = token();
 
 export const registerBuyer = async (buyerDetails) => {
+    const t = localStorage.getItem('token');
+    console.log(t);
     const config = {
+        
         headers: {
             'Content-Type': 'application/json', 
             'Accept': 'application/json', 
-            'Authorization': `Bearer ${jwtToken}`
+            'Authorization': `Bearer ${t}`
         }
       };
       console.log(config);
@@ -29,12 +32,12 @@ export const registerBuyer = async (buyerDetails) => {
 }
 
 export const registerCompany = async (companyDetails) => {
-
+    const t = localStorage.getItem('token');
     const config = {
         headers: {
             'Content-Type': 'application/json', 
             'Accept': 'application/json', 
-            'Authorization': `Bearer ${jwtToken}`
+            'Authorization': `Bearer ${t}`
         }
       };
     

@@ -16,8 +16,7 @@ import Login from "./Components/Login";
 import Welcome from "./Components/Welcome";
 import Product from "./Components/SafeComponents/Product";
 import AddProduct from "./Components/SafeComponents/AddProduct";
-import { Sidebar } from "./Components/SafeComponents/Sidebar";
-import { decodeToken, signOut, token } from "./Services/auth";
+import { decodeToken, formdata, setCurrStep, setFormData, signOut, token } from "./Services/auth";
 import CompleteDetails from "./Components/CompleteDetails";
 import AddOffer from "./Components/OfferComponents/AddOffer";
 import Offer from "./Components/OfferComponents/Offers";
@@ -25,32 +24,51 @@ import Offer from "./Components/OfferComponents/Offers";
 function App() {
   const loginStatus = token() !== null;
   const [isLoggedIn, setIsLoggedIn] = useState(loginStatus);
+  const [isComplete, setIsComplete] = useState(true);
   const [showSidebar, setShowSidebar] = useState(loginStatus);
   // console.log(showSidebar, isLoggedIn);
 
   const currUsr = decodeToken()
   const [user, setUser] = useState(currUsr)
+  let usrData = {}
+  
+  if(user){
+    const keys = Object.keys(user);
+    const role = keys.find(claim => claim.endsWith('role'));
+    const email = keys.find(claim => claim.endsWith('emailaddress'));
+    usrData.role = role;
+    usrData.email = email
+  }
 
-  const logout = () => {
-    signOut();
-    setIsLoggedIn(false)
-  };
+
   
   return (
     <Router>
       <div className="bg-gray-100 h-screen">
-        {(isLoggedIn && showSidebar) ? <Sidebar changeLogin={logout}  /> : ""}
+        {/* {(isLoggedIn && showSidebar) ? <Sidebar changeLogin={logout}  /> : ""} */}
 
         <Routes>
-          {isLoggedIn && (
+          {(isLoggedIn && user.isComplete==='True') && (
             <>
               <Route path="/" element={<Navigate to="/Home" />} />
-              <Route path="/login" element={<Navigate to="/Home" />} />
-              <Route path="/register" element={<Navigate to="/Home" />} />
+               <Route path="/login" element={<Navigate to="/Home" />} />
+               <Route path="/register" element={<Navigate to="/Home" />} />
             </>
           )}
           <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
+          {
+            isLoggedIn?
+            <>
+              {setCurrStep(3)}
+              {usrData.role && setFormData({...formdata, role:user[usrData.role]})}
+              {usrData.email && setFormData({...formdata, email:user[usrData.email]})}
+              
+              <Route path="/register" element={<Register changeLogin={setIsLoggedIn} setShowSidebar={setShowSidebar} setIsComplete={setIsComplete}/>} />
+            </>
+            :
+            <Route path="/register" element={<Register changeLogin={setIsLoggedIn} setShowSidebar={setShowSidebar} setIsComplete={setIsComplete}/>} />
+          }
+          
           <Route
             path="/login"
             element={<Login changeLogin={setIsLoggedIn} setShowSidebar={setShowSidebar} />}

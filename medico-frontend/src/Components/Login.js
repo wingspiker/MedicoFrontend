@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { loginService, setMessage } from "../Services/auth";
+import {
+  decodeToken,
+  signOut,
+  showMessage,
+  setMessage,
+  loginService,
+  setCurrStep,
+  setFormData,
+  formdata,
+} from "../Services/auth";
 import { Toaster, toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../Loader";
@@ -7,14 +16,14 @@ import { IoClose } from "react-icons/io5";
 // import env from 'react-dotenv'
 
 const Login = (props) => {
-
   // console.log(env);
-  
+
   const { changeLogin, setShowSidebar } = props;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [isRed, setIsRed] = useState(true)
 
   const navigate = useNavigate();
 
@@ -67,11 +76,31 @@ const Login = (props) => {
           console.log(response);
           setLoading(false); // Set loading to false after API response
           // Handle successful login response
-          changeLogin(true);
-          setShowSidebar(true);
-          localStorage.setItem('token', response.accessToken);
-          setMessage(true)
-          navigate("/Home");
+
+          localStorage.setItem("token", response.accessToken);
+          setMessage(true);
+          const user = decodeToken();
+          console.log(user);
+          const keys = Object.keys(user);
+          const role = keys.find(claim => claim.endsWith('role'));
+          if (user.isVerified === "False") {
+            toast.error("You are not verified. kindly get verified.");
+            signOut();
+          }
+          else if (user.isComplete === "False") {
+            setShowSidebar(false);
+            setFormData({...formdata, email:loginData.email})
+            if(user[role]==="Buyer"){
+              setFormData({...formdata, role:'Buyer'})
+            }
+            navigate("/register");
+            setCurrStep(3)
+          }
+          else{
+            changeLogin(true);
+            setShowSidebar(true);
+            navigate("/Home");
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -111,7 +140,7 @@ const Login = (props) => {
           <Toaster
             position="top-center"
             toastOptions={{
-              style: { color: "red" },
+              style: { color: `${isRed ? "red" : "green"}` },
             }}
           />
           <form onSubmit={handleSubmit}>

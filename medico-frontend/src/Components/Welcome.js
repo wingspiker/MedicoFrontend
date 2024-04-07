@@ -1,38 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { decodeToken, signOut, showMessage } from '../Services/auth';
+import { decodeToken, signOut, showMessage, setMessage, } from '../Services/auth';
 import { useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'sonner';
+import { Sidebar } from './SafeComponents/Sidebar';
+
+
 
 const Welcome = (props) => {
   const { changeLogin, setShowSidebar } = props;  
   const navigate = useNavigate();
 
+  const logout = () => {
+    signOut();
+    changeLogin(false)
+  };
+
   const [isRed, setIsRed] = useState(true)
 
   useEffect(() => {
-    const user = decodeToken();
-    if(user.isVerified==='False'){
-      toast.error('You are not verified. kindly get verified.');
-      setTimeout(() => {        
-        changeLogin(false)
-        signOut();
-      }, 3000);
-    }
-    if(user.isComplete==='False'){
-      setShowSidebar(false)
-      navigate('/complete-details')
-    }
+    
     if(showMessage){
     setIsRed(false)
-      toast.success("Logged in successfully!");
+      toast.success("Logged in successfully!", {autoClose: 1000});
     }
     setTimeout(() => {
       setIsRed(true)
+      setMessage(false)
     }, 6000);
   }, [])
 
   return (
     <div className="flex h-screen bg-cyan-900 text-white">
+      <Sidebar changeLogin={logout}  />
       <div className="flex-1">
       <Toaster
         position="top-center"

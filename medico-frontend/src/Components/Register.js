@@ -8,28 +8,68 @@ import StepFour from "./RegisterComponents/StepFour";
 import BuyerStepThree from "./RegisterComponents/BuyerStepThree";
 import {
   currStep,
+  formdata,
   getEmailOtp,
   getMobileOtp,
   signUpService,
   verifyEmailOtp,
   verifyMobileOtp,
+  decodeToken,
+  signOut,
+  setCurrStep,
 } from "../Services/auth";
+
 import { Toaster, toast } from "sonner";
 import { getDistricts, getStates, getTalukas } from "../Services/location";
 import { handleImageUpload } from "../Services/upload";
 import { registerBuyer, registerCompany } from "../Services/user";
 
-const Register = () => {
+const Register = (props) => {
+  const { changeLogin, setShowSidebar, setIsComplete } = props;
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [talukas, setTalukas] = useState([]);
 
-  const [currState, setCurrState] = useState('');
-  const [currDistricts, setCurrDistrict] = useState('');
-  const [currTaluka, setCurrTaluka] = useState('');
+  const [currState, setCurrState] = useState("");
+  const [currDistricts, setCurrDistrict] = useState("");
+  const [currTaluka, setCurrTaluka] = useState("");
+
+  // window.location.reload = ()=>{
+  //   console.log('ggg');
+  //   signOut();
+  // }
 
   // Your form state and functions...
   useEffect(() => {
+    const user = decodeToken();
+    // console.log(user);
+    let usrData = {};
+    if (user) {
+      const keys = Object.keys(user);
+      const role = keys.find((claim) => claim.endsWith("role"));
+      const email = keys.find((claim) => claim.endsWith("emailaddress"));
+      usrData.role = role;
+      usrData.email = email;
+      if (user.isVerified === "False") {
+        toast.error("You are not verified. kindly get verified.");
+        signOut();
+      } else if (user.isComplete === "False") {
+        setShowSidebar(false);
+  
+        setFormData({ ...formdata, email: user[usrData.email] });
+        if (user[usrData.role] === "Buyer") {
+          setFormData({ ...formdata, role: "Buyer" });
+        }
+        navigate("/register");
+        setCurrStep(3);
+      } else {
+        changeLogin(true);
+        setShowSidebar(true);
+        navigate("/Home");
+      }
+    }
+    
+
     getStates()
       .then((res) => {
         setStates(res);
@@ -77,7 +117,7 @@ const Register = () => {
     lastName: "",
     occupation: "",
   };
-  const [formData, setFormData] = useState(initialForm);
+  const [formData, setFormData] = useState(formdata);
   const [errors, setErrors] = useState({});
   const [emailVerified, setEmailVerified] = useState(false);
   const [otpEmailLoading, setOtpEmailLoading] = useState(false);
@@ -85,7 +125,7 @@ const Register = () => {
   const [m, sM] = useState(false);
   const [otpMobileLoading, setOtpMobileLoading] = useState(false);
   const [mobileVerified, setMobileVerified] = useState(false);
-  const [isBuyer, setIsBuyer] = useState(false);
+  const [isBuyer, setIsBuyer] = useState(formdata.role === "Buyer");
   const [submitLoading, setSubmitLoading] = useState(false);
 
   let documents = [
@@ -223,17 +263,18 @@ const Register = () => {
       ...prevState,
       [name]: value,
     }));
-    if(name==='state'){
-      const currState = states.find(e=> e.id == value).name;
-      setCurrState(currState)
+    if (name === "state") {
+      const currState = states.find((e) => e.id == value).name;
+      setCurrState(currState);
     }
-    if(name==='district'){
-      const currDistrict = districts.find(e=> e.id == value).name;
-      setCurrDistrict(currDistrict)
+    if (name === "district") {
+      const currDistrict = districts.find((e) => e.id == value).name;
+      setCurrDistrict(currDistrict);
     }
-    if(name=='taluka'){
-      const currTaluka = talukas.find(e=> e.id == value).name;
-      setCurrTaluka(currTaluka)
+    if (name == "taluka") {
+      console.log(value);  
+      const currTaluka = talukas.find((e) => e.name == value).name;
+      setCurrTaluka(currTaluka);
     }
   };
 
@@ -482,12 +523,26 @@ const Register = () => {
     if (filteredNames.length) {
       toast.error(filteredNames[0] + " is required");
     } else {
-      if (formData.role == 1) {
-        const { email, companyEmail, displayName, companyName, companyType, chargeType, licenseNumber, gstNumber,panCardNumber, drugLicenseNumber, wholesaleLicenseNumber, companyAddress1, companyAddress2, pincode,  } =
-          formData;
+      if (formData.role != "Buyer") {
+        const {
+          email,
+          companyEmail,
+          displayName,
+          companyName,
+          companyType,
+          chargeType,
+          licenseNumber,
+          gstNumber,
+          panCardNumber,
+          drugLicenseNumber,
+          wholesaleLicenseNumber,
+          companyAddress1,
+          companyAddress2,
+          pincode,
+        } = formData;
 
         let submitData = {
-          emailAddress:email,
+          emailAddress: email,
           companyName,
           companyEmail,
           companyType: Number(companyType),
@@ -495,13 +550,13 @@ const Register = () => {
           documentLinks,
           licenseNumber,
           gstNumber,
-          panNumber:panCardNumber,
+          panNumber: panCardNumber,
           displayName,
           pincode,
           drugLicenseNumber,
           wholesaleLicenseNumber,
-          address1:companyAddress1,
-          address2:companyAddress2   
+          address1: companyAddress1,
+          address2: companyAddress2,
         };
 
         if (chargeType == 0) {
@@ -509,47 +564,69 @@ const Register = () => {
           submitData.subscription = Number(subscription);
         }
         console.log(submitData);
-        saveCompanyData(submitData)
-      }else if(formData.role ==0){
-        const { email, firstName, lastName, state, district, taluka, occupation } =
-          formData;  
-        let buyerSubmitData = {emailAddress:email, firstName, lastName, occupation, address:{state:currState,district:currDistricts,taluka:currTaluka}, documentLinks, talukaId:Number(taluka)}
-        if(occupation=="Doctor"){
+        saveCompanyData(submitData);
+      } else if (formData.role == "Buyer") {
+        const {
+          email,
+          firstName,
+          lastName,
+          state,
+          district,
+          taluka,
+          occupation,
+        } = formData;
+        let buyerSubmitData = {
+          emailAddress: email,
+          firstName,
+          lastName,
+          occupation,
+          address: {
+            state: currState,
+            district: currDistricts,
+            taluka: currTaluka,
+          },
+          documentLinks,
+          talukaId: Number(taluka),
+        };
+        if (occupation == "Doctor") {
           buyerSubmitData.degree = formData.degree;
         }
         console.log(buyerSubmitData);
-        saveBuyerData(buyerSubmitData)
+        saveBuyerData(buyerSubmitData);
       }
     }
   };
 
-  const saveCompanyData = (cData)=>{
-    setSubmitLoading(true)
+  const saveCompanyData = (cData) => {
+    setSubmitLoading(true);
 
-    registerCompany(cData).then((resp)=>{
-      console.log(resp);
-      navigate('/Home')
-      setSubmitLoading(false)
-    }).catch((err)=>{
-      console.log(err)
-      setSubmitLoading(false)
-    })
+    registerCompany(cData)
+      .then((resp) => {
+        console.log(resp);
+        navigate("/Home");
+        setSubmitLoading(false);
 
-  }
+      })
+      .catch((err) => {
+        console.log(err);
+        setSubmitLoading(false);
+      });
+  };
 
-  const saveBuyerData = (bData)=>{
-    setSubmitLoading(true)
+  const saveBuyerData = (bData) => {
+    setSubmitLoading(true);
 
-    registerBuyer(bData).then((resp)=>{
-      console.log(resp);
-      navigate('/Home')
-      setSubmitLoading(false)
-    }).catch((err)=>{
-      console.log(err)
-      setSubmitLoading(false)
-    })
-
-  }
+    registerBuyer(bData)
+      .then((resp) => {
+        console.log(resp);
+        navigate("/Home");
+        setSubmitLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setSubmitLoading(false);
+      });
+  };
 
   const nextStep = () => {
     if (formData.role == 0) {
@@ -631,17 +708,17 @@ const Register = () => {
 
     signUpService(registerData)
       .then((res) => {
-        isRed(false)
+        isRed(false);
         toast.success("Account created successfully!");
         setTimeout(() => {
-          isRed(true)
+          isRed(true);
         }, 6000);
-        localStorage.setItem('token', res.accessToken);
+        localStorage.setItem("token", res.accessToken);
         nextStep();
       })
       .catch((err) => {
-        toast.error(err.response.data.detail)
-      })
+        toast.error(err.response.data.detail);
+      });
 
     // nextStep();
   };
