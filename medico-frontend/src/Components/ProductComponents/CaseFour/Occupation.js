@@ -2,43 +2,72 @@ import React from "react";
 import { CustomSelect, CustomCheckbox } from "../../OfferComponents/Input";
 
 function Occupation({ register, errors, occupation }) {
+  // console.log(occupation);
   return (
     <div className="flex items-center">
-      <CustomSelect
-        options={[
-          { value: "", label: "Select an Occupation" },
-          { value: "doctor", label: "Doctor" },
-          { value: "medical_store", label: "Medical Store" },
-        ]}
-        inputProps={register("occupation")}
-        error={errors.occupation}
-        className="mr-4 ml-5" // Add margin-right to create space between selects
-      />
-      {occupation === "doctor" && (
-        <div className="ml-4">
-          <CustomSelect
-            options={[
-              { value: "", label: "Select a Degree" },
-              { value: "Master of Surgery", label: "Master of Surgery" },
-              { value: "Doctor of Medicine", label: "Doctor of Medicine" },
-              {
-                value: "Bachelor of Medicine Bachelor of Surgery",
-                label: "Bachelor of Medicine Bachelor of Surgery",
-              },
-              {
-                value: "Bachelor of Dental Surgery",
-                label: "Bachelor of Dental Surgery",
-              },
-              {
-                value: "Bachelor of Homeopathy Medicine and Surgery",
-                label: "Bachelor of Homeopathy Medicine and Surgery",
-              },
-            ]}
-            inputProps={register("degree")}
-            error={errors.degree}
-          />
-        </div>
-      )}
+      <div>
+        <input
+          type="checkbox"
+          value="doctor"
+          className="w-16 h-16"
+          {...register("occupation")}
+        />
+        <p className="text-4xl">Doctor</p>
+        <input
+          type="checkbox"
+          value="Medical Store"
+          className="w-16 h-16"
+          {...register("occupation")}
+        />
+        <p className="text-4xl">Medical Store</p>
+      </div>
+      <div>
+        {occupation && occupation.includes("doctor") && (
+          <>
+            <input
+              type="checkbox"
+              value="Master of Surgery"
+              className="w-16 h-16"
+              {...register("degree")}
+            />
+            <p className="text-4xl">Master of Surgery</p>
+
+            <input
+              type="checkbox"
+              value="Bachelor of Medicine Bachelor of Surgery"
+              className="w-16 h-16"
+              {...register("degree")}
+            />
+            <p className="text-4xl">Bachelor of Medicine Bachelor of Surgery</p>
+
+            <input
+              type="checkbox"
+              value="Bachelor of Dental Surgery"
+              className="w-16 h-16"
+              {...register("degree")}
+            />
+            <p className="text-4xl">Bachelor of Dental Surgery</p>
+
+            <input
+              type="checkbox"
+              value="Bachelor of Homeopathy Medicine and Surgery"
+              className="w-16 h-16"
+              {...register("degree")}
+            />
+            <p className="text-4xl">
+              Bachelor of Homeopathy Medicine and Surgery
+            </p>
+
+            <input
+              type="checkbox"
+              value="Medical Store"
+              className="w-16 h-16"
+              {...register("degree")}
+            />
+            <p className="text-4xl">Medical Store</p>
+          </>
+        )}
+      </div>
     </div>
   );
 }

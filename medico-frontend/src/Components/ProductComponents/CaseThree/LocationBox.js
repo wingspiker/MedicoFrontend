@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Loader from "../../../Loader";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { IoIosAddCircle } from "react-icons/io";
 
 export default function LocationBox({
   register,
@@ -102,9 +104,9 @@ export default function LocationBox({
                   </p>
                   <p
                     onClick={() => handleOptionsClick(state.id)}
-                    className=" cursor-pointer bg-[#5bb77d] hover:bg-green-600 text-white font-bold py-1 px-2 rounded rounded-s-none"
+                    className=" cursor-pointer py-2 bg-[#5bb77d] hover:bg-green-600 text-white font-bold px-2 rounded rounded-s-none"
                   >
-                    +
+                    <IoIosAddCircle />
                   </p>
                 </div>
               );
@@ -119,9 +121,9 @@ export default function LocationBox({
                   </p>
                   <p
                     onClick={() => handleSelectedClick(state.id)}
-                    className=" cursor-pointer bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded rounded-s-none"
+                    className=" cursor-pointer bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded rounded-s-none"
                   >
-                    -
+                    <RiDeleteBin5Line />
                   </p>
                 </div>
               );

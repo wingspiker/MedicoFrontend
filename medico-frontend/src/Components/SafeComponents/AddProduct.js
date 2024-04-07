@@ -19,6 +19,7 @@ function AddProduct() {
 
   const onSubmit = (data) => {
     data.talukaIds = sTaluka;
+    console.log("data", data);
     if (currentStep < 6) {
       if (currentStep === 1) {
         AddProduct(data);
@@ -73,7 +74,11 @@ function AddProduct() {
 
   const occupation = watch("occupation");
   const degree = watch("degree");
-  //watch PRiceInfo Selling price is remaining
+  // console.log("Occupation");
+  // console.log(occupation);
+  // console.log("degree");
+  // console.log(degree);
+
   const sellingPrice = watch("sellingPrice");
 
   const [sTaluka, setsTaluka] = useState([]);
