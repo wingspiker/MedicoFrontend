@@ -97,6 +97,13 @@ const Login = (props) => {
             setCurrStep(3)
           }
           else{
+            if(user[role]==="Buyer"){
+              signOut()
+              navigate('/');
+              setFormData({...formdata, email:''})
+              setCurrStep(1)
+              return
+            }
             changeLogin(true);
             setShowSidebar(true);
             navigate("/Home");

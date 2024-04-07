@@ -639,6 +639,8 @@ const Register = (props) => {
     registerBuyer(bData)
       .then((resp) => {
         console.log(resp);
+        setFormData({...formdata, email:''})
+        setCurrStep(1)
         navigate("/");
         signOut();
         setSubmitLoading(false);
