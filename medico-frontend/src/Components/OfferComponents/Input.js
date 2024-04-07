@@ -66,3 +66,18 @@ export const CustomTextArea = ({
     </div>
   );
 };
+
+export const CustomCheckbox = ({ label, checked, onChange, error }) => {
+  return (
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        className="w-4 h-4 mr-2 border border-solid border-gray-900 rounded-sm"
+      />
+      <label className="text-black text-lg">{label}</label>
+      {error && <span className="text-red-600 ml-2">{error.message}</span>}
+    </div>
+  );
+};

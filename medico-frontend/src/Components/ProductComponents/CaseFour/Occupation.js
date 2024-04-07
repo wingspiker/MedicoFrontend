@@ -1,5 +1,5 @@
 import React from "react";
-import { CustomSelect } from "../../OfferComponents/Input";
+import { CustomSelect, CustomCheckbox } from "../../OfferComponents/Input";
 
 function Occupation({ register, errors, occupation }) {
   return (
