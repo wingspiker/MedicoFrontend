@@ -55,7 +55,7 @@ const Register = (props) => {
         signOut();
       } else if (user.isComplete === "False") {
         setShowSidebar(false);
-  
+
         setFormData({ ...formdata, email: user[usrData.email] });
         if (user[usrData.role] === "Buyer") {
           setFormData({ ...formdata, role: "Buyer" });
@@ -68,7 +68,6 @@ const Register = (props) => {
         navigate("/Home");
       }
     }
-    
 
     getStates()
       .then((res) => {
@@ -193,10 +192,22 @@ const Register = (props) => {
       error = "Invalid company email address";
     } else if (name === "companyName" && value.trim() === "") {
       error = "Company name is required";
-    } else if (name === "licenseNumber" && value.trim() === "") {
-      error = "License number is required";
-    } else if (name === "gstNumber" && value.trim() === "") {
-      error = "GST number is required";
+    } else if (name === "licenseNumber") {
+      if (value.trim() === "") {
+        error = "License number is required";
+      } else if (!/[A-Z]/.test(value) || !/\d/.test(value)) {
+        error =
+          "License number must contain at least one capital letter and one number";
+      }
+    } else if (name === "gstNumber") {
+      if (value.trim() === "") {
+        error = "GST number is required";
+      } else if (!/[A-Z]/.test(value) || !/\d/.test(value)) {
+        error =
+          "GST number must contain at least one capital letter and one number";
+      } else if (value.trim().length !== 15) {
+        error = "GST number must be 15 characters long";
+      }
     } else if (name === "panCardNumber" && value.trim() === "") {
       error = "Pan card number is required";
     } else if (name === "displayName" && value.trim() === "") {
@@ -216,10 +227,20 @@ const Register = (props) => {
       (value.length !== 6 || !/^\d+$/.test(value))
     ) {
       error = "Invalid pincode";
-    } else if (name === "drugLicenseNumber" && value.trim() === "") {
-      error = "Drug license number is required";
-    } else if (name === "wholesaleLicenseNumber" && value.trim() === "") {
-      error = "Wholesale license number is required";
+    } else if (name === "drugLicenseNumber") {
+      if (value.trim() === "") {
+        error = "Drug license number is required";
+      } else if (!/[A-Z]/.test(value) || !/\d/.test(value)) {
+        error =
+          "Drug license number must contain at least one capital letter and one number";
+      }
+    } else if (name === "wholesaleLicenseNumber") {
+      if (value.trim() === "") {
+        error = "Wholesale license number is required";
+      } else if (!/[A-Z]/.test(value) || !/\d/.test(value)) {
+        error =
+          "Wholesale license number must contain at least one capital letter and one number";
+      }
     } else if (name === "companyType" && value.trim() === "") {
       error = "Company type is required";
     } else if (
@@ -272,8 +293,8 @@ const Register = (props) => {
       setCurrDistrict(currDistrict);
     }
     if (name == "taluka") {
-      console.log(value);  
-      const currTaluka = talukas.find((e) => e.name == value).name;
+      console.log(value);
+      const currTaluka = talukas.find((e) => e.id == value).name;
       setCurrTaluka(currTaluka);
     }
   };
@@ -605,7 +626,6 @@ const Register = (props) => {
         console.log(resp);
         navigate("/Home");
         setSubmitLoading(false);
-
       })
       .catch((err) => {
         console.log(err);
@@ -619,12 +639,15 @@ const Register = (props) => {
     registerBuyer(bData)
       .then((resp) => {
         console.log(resp);
-        navigate("/Home");
+        navigate("/");
+        signOut();
         setSubmitLoading(false);
       })
       .catch((err) => {
         console.log(err);
         setSubmitLoading(false);
+        navigate("/");
+        signOut();
       });
   };
 

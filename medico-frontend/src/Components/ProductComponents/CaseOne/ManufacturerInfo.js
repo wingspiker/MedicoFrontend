@@ -29,7 +29,7 @@ function ManufacturerInformation({ register, errors, allowReturn }) {
           label="Manufacturer Name"
           placeholder="Enter manufacturer name"
           inputProps={register("manufacturerName", {
-            // required: "Manufacturer name is required",
+            required: "Manufacturer name is required",
             pattern: {
               value: /^[A-Za-z\s]+$/,
               message:
@@ -45,7 +45,7 @@ function ManufacturerInformation({ register, errors, allowReturn }) {
           label="Manufacturer License Number"
           placeholder="Enter license number"
           inputProps={register("manufacturerLicenseNumber", {
-            // required: "Manufacturer license number is required",
+            required: "Manufacturer license number is required",
             pattern: {
               value: /^[0-9]+$/,
               message:
@@ -56,7 +56,6 @@ function ManufacturerInformation({ register, errors, allowReturn }) {
         />
       </div>
 
-      {/* Assuming CustomSelect or a similar component is not suitable for Yes/No selection, using radios directly */}
       <div className="form-group flex flex-col">
         <label>Allow Exchange</label>
         <div className="flex">
@@ -87,7 +86,7 @@ function ManufacturerInformation({ register, errors, allowReturn }) {
             label="Return Days"
             placeholder="Enter return days"
             inputProps={register("returnDays", {
-              // required: "Return days is required",
+              required: "Return days is required",
             })}
             error={errors.returnDays}
           />

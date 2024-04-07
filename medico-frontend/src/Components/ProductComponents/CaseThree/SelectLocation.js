@@ -94,7 +94,7 @@ function SelectLocation({ register, errors, setsTaluka }) {
             <CustomInput
               placeholder="Enter Group Name"
               inputProps={register("groupName", {
-                // required: "groupNameis required",
+                required: "Group Nameis required",
               })}
               error={errors.groupName}
             />
@@ -103,7 +103,7 @@ function SelectLocation({ register, errors, setsTaluka }) {
             <CustomTextArea
               placeholder="Enter Group Description"
               inputProps={register("groupDescription", {
-                // required: "Group Description is required",
+                required: "Group Description is required",
               })}
               small={true}
               error={errors.groupDescription}
@@ -117,6 +117,8 @@ function SelectLocation({ register, errors, setsTaluka }) {
             data={states}
             next={"Districts"}
             curr={"State"}
+            setDistActive={setdistActive}
+            setTalukaActive={settalukaActive}
           />
         </div>
         <div className="mt-6">
@@ -127,6 +129,7 @@ function SelectLocation({ register, errors, setsTaluka }) {
               next={"Talukas"}
               loadNext={getTalukasByDistrict}
               curr={"District"}
+              setTalukaActive={settalukaActive}
             />
           )}
         </div>
@@ -138,7 +141,6 @@ function SelectLocation({ register, errors, setsTaluka }) {
               curr={"Taluka"}
               next={""}
               setselectedTaluka={setselectedTaluka}
-              //   loadNext={LoadTaluka}
             />
           )}
         </div>

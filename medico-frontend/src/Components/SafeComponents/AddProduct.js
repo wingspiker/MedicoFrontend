@@ -25,9 +25,9 @@ function AddProduct() {
     if (currentStep < 6) {
       console.log(data.existingGroupNo);
       if (currentStep === 2 && data.existingGroupNo) {
-        setCurrentStep(5); // Move to step 5 if no group is selected
+        setCurrentStep(5);
       } else {
-        setCurrentStep(currentStep + 1); // Move to the next step
+        setCurrentStep(currentStep + 1);
       }
       // setCurrentStep(currentStep + 1);
     } else {
@@ -156,8 +156,9 @@ function AddProduct() {
                 />
               </div>
               <button
+                disabled={sTaluka.length === 0}
                 type="submit"
-                className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+                className={`cursor-pointer bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 disabled:cursor-auto text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
               >
                 Next
               </button>

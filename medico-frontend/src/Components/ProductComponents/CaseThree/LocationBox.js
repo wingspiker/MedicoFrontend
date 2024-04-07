@@ -10,6 +10,8 @@ export default function LocationBox({
   next,
   curr,
   setselectedTaluka,
+  setDistActive,
+  setTalukaActive,
 }) {
   const [options, setOptions] = useState(data);
   const [selected, setSelected] = useState([]);
@@ -47,6 +49,12 @@ export default function LocationBox({
     newSelected.sort((a, b) => a.id - b.id);
     setOptions(newSelected);
     setSelected(remainingSelected);
+    if (setDistActive) {
+      setDistActive(false);
+    }
+    if (setTalukaActive) {
+      setTalukaActive(false);
+    }
   };
 
   const onLoadNext = (e) => {
@@ -64,19 +72,23 @@ export default function LocationBox({
             Select {curr}
           </legend>
           <div className=" flex justify-end w-full">
-            {next.length && (
-              <button
-                disabled={selected.length == 0}
-                className={` cursor-pointer relative bg-[#3e9a6f] hover:bg-green-600 disabled:bg-green-300 disabled:cursor-auto text-white font-bold py-1 px-2 rounded`}
-                onClick={onLoadNext}
-              >
-                {isLoading ? <Loader /> : `Load ${next}`}
-                {selected.length > 0 && (
-                  <p className=" absolute top-0 right-0 bg-red-500 text-white p-[2px] px-[6px] text-xs rounded-full translate-x-1/2 -translate-y-1/2">
-                    {selected.length}
-                  </p>
+            {curr != "Taluka" && (
+              <>
+                {next.length && (
+                  <button
+                    disabled={selected.length == 0}
+                    className={` cursor-pointer relative bg-[#3e9a6f] hover:bg-green-600 disabled:bg-green-300 disabled:cursor-auto text-white font-bold py-1 px-2 rounded`}
+                    onClick={onLoadNext}
+                  >
+                    {isLoading ? <Loader /> : `Load ${next}`}
+                    {selected.length > 0 && (
+                      <p className=" absolute top-0 right-0 bg-red-500 text-white p-[2px] px-[6px] text-xs rounded-full translate-x-1/2 -translate-y-1/2">
+                        {selected.length}
+                      </p>
+                    )}
+                  </button>
                 )}
-              </button>
+              </>
             )}
           </div>
         </div>

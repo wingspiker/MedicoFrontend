@@ -34,7 +34,7 @@ function PricingInformation({
           label="MRP"
           placeholder="Enter MRP"
           inputProps={register("mrp", {
-            // required: "MRP is required",
+            required: "MRP is required",
             pattern: {
               value: /^[0-9]+$/,
               message: "MRP can only contain numeric values",
@@ -49,7 +49,7 @@ function PricingInformation({
           label="Retail Price"
           placeholder="Enter Retail Price"
           inputProps={register("retailPrice", {
-            // required: "Retail price is required",
+            required: "Retail price is required",
             pattern: {
               value: /^[0-9]+$/,
               message: "Retail price can only contain numeric values",
@@ -78,7 +78,7 @@ function PricingInformation({
             label="Discount on MRP (%)"
             placeholder="Enter Discount on MRP"
             inputProps={register("discountOnMRP", {
-              // required: "Discount on MRP is required",
+              required: "Discount on MRP is required",
               pattern: {
                 value: /^[0-9]+$/,
                 message: "Discount on MRP can only contain numeric values",
@@ -93,7 +93,7 @@ function PricingInformation({
             label="Margin on Retail Price (%)"
             placeholder="Enter Margin on Retail Price"
             inputProps={register("marginOnRetail", {
-              // required: "Margin on Retail Price is required",
+              required: "Margin on Retail Price is required",
               pattern: {
                 value: /^[0-9]+$/,
                 message:
