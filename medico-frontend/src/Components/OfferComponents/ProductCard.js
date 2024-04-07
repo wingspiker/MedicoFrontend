@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Checkbox,
-  TextField,
-} from "@mui/material";
+import { Card, CardContent, Typography, Checkbox } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 import { CustomInput } from "./Input";
 
-const ProductCard = ({ product, boxBase  }) => {
+const ProductCard = ({ product, boxBase }) => {
   const { register, setValue, watch, errors } = useFormContext();
   const watchSelectedProducts = watch("selectedProducts") || [];
   const checked = watchSelectedProducts.some(
@@ -29,30 +23,33 @@ const ProductCard = ({ product, boxBase  }) => {
     const updatedSelectedProducts = [...watchSelectedProducts];
     if (event.target.checked) {
       if (boxBase)
-        updatedSelectedProducts[product.id] = {
+        updatedSelectedProducts.push({
           productId: product.id,
           sizeX: product?.packSize?.x,
           sizeY: "",
           quantity: "",
           unitBoxQuantity: 0,
-        };
+        });
       else
-        updatedSelectedProducts[product.id] = {
+        updatedSelectedProducts.push({
           productId: product.id,
-        };
+        });
       setExpanded(true);
     } else {
-      updatedSelectedProducts[product.id] = null;
+      const index = updatedSelectedProducts.findIndex(
+        (selectedProducts) => selectedProducts.productId === product.id
+      );
+      updatedSelectedProducts.splice(index, 1);
       setExpanded(false);
     }
     setValue("selectedProducts", updatedSelectedProducts);
   };
 
-  const handleInputChange = (event, field) => {
+  const handleInputChange = (event, field, index) => {
     const value = parseFloat(event.target.value);
     const updatedSelectedProducts = [...watchSelectedProducts];
-    updatedSelectedProducts[product.id] = {
-      ...updatedSelectedProducts[product.id],
+    updatedSelectedProducts[index] = {
+      ...updatedSelectedProducts[index],
       [field]: isNaN(value) ? "" : value,
     };
     setValue("selectedProducts", updatedSelectedProducts);
@@ -144,90 +141,103 @@ const ProductCard = ({ product, boxBase  }) => {
           </div>
           {boxBase ? (
             <div className="h-[90px]">
-              {expanded && (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    gap: "10px",
-                    height: "100%",
-                  }}
-                >
-                  <CustomInput
-                    label={"Size X"}
-                    inputProps={{
-                      defaultValue: product.packSize.x,
-                      disabled: true,
-                      variant: "outlined",
-                      className: "!w-36",
-                    }}
-                    style={{ marginBottom: "8px" }}
-                  />
-                  <CustomInput
-                    label={"Size Y"}
-                    inputProps={{
-                      ...register(`selectedProducts.${product?.id}.sizeY`, {
-                        required: "Size Y is required",
-                      }),
-                      variant: "outlined",
-                      type: "number",
-                      onChange: (e) => handleInputChange(e, "sizeY"),
-                      className: "!w-36",
-                    }}
-                    error={errors?.selectedProducts?.[product?.id]?.sizeY}
-                    style={{ marginBottom: "8px" }}
-                  />
-                  <CustomInput
-                    label={"Quantity"}
-                    inputProps={{
-                      ...register(`selectedProducts.${product?.id}.quantity`, {
-                        required: "Quantity is required",
-                      }),
-                      variant: "outlined",
-                      type: "number",
-                      onChange: (e) => handleInputChange(e, "quantity"),
-                      className: "!w-36",
-                    }}
-                    error={errors?.selectedProducts?.[product?.id]?.quantity}
-                    style={{ marginBottom: "8px" }}
-                  />
-                </div>
-              )}{" "}
+              {expanded &&
+                watchSelectedProducts.map((selectedProduct, index) => (
+                  <div key={index}>
+                    {selectedProduct.productId === product.id && (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          gap: "10px",
+                          height: "100%",
+                        }}
+                      >
+                        <CustomInput
+                          label={"Size X"}
+                          inputProps={{
+                            defaultValue: product.packSize.x,
+                            disabled: true,
+                            variant: "outlined",
+                            className: "!w-36",
+                          }}
+                          style={{ marginBottom: "8px" }}
+                        />
+                        <CustomInput
+                          label={"Size Y"}
+                          inputProps={{
+                            ...register(`selectedProducts[${index}].sizeY`, {
+                              required: "Size Y is required",
+                            }),
+                            variant: "outlined",
+                            type: "number",
+                            onChange: (e) =>
+                              handleInputChange(e, "sizeY", index),
+                            className: "!w-36",
+                          }}
+                          error={errors?.selectedProducts?.[index]?.sizeY}
+                          style={{ marginBottom: "8px" }}
+                        />
+                        <CustomInput
+                          label={"Quantity"}
+                          inputProps={{
+                            ...register(`selectedProducts[${index}].quantity`, {
+                              required: "Quantity is required",
+                            }),
+                            variant: "outlined",
+                            type: "number",
+                            onChange: (e) =>
+                              handleInputChange(e, "quantity", index),
+                            className: "!w-36",
+                          }}
+                          error={errors?.selectedProducts?.[index]?.quantity}
+                          style={{ marginBottom: "8px" }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
           ) : (
             <div className="h-[90px]">
-              {expanded && (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    gap: "10px",
-                    height: "100%",
-                  }}
-                >
-                  <CustomInput
-                    label={"Quantity"}
-                    inputProps={{
-                      ...register(
-                        `selectedProducts.${product?.id}.requiredQuantity`,
-                        {
-                          required: "Quantity is required",
-                        }
-                      ),
-                      variant: "outlined",
-                      type: "number",
-                      onChange: (e) => handleInputChange(e, "requiredQuantity"),
-                      className: "!w-36",
-                    }}
-                    error={
-                      errors?.selectedProducts?.[product?.id]?.requiredQuantity
-                    }
-                    style={{ marginBottom: "8px" }}
-                  />
-                </div>
-              )}
+              {expanded &&
+                watchSelectedProducts.map((selectedProduct, index) => (
+                  <div key={index}>
+                    {selectedProduct.productId === product.id && (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          gap: "10px",
+                          height: "100%",
+                        }}
+                      >
+                        <CustomInput
+                          label={"Quantity"}
+                          inputProps={{
+                            ...register(
+                              `selectedProducts[${index}].requiredQuantity`,
+                              {
+                                required: "Quantity is required",
+                              }
+                            ),
+                            variant: "outlined",
+                            type: "number",
+                            onChange: (e) =>
+                              handleInputChange(e, "requiredQuantity", index),
+                            className: "!w-36",
+                          }}
+                          error={
+                            errors?.selectedProducts?.[index]?.requiredQuantity
+                          }
+                          style={{ marginBottom: "8px" }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
           )}
         </CardContent>

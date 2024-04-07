@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import { CustomInput } from "./Input";
 import {
@@ -17,13 +17,20 @@ import {
 } from "@mui/material";
 import ReactDatePicker from "react-datepicker";
 import ProductCard from "./ProductCard";
-import { MdAddCircleOutline } from "react-icons/md";
 import PreviewCard from "./PreviewCard";
 import { toast, Toaster } from "sonner";
+import ArticleCard from "./ArticleCard";
+import ArticlePreviewCard from "./ArticlesPreviewCard";
+
+const BenefitType = {
+  DISCOUNT: "Discount Offer",
+  FREE_GOODS: "Free Goods Offer",
+  FREE_PRODUCTS: "Free Products Offer",
+};
 
 const DEMO_PRODUCTS = [
   {
-    id: "1",
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     type: 0,
     division: "Oral",
     brandName: "Tylenol",
@@ -73,7 +80,7 @@ const DEMO_PRODUCTS = [
     value: 0,
   },
   {
-    id: "2",
+    id: "3fa85f64-5717-4562-b3fc-2c963f66asdfa6",
     type: 1,
     division: "Injectable",
     brandName: "Advil",
@@ -279,6 +286,57 @@ const DEMO_PRODUCTS = [
   },
 ];
 
+const DEMO_ARTICLES = [
+  {
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    articleName: "Article 1",
+    articlePhoto: "https://via.placeholder.com/150",
+    articleDescription: "Description of Article 1",
+  },
+  {
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa1",
+    articleName: "Article 2",
+    articlePhoto: "https://via.placeholder.com/150",
+    articleDescription: "Description of Article 2",
+  },
+  {
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa2",
+    articleName: "Article 3",
+    articlePhoto: "https://via.placeholder.com/150",
+    articleDescription: "Description of Article 3",
+  },
+  {
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa3",
+    articleName: "Article 4",
+    articlePhoto: "https://via.placeholder.com/150",
+    articleDescription: "Description of Article 4",
+  },
+  {
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa4",
+    articleName: "Article 5",
+    articlePhoto: "https://via.placeholder.com/150",
+    articleDescription: "Description of Article 5",
+  },
+  {
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa5",
+    articleName: "Article 6",
+    articlePhoto: "https://via.placeholder.com/150",
+    articleDescription: "Description of Article 6",
+  },
+  {
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa7",
+    articleName: "Article 7",
+    articlePhoto: "https://via.placeholder.com/150",
+    articleDescription: "Description of Article 7",
+  },
+  {
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa8",
+    articleName: "Article 8",
+    articlePhoto: "https://via.placeholder.com/150",
+    articleDescription: "Description of Article 8",
+  },
+];
+
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -311,7 +369,7 @@ function removeUndefinedEntries(array) {
 }
 
 function AddOffer() {
-  const [currentStep, setCurrentStep] = React.useState(1);
+  const [currentStep, setCurrentStep] = React.useState(3);
   const {
     register,
     handleSubmit,
@@ -326,7 +384,7 @@ function AddOffer() {
   const onSubmit = (data) => {
     console.log("Form Data:", data);
     if (currentStep < 3) {
-      if (offerType === "Price Centric" && currentStep === 1) setCurrentStep(3);
+      if (offerType === "Price Centric" && currentStep === 1) setCurrentStep(1);
       else setCurrentStep(currentStep + 1);
     } else {
       console.log("Final Submission", data);
@@ -342,13 +400,21 @@ function AddOffer() {
   const allowedUser = watch("allowedUser");
   const offerDiscount = watch("offerDiscount");
   const selectedProducts = watch("selectedProducts");
+  const selectedArticles = watch("selectedArticles");
+  const benefitType = watch("benefitType");
   const conditions = watch("conditions", []);
+  const goodsBenefitConditions = watch("goodsBenefitConditions", []);
+  const productsBenefitConditions = watch("productsBenefitConditions", []);
 
   const [values, setValues] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValues(newValue);
   };
+
+  useEffect(() => {
+    setValue("");
+  }, [benefitType]);
 
   const renderStep = () => {
     switch (currentStep) {
@@ -568,8 +634,16 @@ function AddOffer() {
                     onChange={handleChange}
                     aria-label="basic tabs example"
                   >
-                    <Tab label="Group" {...a11yProps(0)} />
-                    <Tab label="Preview" {...a11yProps(1)} />
+                    <Tab
+                      label="Group"
+                      {...a11yProps(0)}
+                      style={{ maxWidth: "unset", flex: 1 }}
+                    />
+                    <Tab
+                      label="Preview"
+                      {...a11yProps(1)}
+                      style={{ maxWidth: "unset", flex: 1 }}
+                    />
                   </Tabs>
                 </Box>
                 <CustomTabPanel value={values} index={0}>
@@ -648,32 +722,6 @@ function AddOffer() {
                       );
                     })}
                   </div>
-                  {/* )} */}
-                  {/* {offerType === "Product Centric" && (
-                    <div className="flex flex-col gap-5">
-                      {conditions.map(({ productOffers }, idx) => {
-                        return (
-                          <>
-                            <div className="w-full justify-center text-xl text-center">
-                              Group {idx + 1}
-                            </div>
-                            <div className="flex flex-wrap gap-5">
-                              {productOffers.map((product, index) => (
-                                <PreviewCard
-                                  product={{
-                                    ...DEMO_PRODUCTS.find(
-                                      (el) => el.id === product.productId
-                                    ),
-                                    ...product,
-                                  }}
-                                />
-                              ))}
-                            </div>
-                          </>
-                        );
-                      })}
-                    </div>
-                  )} */}
                 </CustomTabPanel>
                 <div className="w-full flex justify-center mt-12">
                   <button
@@ -689,12 +737,255 @@ function AddOffer() {
         );
       case 3:
         return (
-          <div>
-            <h2>Step 3: [Demo Purpose Only]</h2>
-            <button onClick={() => setCurrentStep(currentStep + 1)}>
-              Next
-            </button>
-          </div>
+          <FormProvider
+            register={register}
+            handleSubmit={handleSubmit}
+            watch={watch}
+            control={control}
+            errors={errors}
+            setValue={setValue}
+            getValues={getValues}
+          >
+            <div className="flex justify-start">
+              <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+                <h1 className="text-2xl font-semibold mb-4">Create Benefits</h1>
+                <div className="flex flex-col">
+                  <label className="text-black text-lg">Benefit Type</label>
+                  <FormGroup
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "20px",
+                      marginBottom: "15px",
+                    }}
+                  >
+                    <FormControlLabel
+                      control={
+                        <Radio checked={benefitType === BenefitType.DISCOUNT} />
+                      }
+                      {...register("benefitType", {
+                        required: "Discount type is required",
+                      })}
+                      label="Discount Offer"
+                      value={"Discount Offer"}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Radio
+                          checked={benefitType === BenefitType.FREE_GOODS}
+                        />
+                      }
+                      {...register("benefitType", {
+                        required: "Discount type is required",
+                      })}
+                      label="Free Goods Offer"
+                      value={"Free Goods Offer"}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Radio
+                          checked={benefitType === BenefitType.FREE_PRODUCTS}
+                        />
+                      }
+                      {...register("benefitType", {
+                        required: "Discount type is required",
+                      })}
+                      label="Free Products Offer"
+                      value={"Free Products Offer"}
+                    />
+                  </FormGroup>
+                  {errors?.benefitType && (
+                    <span className="text-[red]">
+                      {errors?.benefitType?.message}
+                    </span>
+                  )}
+                </div>
+
+                {benefitType === BenefitType.DISCOUNT && (
+                  <div className="flex gap-4 mt-2">
+                    <CustomInput
+                      label={"Discount Percentage"}
+                      placeholder={"Enter percentage"}
+                      inputProps={{
+                        ...register("discountPercentage", {
+                          required: "Discount percentage is required",
+                          max: {
+                            value: 100,
+                            message:
+                              "Discount percentage should be less than 100",
+                          },
+                        }),
+                        type: "number",
+                      }}
+                      error={errors?.discountPercentage}
+                    />
+                    <CustomInput
+                      label={"Maximum Discount"}
+                      placeholder={"Enter percentage"}
+                      inputProps={{
+                        ...register("maximumDiscount", {
+                          required: "Maximum discount is required",
+                        }),
+                        type: "number",
+                      }}
+                      error={errors?.maximumDiscount}
+                    />
+                  </div>
+                )}
+                {(benefitType === BenefitType.FREE_GOODS ||
+                  benefitType === BenefitType.FREE_PRODUCTS) && (
+                  <>
+                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                      <Tabs
+                        value={values}
+                        onChange={handleChange}
+                        aria-label="basic tabs example"
+                      >
+                        <Tab
+                          label={
+                            benefitType === BenefitType.FREE_GOODS
+                              ? "Goods Group"
+                              : "Products Group"
+                          }
+                          {...a11yProps(0)}
+                          style={{ maxWidth: "unset", flex: 1 }}
+                        />
+                        <Tab
+                          label="Preview"
+                          {...a11yProps(1)}
+                          style={{ maxWidth: "unset", flex: 1 }}
+                        />
+                      </Tabs>
+                    </Box>
+                    <CustomTabPanel value={values} index={0}>
+                      <div className="flex gap-5 flex-wrap">
+                        {benefitType === BenefitType.FREE_GOODS
+                          ? DEMO_ARTICLES.map((article) => (
+                              <ArticleCard article={article} />
+                            ))
+                          : DEMO_PRODUCTS.map((product) => (
+                              <ProductCard product={product} />
+                            ))}
+                      </div>
+
+                      <Box sx={{ "& > :not(style)": { m: 1 } }}>
+                        <Fab
+                          variant="extended"
+                          style={{
+                            margin: 0,
+                            top: "auto",
+                            right: 40,
+                            bottom: 30,
+                            left: "auto",
+                            position: "fixed",
+                          }}
+                          disabled={
+                            benefitType === BenefitType.FREE_GOODS
+                              ? !selectedArticles ||
+                                !removeUndefinedEntries(selectedArticles).length
+                              : !selectedProducts ||
+                                !removeUndefinedEntries(selectedProducts).length
+                          }
+                          onClick={async () => {
+                            await trigger();
+                            if (Object.keys(errors).length === 0) {
+                              toast.success("Group created");
+                              if (benefitType === BenefitType.FREE_GOODS) {
+                                setValue("goodsBenefitConditions", [
+                                  ...goodsBenefitConditions,
+                                  {
+                                    id: Math.random(),
+                                    articleWithQuantities:
+                                      removeUndefinedEntries(selectedArticles),
+                                  },
+                                ]);
+                              } else {
+                                setValue("productsBenefitConditions", [
+                                  ...productsBenefitConditions,
+                                  {
+                                    id: Math.random(),
+                                    productWithQuantities:
+                                      removeUndefinedEntries(selectedProducts),
+                                  },
+                                ]);
+                              }
+                            }
+                          }}
+                        >
+                          Create Group
+                        </Fab>
+                      </Box>
+                    </CustomTabPanel>
+                    <CustomTabPanel value={values} index={1}>
+                      <div className="flex flex-col gap-5">
+                        {benefitType === BenefitType.FREE_GOODS
+                          ? goodsBenefitConditions.map(
+                              ({ articleWithQuantities }, idx) => {
+                                return (
+                                  <>
+                                    <div className="w-full justify-center text-xl text-center">
+                                      Group {idx + 1}
+                                    </div>
+                                    <div className="flex flex-wrap gap-5">
+                                      {articleWithQuantities.map(
+                                        (article, index) => (
+                                          <ArticlePreviewCard
+                                            article={{
+                                              ...DEMO_ARTICLES.find(
+                                                (el) =>
+                                                  el.id === article.productId
+                                              ),
+                                              ...article,
+                                            }}
+                                          />
+                                        )
+                                      )}
+                                    </div>
+                                  </>
+                                );
+                              }
+                            )
+                          : productsBenefitConditions.map(
+                              ({ productWithQuantities }, idx) => {
+                                return (
+                                  <>
+                                    <div className="w-full justify-center text-xl text-center">
+                                      Group {idx + 1}
+                                    </div>
+                                    <div className="flex flex-wrap gap-5">
+                                      {productWithQuantities.map(
+                                        (product, index) => (
+                                          <PreviewCard
+                                            product={{
+                                              ...DEMO_PRODUCTS.find(
+                                                (el) =>
+                                                  el.id === product.productId
+                                              ),
+                                              ...product,
+                                            }}
+                                          />
+                                        )
+                                      )}
+                                    </div>
+                                  </>
+                                );
+                              }
+                            )}
+                      </div>
+                    </CustomTabPanel>
+                  </>
+                )}
+                <div className="w-full flex justify-center mt-12">
+                  <button
+                    className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+                    type="submit"
+                  >
+                    Next
+                  </button>
+                </div>
+              </form>
+            </div>
+          </FormProvider>
         );
       default:
         return null;

@@ -1,18 +1,8 @@
-import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Checkbox,
-  TextField,
-} from "@mui/material";
-import { useFormContext } from "react-hook-form";
+import React from "react";
+import { Card, CardContent, Typography } from "@mui/material";
 import { CustomInput } from "./Input";
 
 const PreviewCard = ({ product, boxBase }) => {
-  const { register, setValue, watch, errors } = useFormContext();
-  const watchSelectedProducts = watch("selectedProducts") || [];
-
   return (
     <label htmlFor={`checkbox-${product.id}`} style={{ cursor: "pointer" }}>
       <Card
@@ -111,9 +101,6 @@ const PreviewCard = ({ product, boxBase }) => {
                     className: "w-36",
                     disabled: true,
                   }}
-                  error={
-                    errors?.selectedProducts?.[product?.id]?.unitBoxQuantity
-                  }
                   style={{ marginBottom: "8px" }}
                 />
               </div>
@@ -138,9 +125,6 @@ const PreviewCard = ({ product, boxBase }) => {
                     className: "w-36",
                     disabled: true,
                   }}
-                  error={
-                    errors?.selectedProducts?.[product?.id]?.requiredQuantity
-                  }
                   style={{ marginBottom: "8px" }}
                 />
               </div>
