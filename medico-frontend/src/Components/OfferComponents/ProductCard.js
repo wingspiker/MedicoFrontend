@@ -59,9 +59,10 @@ const ProductCard = ({ product, boxBase }) => {
     <label htmlFor={`checkbox-${product.id}`} style={{ cursor: "pointer" }}>
       <Card
         variant="outlined"
+        
         style={{
           marginBottom: "16px",
-          background: "#333",
+          background: "#ffffff",
           color: "#fff",
           borderRadius: "8px",
           "&:hover": { boxShadow: "0 0 10px rgba(255, 255, 255, 0.5)" },
@@ -78,19 +79,21 @@ const ProductCard = ({ product, boxBase }) => {
             style={{
               display: "flex",
               alignItems: "center",
-              marginBottom: "16px",
+              // marginBottom: "16px",
             }}
           >
             <Checkbox
               id={`checkbox-${product.id}`}
               checked={checked}
               onChange={handleCheckboxChange}
-              style={{ color: "#fff", marginRight: "16px" }}
+              
+              // style={{ color: "rgb(22 78 99)", marginRight: "16px" }}
             />
             <Typography
-              variant="h6"
+              variant="h5"
               component="div"
-              style={{ marginBottom: "8px", color: "#ffcc00" }}
+              className=" text-red-500 font-extralight"
+              style={{ letterSpacing:'0.125em'}}
             >
               {product.drugName}
             </Typography>
@@ -99,7 +102,7 @@ const ProductCard = ({ product, boxBase }) => {
             style={{
               display: "flex",
               alignItems: "center",
-              marginBottom: "16px",
+              // marginBottom: "16px",
             }}
           >
             <img
@@ -115,27 +118,27 @@ const ProductCard = ({ product, boxBase }) => {
             <div>
               <Typography
                 color="text.secondary"
-                style={{ marginBottom: "4px", color: "#66ff99" }}
+                style={{ marginBottom: "4px", color: "#000000" }}
               >
                 Brand: {product.brandName}
               </Typography>
               <Typography
                 color="text.secondary"
-                style={{ marginBottom: "4px", color: "#66ff99" }}
+                style={{ marginBottom: "4px", color: "#000000" }}
               >
                 Manufacturing Name: {product.manufacturingName}
               </Typography>
               <Typography
                 color="text.secondary"
-                style={{ marginBottom: "4px", color: "#66ff99" }}
+                style={{ marginBottom: "4px", color: "#000000" }}
               >
                 Manufacturer Name: {product.manufacturerName}
               </Typography>
               <Typography
                 color="text.secondary"
-                style={{ marginBottom: "4px", color: "#66ff99" }}
+                style={{ marginBottom: "4px", color: "#000000" }}
               >
-                MRP: {product.mrp}
+                MRP:  ₹ {Number(product.mrp).toPrecision(String(product.mrp).length+2)} /-
               </Typography>
             </div>
           </div>

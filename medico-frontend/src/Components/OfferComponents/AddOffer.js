@@ -40,7 +40,7 @@ const DEMO_PRODUCTS = [
     prescription: 1,
     letterPadDocument: "ABC123",
     licenseNo: "ABC-456",
-    photoUrl: "https://via.placeholder.com/150",
+    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
     mrp: 50,
     retailPrice: 40,
     sellingPrice: 35,
@@ -90,7 +90,7 @@ const DEMO_PRODUCTS = [
     prescription: 1,
     letterPadDocument: "XYZ789",
     licenseNo: "XYZ-123",
-    photoUrl: "https://via.placeholder.com/150",
+    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
     mrp: 60,
     retailPrice: 50,
     sellingPrice: 45,
@@ -131,7 +131,7 @@ const DEMO_PRODUCTS = [
     prescription: 1,
     letterPadDocument: "DEF456",
     licenseNo: "DEF-789",
-    photoUrl: "https://via.placeholder.com/150",
+    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
     mrp: 70,
     retailPrice: 60,
     sellingPrice: 55,
@@ -172,7 +172,7 @@ const DEMO_PRODUCTS = [
     prescription: 1,
     letterPadDocument: "GHI123",
     licenseNo: "GHI-456",
-    photoUrl: "https://via.placeholder.com/150",
+    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
     mrp: 80,
     retailPrice: 70,
     sellingPrice: 65,
@@ -213,7 +213,7 @@ const DEMO_PRODUCTS = [
     prescription: 1,
     letterPadDocument: "JKL789",
     licenseNo: "JKL-123",
-    photoUrl: "https://via.placeholder.com/150",
+    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
     mrp: 90,
     retailPrice: 80,
     sellingPrice: 75,
@@ -254,7 +254,7 @@ const DEMO_PRODUCTS = [
     prescription: 1,
     letterPadDocument: "MNO456",
     licenseNo: "MNO-789",
-    photoUrl: "https://via.placeholder.com/150",
+    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
     mrp: 100,
     retailPrice: 90,
     sellingPrice: 85,
@@ -369,7 +369,7 @@ function removeUndefinedEntries(array) {
 }
 
 function AddOffer() {
-  const [currentStep, setCurrentStep] = React.useState(3);
+  const [currentStep, setCurrentStep] = React.useState(1);
   const {
     register,
     handleSubmit,
@@ -648,14 +648,14 @@ function AddOffer() {
                 </Box>
                 <CustomTabPanel value={values} index={0}>
                   {offerType === "Product Centric" && (
-                    <div className="flex gap-5 flex-wrap">
+                    <div className="grid grid-cols-3 gap-4">
                       {DEMO_PRODUCTS.map((product) => (
                         <ProductCard product={product} />
                       ))}
                     </div>
                   )}
                   {offerType === "Box Base" && (
-                    <div className="flex gap-5 flex-wrap">
+                    <div className="grid grid-cols-4">
                       {DEMO_PRODUCTS.map((product) => (
                         <ProductCard product={product} boxBase={true} />
                       ))}

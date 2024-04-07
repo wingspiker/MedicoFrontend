@@ -36,7 +36,7 @@ function PricingInformation({
           inputProps={register("mrp", {
             required: "MRP is required",
             pattern: {
-              value: /^[0-9]+$/,
+              value: /^[0-9]+(?:\.[0-9]+)?$/,
               message: "MRP can only contain numeric values",
             },
           })}
@@ -51,7 +51,7 @@ function PricingInformation({
           inputProps={register("retailPrice", {
             required: "Retail price is required",
             pattern: {
-              value: /^[0-9]+$/,
+              value: /^[0-9]+(?:\.[0-9]+)?$/,
               message: "Retail price can only contain numeric values",
             },
             validate: { validateRetailPrice },
@@ -80,7 +80,7 @@ function PricingInformation({
             inputProps={register("discountOnMRP", {
               required: "Discount on MRP is required",
               pattern: {
-                value: /^[0-9]+$/,
+                value: /^[0-9]+(?:\.[0-9]+)?$/,
                 message: "Discount on MRP can only contain numeric values",
               },
             })}
@@ -95,7 +95,7 @@ function PricingInformation({
             inputProps={register("marginOnRetail", {
               required: "Margin on Retail Price is required",
               pattern: {
-                value: /^[0-9]+$/,
+                value: /^[0-9]+(?:\.[0-9]+)?$/,
                 message:
                   "Margin on Retail Price can only contain numeric values",
               },

@@ -39,13 +39,45 @@ function ProductInformation({ register, watch, errors, prescription }) {
           />
         </div>
 
+        <div className="w-full md:w-1/4 px-2 md:mb-0">
+          <CustomInput
+            label="Brand Name"
+            placeholder="Enter Brand name"
+            inputProps={register("brandName", {
+              required: "Brand Name is required",
+              pattern: {
+                value: /^[A-Za-z]+[A-Za-z0-9]*$/,
+                message:
+                  "Brand name must start with a letter and can contain letters and numbers.",
+              },
+            })}
+            error={errors.brandName}
+          />
+        </div>
+
+        <div className="w-full md:w-1/4 px-2 md:mb-0">
+          <CustomInput
+            label={"Product Image"}
+            placeholder={"Upload"}
+            inputProps={{
+              ...register("productImage", {
+                required: "Product Image is required",
+              }),
+              type: "file",
+              accept: "image/*",
+              className:" bg-red-500"
+            }}
+            error={errors?.productImage}
+          />
+        </div>
+
         <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
           <CustomSelect
             label="Product Type"
             options={[
               { value: "", label: "Select a product type" },
-              { value: "Tablet", label: "Tablet" },
-              { value: "Capsule", label: "Capsule" },
+              { value: 0, label: "Capsule" },
+              { value: 1, label: "Tablet" },
               // Add more product types as needed
             ]}
             inputProps={register("productType", {
@@ -75,9 +107,9 @@ function ProductInformation({ register, watch, errors, prescription }) {
           <CustomSelect
             label="Prescription"
             options={[
-              { value: "Rx", label: "Rx" },
-              { value: "nRx", label: "nRx" },
-              { value: "G", label: "G" },
+              { value: 0, label: "Rx" },
+              { value: 1, label: "nRx" },
+              { value: 2, label: "G" },
             ]}
             inputProps={register("prescription", {
               required: "Prescription is required",

@@ -6,9 +6,12 @@ import PricingInformation from "../ProductComponents/CaseOne/PricingInfo";
 import SelectExistingGroup from "../ProductComponents/CaseTwo/SelectGroup";
 import Occupation from "../ProductComponents/CaseFour/Occupation";
 import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
+import { decodeToken } from "../../Services/auth";
+import { addProduct } from "../../Services/product";
 
 function AddProduct() {
   const [currentStep, setCurrentStep] = React.useState(1);
+  const [currentProdId, setCurrentProdId] = React.useState(null);
 
   const {
     register,
@@ -36,8 +39,13 @@ function AddProduct() {
   };
 
   const AddProduct = (rawData) => {
+    console.log(rawData);
+    const user = decodeToken();
+    const keys = Object.keys(user);
+    const email = user[keys.find(k=>k.endsWith("emailaddress"))]
     const {
       productName,
+      brandName,
       productType,
       division,
       prescription,
@@ -53,12 +61,57 @@ function AddProduct() {
       pricingMethod,
       discountOnMRP,
       marginOnRetail,
-      sellingPrice,
       returnDays,
     } = rawData;
+
+    let formattedApiInput = {
+      companyEmail:email,
+      type:Number(productType),
+      brandName:brandName,
+      drugName:productName,
+      manufacturingName:manufacturerName,
+      division,
+      prescription:Number(prescription),
+      letterPadDocumentLink:"docccc",
+      licenseNo:manufacturerLicenseNumber,
+      photoUrl:'urlllll',
+      manufacturerName:manufacturerName,
+      contents:contains,
+      mrp,
+      retailPrice,
+      packSize:{
+        x:Number(sizeX),
+        y:Number(sizeY)
+      },
+      returnPolicy:{
+        allowReturn:Boolean(allowReturn),
+        returnDays:Number(returnDays),
+        allowExchange:Boolean(allowExchange),
+      }
+    }
+    if(pricingMethod==='discountOnMRP'){
+      formattedApiInput.sellingPrice=Number(Number(mrp)*(1-Number(discountOnMRP)/100));
+      formattedApiInput.value=Number(Number(mrp)*(1-Number(discountOnMRP)/100));
+      formattedApiInput.effectivePriceCalculationType=0
+    }else if(pricingMethod==='marginOnRetail'){
+      formattedApiInput.sellingPrice=Number(Number(retailPrice)*(1+Number(marginOnRetail)/100))
+      formattedApiInput.value=Number(Number(retailPrice)*(1+Number(marginOnRetail)/100))
+      formattedApiInput.effectivePriceCalculationType=1
+    }
+
+    addProduct(formattedApiInput)
+    .then((response)=>{
+      console.log(response);
+      setCurrentProdId(response.id)
+    })
+    .catch((error)=>{
+      console.log('Error in adding product : ', error)
+    });
   };
 
   const productName = watch("productName");
+  const brandName = watch("brandName");
+  const productImage = watch("productImage");
   const productType = watch("productType");
   const division = watch("division");
   const sizeX = watch("sizeX");
