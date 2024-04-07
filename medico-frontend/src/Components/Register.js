@@ -61,7 +61,7 @@ const Register = (props) => {
           setFormData({ ...formdata, role: Number(user[role] !== "Buyer") });
         }
         navigate("/register");
-        
+
         setCurrStep(3);
       } else {
         changeLogin(true);
@@ -119,12 +119,11 @@ const Register = (props) => {
   };
   const [formData, setFormData] = useState(formdata);
 
-
-  useEffect(()=>{
-      if(currStep===1){
-    setFormData(initialForm)
-  }
-  },[])
+  useEffect(() => {
+    if (currStep === 1) {
+      setFormData(initialForm);
+    }
+  }, []);
   const [errors, setErrors] = useState({});
   const [emailVerified, setEmailVerified] = useState(false);
   const [otpEmailLoading, setOtpEmailLoading] = useState(false);
@@ -651,8 +650,8 @@ const Register = (props) => {
     registerBuyer(bData)
       .then((resp) => {
         console.log(resp);
-        setFormData(initialForm)
-        setCurrStep(1)
+        setFormData(initialForm);
+        setCurrStep(1);
         navigate("/");
         signOut();
         setSubmitLoading(false);

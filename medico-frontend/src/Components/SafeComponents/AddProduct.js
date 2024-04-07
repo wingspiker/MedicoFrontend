@@ -52,6 +52,7 @@ function AddProduct() {
   const occupation = watch("occupation");
   const degree = watch("degree");
   //watch PRiceInfo Selling price is remaining
+  const sellingPrice = watch("sellingPrice");
 
   const [sTaluka, setsTaluka] = useState([]);
   console.log(sTaluka);

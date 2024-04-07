@@ -107,10 +107,10 @@ function PricingInformation({
         <CustomInput
           label="Selling Price"
           placeholder="Calculated Selling Price"
-          inputProps={{
+          inputProps={register("sellingPrice", {
             value: calculateSellingPrice(),
             readOnly: true,
-          }}
+          })}
         />
       </div>
     </fieldset>
