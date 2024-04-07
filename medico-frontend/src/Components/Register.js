@@ -58,9 +58,10 @@ const Register = (props) => {
 
         setFormData({ ...formdata, email: user[usrData.email] });
         if (user[usrData.role] === "Buyer") {
-          setFormData({ ...formdata, role: "Buyer" });
+          setFormData({ ...formdata, role: Number(user[role] !== "Buyer") });
         }
         navigate("/register");
+        
         setCurrStep(3);
       } else {
         changeLogin(true);
@@ -117,6 +118,13 @@ const Register = (props) => {
     occupation: "",
   };
   const [formData, setFormData] = useState(formdata);
+
+
+  useEffect(()=>{
+      if(currStep===1){
+    setFormData(initialForm)
+  }
+  },[])
   const [errors, setErrors] = useState({});
   const [emailVerified, setEmailVerified] = useState(false);
   const [otpEmailLoading, setOtpEmailLoading] = useState(false);
@@ -293,7 +301,7 @@ const Register = (props) => {
       setCurrDistrict(currDistrict);
     }
     if (name == "taluka") {
-      console.log(value);
+      // console.log(value);
       const currTaluka = talukas.find((e) => e.id == value).name;
       setCurrTaluka(currTaluka);
     }
@@ -362,7 +370,7 @@ const Register = (props) => {
     //   [name]: file,
     // }));
 
-    console.log(e.target.name);
+    // console.log(e.target.name);
 
     const doc = {
       name: e.target.name,
@@ -475,7 +483,7 @@ const Register = (props) => {
   };
 
   const ValidateStep3Buyer = () => {
-    console.log("Validating Step 3 - Buyer");
+    // console.log("Validating Step 3 - Buyer");
 
     if (formData.firstName === "" || errors.firstName) {
       toast.error(errors.firstName ?? "First Name is required");
@@ -544,7 +552,8 @@ const Register = (props) => {
     if (filteredNames.length) {
       toast.error(filteredNames[0] + " is required");
     } else {
-      if (formData.role != "Buyer") {
+      // console.log(formData.role);
+      if (formData.role != 0) {
         const {
           email,
           companyEmail,
@@ -585,8 +594,10 @@ const Register = (props) => {
           submitData.subscription = Number(subscription);
         }
         console.log(submitData);
+        // console.log('company');
         saveCompanyData(submitData);
-      } else if (formData.role == "Buyer") {
+        // console.log(formData.role);
+      } else if (formData.role == 0) {
         const {
           email,
           firstName,
@@ -613,6 +624,7 @@ const Register = (props) => {
           buyerSubmitData.degree = formData.degree;
         }
         console.log(buyerSubmitData);
+        // console.log('buyer');
         saveBuyerData(buyerSubmitData);
       }
     }
@@ -639,7 +651,7 @@ const Register = (props) => {
     registerBuyer(bData)
       .then((resp) => {
         console.log(resp);
-        setFormData({...formdata, email:''})
+        setFormData(initialForm)
         setCurrStep(1)
         navigate("/");
         signOut();
