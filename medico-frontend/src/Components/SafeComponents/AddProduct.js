@@ -19,20 +19,42 @@ function AddProduct() {
 
   const onSubmit = (data) => {
     data.talukaIds = sTaluka;
-    // setsTaluka([]);
-    console.log("Form Data:", data);
-
     if (currentStep < 6) {
-      console.log(data.existingGroupNo);
+      if (currentStep === 1) {
+        AddProduct(data);
+      }
+
       if (currentStep === 2 && data.existingGroupNo) {
         setCurrentStep(5);
       } else {
         setCurrentStep(currentStep + 1);
       }
-      // setCurrentStep(currentStep + 1);
     } else {
       console.log("Final Submission", data);
     }
+  };
+
+  const AddProduct = (rawData) => {
+    const {
+      productName,
+      productType,
+      division,
+      prescription,
+      sizeX,
+      sizeY,
+      contains,
+      manufacturerName,
+      manufacturerLicenseNumber,
+      allowExchange,
+      allowReturn,
+      mrp,
+      retailPrice,
+      pricingMethod,
+      discountOnMRP,
+      marginOnRetail,
+      sellingPrice,
+      returnDays,
+    } = rawData;
   };
 
   const productName = watch("productName");
@@ -55,7 +77,7 @@ function AddProduct() {
   const sellingPrice = watch("sellingPrice");
 
   const [sTaluka, setsTaluka] = useState([]);
-  console.log(sTaluka);
+  // console.log(sTaluka);
 
   const groupName = watch("groupName");
   const groupDescription = watch("groupDescription");
@@ -90,7 +112,7 @@ function AddProduct() {
     switch (currentStep) {
       case 1:
         return (
-          <div className="flex justify-center items-center min-h-screen bg-cyan-900">
+          <div className="flex justify-center items-center min-h-screen bg-cyan-900 ps-16">
             <form onSubmit={handleSubmit(onSubmit)}>
               <h1 className=" text-4xl text-white">Product</h1>
               <ProductInformation
