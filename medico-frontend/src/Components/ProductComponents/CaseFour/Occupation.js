@@ -8,7 +8,7 @@ function Occupation({ register, errors, occupation }) {
       <div>
         <input
           type="checkbox"
-          value="doctor"
+          value="Doctor"
           className="w-16 h-16"
           {...register("occupation")}
         />
@@ -22,7 +22,7 @@ function Occupation({ register, errors, occupation }) {
         <p className="text-4xl">Medical Store</p>
       </div>
       <div>
-        {occupation && occupation.includes("doctor") && (
+        {occupation && occupation.includes("Doctor") && (
           <>
             <input
               type="checkbox"

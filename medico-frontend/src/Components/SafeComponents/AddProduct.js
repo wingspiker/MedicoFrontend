@@ -8,10 +8,17 @@ import Occupation from "../ProductComponents/CaseFour/Occupation";
 import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
 import { decodeToken } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
+import { addGroup } from "../../Services/group";
+import { filterBuyrs } from "../../Services/buyer";
+import { Toaster, toast } from 'sonner';
+import Loader from "../../Loader";
 
 function AddProduct() {
   const [currentStep, setCurrentStep] = React.useState(1);
   const [currentProdId, setCurrentProdId] = React.useState(null);
+  const [currentGroupId, setCurrentGroupId] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
+
 
   const {
     register,
@@ -25,24 +32,38 @@ function AddProduct() {
     console.log("data", data);
     if (currentStep < 6) {
       if (currentStep === 1) {
-        AddProduct(data);
+        AddProductData(data);
       }
 
-      if (currentStep === 2 && data.existingGroupNo) {
-        setCurrentStep(5);
+      if (currentStep === 3) {
+        AddGroup(data);
+      }
+
+      if (currentStep === 4) {
+        FilterGroup(data);
+      }
+
+      if (currentStep === 2) {
+        if (data.existingGroupNo) {
+          setCurrentStep(5);
+        } else {
+          console.log("3 pe jaa");
+          // setCurrentStep(currentStep + 1);
+        }
       } else {
-        setCurrentStep(currentStep + 1);
+        // setCurrentStep(currentStep + 1);
       }
     } else {
       console.log("Final Submission", data);
     }
   };
 
-  const AddProduct = (rawData) => {
+  const AddProductData = (rawData) => {
+    setLoading(true)
     console.log(rawData);
     const user = decodeToken();
     const keys = Object.keys(user);
-    const email = user[keys.find(k=>k.endsWith("emailaddress"))]
+    const email = user[keys.find((k) => k.endsWith("emailaddress"))];
     const {
       productName,
       brandName,
@@ -65,48 +86,113 @@ function AddProduct() {
     } = rawData;
 
     let formattedApiInput = {
-      companyEmail:email,
-      type:Number(productType),
-      brandName:brandName,
-      drugName:productName,
-      manufacturingName:manufacturerName,
+      companyEmail: email,
+      type: Number(productType),
+      brandName: brandName,
+      drugName: productName,
+      manufacturingName: manufacturerName,
       division,
-      prescription:Number(prescription),
-      letterPadDocumentLink:"docccc",
-      licenseNo:manufacturerLicenseNumber,
-      photoUrl:'urlllll',
-      manufacturerName:manufacturerName,
-      contents:contains,
-      mrp,
-      retailPrice,
-      packSize:{
-        x:Number(sizeX),
-        y:Number(sizeY)
+      prescription: Number(prescription),
+      letterPadDocumentLink: "docccc",
+      licenseNo: manufacturerLicenseNumber,
+      photoUrl: "urlllll",
+      manufacturerName: manufacturerName,
+      contents: contains,
+      mrp:Number(mrp),
+      retailPrice:Number(retailPrice),
+      packSize: {
+        x: Number(sizeX),
+        y: Number(sizeY),
       },
-      returnPolicy:{
-        allowReturn:Boolean(allowReturn),
-        returnDays:Number(returnDays),
-        allowExchange:Boolean(allowExchange),
-      }
-    }
-    if(pricingMethod==='discountOnMRP'){
-      formattedApiInput.sellingPrice=Number(Number(mrp)*(1-Number(discountOnMRP)/100));
-      formattedApiInput.value=Number(Number(mrp)*(1-Number(discountOnMRP)/100));
-      formattedApiInput.effectivePriceCalculationType=0
-    }else if(pricingMethod==='marginOnRetail'){
-      formattedApiInput.sellingPrice=Number(Number(retailPrice)*(1+Number(marginOnRetail)/100))
-      formattedApiInput.value=Number(Number(retailPrice)*(1+Number(marginOnRetail)/100))
-      formattedApiInput.effectivePriceCalculationType=1
+      returnPolicy: {
+        allowReturn: Boolean(allowReturn),
+        returnDays:  isNaN(Number(returnDays))?0:Number(returnDays),
+        allowExchange: Boolean(allowExchange),
+      },
+    };
+    if (pricingMethod === "discountOnMRP") {
+      formattedApiInput.sellingPrice = Number(
+        Number(mrp) * (1 - Number(discountOnMRP) / 100)
+      );
+      formattedApiInput.value = Number(
+        Number(mrp) * (1 - Number(discountOnMRP) / 100)
+      );
+      formattedApiInput.effectivePriceCalculationType = 0;
+    } else if (pricingMethod === "marginOnRetail") {
+      formattedApiInput.sellingPrice = Number(
+        Number(retailPrice) * (1 + Number(marginOnRetail) / 100)
+      );
+      formattedApiInput.value = Number(
+        Number(retailPrice) * (1 + Number(marginOnRetail) / 100)
+      );
+      formattedApiInput.effectivePriceCalculationType = 1;
     }
 
+    console.log(formattedApiInput);
+
     addProduct(formattedApiInput)
-    .then((response)=>{
-      console.log(response);
-      setCurrentProdId(response.id)
-    })
-    .catch((error)=>{
-      console.log('Error in adding product : ', error)
-    });
+      .then((response) => {
+        console.log(response);
+        setCurrentProdId(response.id);
+        setCurrentStep(currentStep + 1);
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.log("Error in adding product : ", error);
+        toast.error(error.response.data.title)
+        setLoading(false)
+      });
+  };
+
+  const AddGroup = (rawData) => {
+    setLoading(true)
+    console.log(rawData);
+    const user = decodeToken();
+    const keys = Object.keys(user);
+    const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+    const { groupName, groupDescription, talukaIds } = rawData;
+
+    let formattedApiInput = {
+      companyEmail: email,
+      name: groupName,
+      description: groupDescription,
+      buyerIds: [],
+      talukaIds,
+      productIds: [currentProdId],
+    };
+
+    console.log(formattedApiInput);
+    addGroup(formattedApiInput)
+      .then((resp) => {
+        console.log(resp);
+        setCurrentGroupId(resp.id);
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false)
+      });
+  };
+
+  const FilterGroup = (rawData) => {
+    setLoading(true)
+    const { occupation, degree } = rawData;
+
+    let formattedApiInput = {
+      id: currentGroupId,
+      occupations: occupation ?? [],
+      degrees: degree ?? [],
+    };
+
+    filterBuyrs(formattedApiInput)
+      .then((resp) => {
+        console.log(resp);
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false)
+      });
   };
 
   const productName = watch("productName");
@@ -127,15 +213,10 @@ function AddProduct() {
 
   const occupation = watch("occupation");
   const degree = watch("degree");
-  // console.log("Occupation");
-  // console.log(occupation);
-  // console.log("degree");
-  // console.log(degree);
 
   const sellingPrice = watch("sellingPrice");
 
   const [sTaluka, setsTaluka] = useState([]);
-  // console.log(sTaluka);
 
   const groupName = watch("groupName");
   const groupDescription = watch("groupDescription");
@@ -198,7 +279,7 @@ function AddProduct() {
                   type="submit"
                   className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                 >
-                  Next
+                  {loading?<Loader/>:'Next'} 
                 </button>
               </div>
             </form>
@@ -217,7 +298,7 @@ function AddProduct() {
                   type="submit"
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
-                  Next
+                  {loading?<Loader/>:'Next'} 
                 </button>
               </div>
             </form>
@@ -241,7 +322,7 @@ function AddProduct() {
                 type="submit"
                 className={`cursor-pointer bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 disabled:cursor-auto text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
               >
-                Next
+                {loading?<Loader/>:'Next'} 
               </button>
             </form>
           </div>
@@ -261,7 +342,7 @@ function AddProduct() {
                   type="submit"
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
-                  Next
+                  {loading?<Loader/>:'Next'} 
                 </button>
               </div>
             </form>
@@ -281,7 +362,9 @@ function AddProduct() {
         return (
           <div>
             <h2>Step 6: Final Review</h2>
-            <button type="submit">Submit</button>
+            <button type="submit">
+            {loading?<Loader/>:'Next'} 
+            </button>
           </div>
         );
       default:
@@ -289,7 +372,21 @@ function AddProduct() {
     }
   };
 
-  return <div className=" w-full">{renderStep()}</div>;
+  return (
+    <>    
+      
+      <div className=" w-full">
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          // style: { color: `${isRed ? "red" : "green"}` },
+          style: { color: `red` },
+        }}
+      />
+        {renderStep()}
+        </div>
+    </>
+  );
 }
 
 export default AddProduct;
