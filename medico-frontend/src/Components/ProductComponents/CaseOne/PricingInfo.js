@@ -14,6 +14,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { pricingPreferenceEnum } from "../../../Models/enums.model";
 
 function PricingInformation({
   register,
@@ -63,17 +64,25 @@ function PricingInformation({
       <div className="form-group flex flex-col md:w-1/4">
         <CustomSelect
           label="Pricing Preference"
-          inputProps={register("pricingMethod", {})}
+          inputProps={register("pricingMethod", {
+            required: "Pricing Preference is required",
+          })}
+          // options={[
+          //   { value: "discountOnMRP", label: "Discount on MRP" },
+          //   { value: "marginOnRetail", label: "Margin on Retail Price" },
+          // ]}
           options={[
-            { value: "discountOnMRP", label: "Discount on MRP" },
-            { value: "marginOnRetail", label: "Margin on Retail Price" },
+            { value: "", label: "Select a pricing prescripton" },
+            ...Object.keys(pricingPreferenceEnum).map((k, i) => {
+              return { value: i , label: pricingPreferenceEnum[k] };
+            }),
           ]}
           error={errors.pricingMethod}
         />
       </div>
 
       <div className="form-group flex flex-col md:w-1/4">
-        {pricingMethod === "discountOnMRP" && (
+        {pricingMethod === "0" && (
           <CustomInput
             label="Discount on MRP (%)"
             placeholder="Enter Discount on MRP"
@@ -88,7 +97,7 @@ function PricingInformation({
           />
         )}
 
-        {pricingMethod === "marginOnRetail" && (
+        {pricingMethod === "1" && (
           <CustomInput
             label="Margin on Retail Price (%)"
             placeholder="Enter Margin on Retail Price"

@@ -16,6 +16,7 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@mui/material";
+import { prescriptionEnum, productTypeEnum } from "../../../Models/enums.model";
 
 function ProductInformation({ register, watch, errors, prescription }) {
   return (
@@ -65,7 +66,8 @@ function ProductInformation({ register, watch, errors, prescription }) {
               }),
               type: "file",
               accept: "image/*",
-              className:" bg-red-500"
+              className:
+                "file:border file:border-gray-300 file:rounded-md file:text-sm file:font-medium file:bg-white file:text-indigo-500 hover:file:bg-indigo-50",
             }}
             error={errors?.productImage}
           />
@@ -74,11 +76,17 @@ function ProductInformation({ register, watch, errors, prescription }) {
         <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
           <CustomSelect
             label="Product Type"
+            // options={[
+            //   { value: "", label: "Select a product type" },
+            //   { value: 0, label: "Capsule" },
+            //   { value: 1, label: "Tablet" },
+            //   // Add more product types as needed
+            // ]}
             options={[
               { value: "", label: "Select a product type" },
-              { value: 0, label: "Capsule" },
-              { value: 1, label: "Tablet" },
-              // Add more product types as needed
+              ...Object.keys(productTypeEnum).map((k, i) => {
+                return { value: i , label: productTypeEnum[k] };
+              }),
             ]}
             inputProps={register("productType", {
               required: "Product Type is required",
@@ -106,10 +114,16 @@ function ProductInformation({ register, watch, errors, prescription }) {
         <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
           <CustomSelect
             label="Prescription"
+            // options={[
+            //   { value: 0, label: "Rx" },
+            //   { value: 1, label: "nRx" },
+            //   { value: 2, label: "G" },
+            // ]}
             options={[
-              { value: 0, label: "Rx" },
-              { value: 1, label: "nRx" },
-              { value: 2, label: "G" },
+              { value: "", label: "Select a prescription type" },
+              ...Object.keys(prescriptionEnum).map((k, i) => {
+                return { value: i, label: prescriptionEnum[k] };
+              }),
             ]}
             inputProps={register("prescription", {
               required: "Prescription is required",
@@ -118,17 +132,23 @@ function ProductInformation({ register, watch, errors, prescription }) {
           />
         </div>
 
-        {prescription === "nRx" && (
+        {prescription === "1" && (
           <div className="w-full md:w-1/4 p-2 mb-4 md:mb-0">
-            <div className="form-group">
-              <input
-                type="file"
-                className="mt-1 block w-full file:border file:border-gray-300 file:rounded-md file:text-sm file:font-medium file:bg-white file:text-indigo-500 hover:file:bg-indigo-50"
-                {...register("letterPadDocument", {
-                  required: "Please Upload the file",
-                })}
-              />
-            </div>
+            
+            <CustomInput
+              label={"Prescription Document"}
+              placeholder={"Upload"}
+              inputProps={{
+                ...register("letterPadDocument", {
+                  required: "letter Pad document is required",
+                }),
+                type: "file",
+                accept: "image/*",
+                className:
+                  "file:border file:border-gray-300 file:rounded-md file:text-sm file:font-medium file:bg-white file:text-indigo-500 hover:file:bg-indigo-50",
+              }}
+              error={errors?.letterPadDocument}
+            />
           </div>
         )}
 

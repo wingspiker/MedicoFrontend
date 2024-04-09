@@ -14,10 +14,21 @@ import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
 
 function AddProduct() {
-  const [currentStep, setCurrentStep] = React.useState(4);
+  const [currentStep, setCurrentStep] = React.useState(1);
   const [currentProdId, setCurrentProdId] = React.useState(null);
   const [currentGroupId, setCurrentGroupId] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
+
+  const [isRed, setIsRed] = useState(true)
+
+  const showToast = (message, isRed) => {
+    setIsRed(isRed);
+    if(isRed){
+      toast.error(message)
+    }else{
+      toast.success(message)
+    }
+  }
 
   const {
     register,
@@ -26,9 +37,11 @@ function AddProduct() {
     formState: { errors },
   } = useForm();
 
+  
+
   const onSubmit = (data) => {
     data.talukaIds = sTaluka;
-    console.log("data", data);
+    // console.log("data", data);
     if (currentStep < 6) {
       if (currentStep === 1) {
         AddProductData(data);
@@ -47,7 +60,7 @@ function AddProduct() {
           setCurrentStep(5);
         } else {
           console.log("3 pe jaa");
-          // setCurrentStep(currentStep + 1);
+          setCurrentStep(currentStep + 1);
         }
       } else {
         // setCurrentStep(currentStep + 1);
@@ -59,7 +72,7 @@ function AddProduct() {
 
   const AddProductData = (rawData) => {
     setLoading(true);
-    console.log(rawData);
+    // console.log(rawData);
     const user = decodeToken();
     const keys = Object.keys(user);
     const email = user[keys.find((k) => k.endsWith("emailaddress"))];
@@ -92,7 +105,6 @@ function AddProduct() {
       manufacturingName: manufacturerName,
       division,
       prescription: Number(prescription),
-      letterPadDocumentLink: "docccc",
       licenseNo: manufacturerLicenseNumber,
       photoUrl: "urlllll",
       manufacturerName: manufacturerName,
@@ -104,27 +116,30 @@ function AddProduct() {
         y: Number(sizeY),
       },
       returnPolicy: {
-        allowReturn: Boolean(allowReturn),
-        returnDays: isNaN(Number(returnDays)) ? 0 : Number(returnDays),
-        allowExchange: Boolean(allowExchange),
+        allowReturn: JSON.parse(allowReturn),
+        // returnDays: isNaN(Number(returnDays)) ? 0 : Number(returnDays),
+        allowExchange: JSON.parse(allowExchange),
       },
     };
-    if (pricingMethod === "discountOnMRP") {
-      formattedApiInput.sellingPrice = Number(
-        Number(mrp) * (1 - Number(discountOnMRP) / 100)
+    if (pricingMethod === "0") {
+      formattedApiInput.sellingPrice = Math.round(
+        Number(Number(mrp) * (1 - Number(discountOnMRP) / 100))
       );
-      formattedApiInput.value = Number(
-        Number(mrp) * (1 - Number(discountOnMRP) / 100)
-      );
+      formattedApiInput.value = Number(discountOnMRP);
       formattedApiInput.effectivePriceCalculationType = 0;
-    } else if (pricingMethod === "marginOnRetail") {
-      formattedApiInput.sellingPrice = Number(
-        Number(retailPrice) * (1 + Number(marginOnRetail) / 100)
+    } else if (pricingMethod === "1") {
+      formattedApiInput.sellingPrice = Math.round(
+        Number(Number(retailPrice) * (1 + Number(marginOnRetail) / 100))
       );
-      formattedApiInput.value = Number(
-        Number(retailPrice) * (1 + Number(marginOnRetail) / 100)
-      );
+      formattedApiInput.value = Number(marginOnRetail);
       formattedApiInput.effectivePriceCalculationType = 1;
+    }
+
+    if(formattedApiInput.returnPolicy.allowReturn){
+      formattedApiInput.returnPolicy.returnDays=Number(returnDays)
+    }
+    if(formattedApiInput.prescription===1){
+      formattedApiInput.letterPadDocumentLink='letterPadDocumentLink'
     }
 
     console.log(formattedApiInput);
@@ -133,12 +148,13 @@ function AddProduct() {
       .then((response) => {
         console.log(response);
         setCurrentProdId(response.id);
+        showToast('Product Added  Successfully', false);
         setCurrentStep(currentStep + 1);
         setLoading(false);
       })
       .catch((error) => {
         console.log("Error in adding product : ", error);
-        toast.error(error.response.data.title);
+        showToast(error.response.data.title, true);
         setLoading(false);
       });
   };
@@ -166,9 +182,12 @@ function AddProduct() {
         console.log(resp);
         setCurrentGroupId(resp.id);
         setLoading(false);
+        showToast('Group Created Successfully', false);
+        setCurrentStep(currentStep+1)
       })
       .catch((err) => {
         console.log(err);
+        showToast(err.response.data.title, true);
         setLoading(false);
       });
   };
@@ -237,9 +256,9 @@ function AddProduct() {
   };
 
   const calculateSellingPrice = () => {
-    if (pricingMethod === "discountOnMRP" && mrp && discount) {
+    if (pricingMethod === "0" && mrp && discount) {
       return (mrp - (mrp * discount) / 100).toFixed(2);
-    } else if (pricingMethod === "marginOnRetail" && retailPrice && margin) {
+    } else if (pricingMethod === "1" && retailPrice && margin) {
       // console.log(retailPrice, margin);
       return (retailPrice * (1 + margin * 0.01)).toFixed(2);
     }
@@ -375,8 +394,8 @@ function AddProduct() {
         <Toaster
           position="top-center"
           toastOptions={{
-            // style: { color: `${isRed ? "red" : "green"}` },
-            style: { color: `red` },
+            style: { color: `${isRed ? "red" : "green"}` },
+            // style: { color: `red` },
           }}
         />
         {renderStep()}

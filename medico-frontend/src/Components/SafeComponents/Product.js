@@ -1,7 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import { Sidebar } from "./Sidebar";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "../../Services/auth";
+
+import {Toaster, toast} from 'sonner'
 
 
 
@@ -17,9 +19,24 @@ export default function Product(props) {
     signOut();
     changeLogin(false)
   };
+  const [isRed, setIsRed] = useState(true)
 
+  const showToast = (message, isRed) => {
+    setIsRed(isRed);
+    if(isRed){
+      toast.error(message)
+    }else{
+      toast.success(message)
+    }
+  }
   return (
     <div className="flex h-screen bg-cyan-900 text-white">
+      {/* <Toaster
+        position="top-center"
+        toastOptions={{
+          style: { color: `${isRed?'red':'green'}`},
+        }}
+      /> */}
       {/* <Sidebar /> Add the Sidebar component */}
       <Sidebar changeLogin={logout}  />
       <div className="flex-1 ms-14">

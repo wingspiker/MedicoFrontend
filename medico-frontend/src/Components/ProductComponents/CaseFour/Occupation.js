@@ -69,15 +69,7 @@ function Occupation({ register, errors, occupation }) {
               <span>Bachelor of Homeopathy Medicine and Surgery</span>
             </label>
 
-            <label className="flex items-center space-x-2 text-xl">
-              <input
-                type="checkbox"
-                value="Medical Store"
-                className="form-checkbox h-4 w-4"
-                {...register("degree")}
-              />
-              <span>Medical Store</span>
-            </label>
+      
           </div>
         </>
       )}

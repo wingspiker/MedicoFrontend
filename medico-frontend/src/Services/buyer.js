@@ -17,7 +17,7 @@ export const filterBuyrs = async (filterDetails) => {
     const postData = {occupations, degrees}
     
     
-    return axios.post(url+ `/api/group${id}/buyers-for-talukas`, postData, config)
+    return axios.post(url+ `/api/group/${id}/buyers-for-talukas`, postData, config)
         .then(response => {
             // Handle successful response
             return response.data; // Return data if needed
