@@ -10,15 +10,14 @@ import { decodeToken } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
 import { addGroup } from "../../Services/group";
 import { filterBuyrs } from "../../Services/buyer";
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
 
 function AddProduct() {
-  const [currentStep, setCurrentStep] = React.useState(1);
+  const [currentStep, setCurrentStep] = React.useState(4);
   const [currentProdId, setCurrentProdId] = React.useState(null);
   const [currentGroupId, setCurrentGroupId] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
-
 
   const {
     register,
@@ -59,7 +58,7 @@ function AddProduct() {
   };
 
   const AddProductData = (rawData) => {
-    setLoading(true)
+    setLoading(true);
     console.log(rawData);
     const user = decodeToken();
     const keys = Object.keys(user);
@@ -98,15 +97,15 @@ function AddProduct() {
       photoUrl: "urlllll",
       manufacturerName: manufacturerName,
       contents: contains,
-      mrp:Number(mrp),
-      retailPrice:Number(retailPrice),
+      mrp: Number(mrp),
+      retailPrice: Number(retailPrice),
       packSize: {
         x: Number(sizeX),
         y: Number(sizeY),
       },
       returnPolicy: {
         allowReturn: Boolean(allowReturn),
-        returnDays:  isNaN(Number(returnDays))?0:Number(returnDays),
+        returnDays: isNaN(Number(returnDays)) ? 0 : Number(returnDays),
         allowExchange: Boolean(allowExchange),
       },
     };
@@ -135,17 +134,17 @@ function AddProduct() {
         console.log(response);
         setCurrentProdId(response.id);
         setCurrentStep(currentStep + 1);
-        setLoading(false)
+        setLoading(false);
       })
       .catch((error) => {
         console.log("Error in adding product : ", error);
-        toast.error(error.response.data.title)
-        setLoading(false)
+        toast.error(error.response.data.title);
+        setLoading(false);
       });
   };
 
   const AddGroup = (rawData) => {
-    setLoading(true)
+    setLoading(true);
     console.log(rawData);
     const user = decodeToken();
     const keys = Object.keys(user);
@@ -166,16 +165,16 @@ function AddProduct() {
       .then((resp) => {
         console.log(resp);
         setCurrentGroupId(resp.id);
-        setLoading(false)
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setLoading(false)
+        setLoading(false);
       });
   };
 
   const FilterGroup = (rawData) => {
-    setLoading(true)
+    setLoading(true);
     const { occupation, degree } = rawData;
 
     let formattedApiInput = {
@@ -187,11 +186,11 @@ function AddProduct() {
     filterBuyrs(formattedApiInput)
       .then((resp) => {
         console.log(resp);
-        setLoading(false)
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setLoading(false)
+        setLoading(false);
       });
   };
 
@@ -279,7 +278,7 @@ function AddProduct() {
                   type="submit"
                   className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                 >
-                  {loading?<Loader/>:'Next'} 
+                  {loading ? <Loader /> : "Next"}
                 </button>
               </div>
             </form>
@@ -298,7 +297,7 @@ function AddProduct() {
                   type="submit"
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
-                  {loading?<Loader/>:'Next'} 
+                  {loading ? <Loader /> : "Next"}
                 </button>
               </div>
             </form>
@@ -322,7 +321,7 @@ function AddProduct() {
                 type="submit"
                 className={`cursor-pointer bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 disabled:cursor-auto text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
               >
-                {loading?<Loader/>:'Next'} 
+                {loading ? <Loader /> : "Next"}
               </button>
             </form>
           </div>
@@ -342,7 +341,7 @@ function AddProduct() {
                   type="submit"
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
-                  {loading?<Loader/>:'Next'} 
+                  {loading ? <Loader /> : "Next"}
                 </button>
               </div>
             </form>
@@ -362,9 +361,7 @@ function AddProduct() {
         return (
           <div>
             <h2>Step 6: Final Review</h2>
-            <button type="submit">
-            {loading?<Loader/>:'Next'} 
-            </button>
+            <button type="submit">{loading ? <Loader /> : "Next"}</button>
           </div>
         );
       default:
@@ -373,18 +370,17 @@ function AddProduct() {
   };
 
   return (
-    <>    
-      
+    <>
       <div className=" w-full">
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          // style: { color: `${isRed ? "red" : "green"}` },
-          style: { color: `red` },
-        }}
-      />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            // style: { color: `${isRed ? "red" : "green"}` },
+            style: { color: `red` },
+          }}
+        />
         {renderStep()}
-        </div>
+      </div>
     </>
   );
 }
