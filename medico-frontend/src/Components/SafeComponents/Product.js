@@ -7,7 +7,7 @@ import { getProducts } from "../../Services/product";
 import "react-tabulator/lib/styles.css";
 import { ReactTabulator } from "react-tabulator";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button } from '@mui/material';
+import { Button } from "@mui/material";
 
 export default function Product(props) {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ export default function Product(props) {
   const [products, setProducts] = useState([]);
   const handleView = (id) => {
     console.log(id);
-  }
+  };
 
   const columns = [
     {
@@ -154,7 +154,7 @@ export default function Product(props) {
             autoHeight
             disableColumnMenu
             hideFooter
-            className="w-full h-full bg-cyan-100"            
+            className="w-full h-full bg-cyan-100"
           />
         </div>
       </div>

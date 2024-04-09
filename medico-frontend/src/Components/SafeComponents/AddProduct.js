@@ -12,51 +12,55 @@ import { addGroup, getGroups } from "../../Services/group";
 import { filterBuyrs } from "../../Services/buyer";
 import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
+import ShowBuyer from "../ProductComponents/CaseFive/ShowBuyer";
 
 function AddProduct() {
-  const [currentStep, setCurrentStep] = React.useState(2);
+  const [currentStep, setCurrentStep] = React.useState(1);
   const [currentProdId, setCurrentProdId] = React.useState(null);
   const [currentGroupId, setCurrentGroupId] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
-  const [isRed, setIsRed] = useState(true)
+  const [isRed, setIsRed] = useState(true);
 
   const showToast = (message, isRed) => {
     setIsRed(isRed);
-    if(isRed){
-      toast.error(message)
-    }else{
-      toast.success(message)
+    if (isRed) {
+      toast.error(message);
+    } else {
+      toast.success(message);
     }
-  }
+  };
 
-  const [groups, setGroups] = useState([])
-  // const [currentGroup, setCurrentGroup] = useState(null)
+  const [buyers, setBuyers] = useState([]);
 
+  const [groups, setGroups] = useState([]);
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
+
+  console.log(rowSelectionModel);
   useEffect(() => {
     const user = decodeToken();
     const keys = Object.keys(user);
     const email = user[keys.find((k) => k.endsWith("emailaddress"))];
     getGroups(email)
-    .then((res) => {
-      // console.log(res);
-      setGroups(res)
-    })
-    .catch((err) => console.log(err))
-  }, [])
+      .then((res) => {
+        setGroups(res);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
+    setValue,
   } = useForm();
-
-  
 
   const onSubmit = (data) => {
     data.talukaIds = sTaluka;
-    // console.log("data", data);
+
+    // data.selectedProducts = selectedProducts;
+    console.log("data", data);
     if (currentStep < 6) {
       if (currentStep === 1) {
         AddProductData(data);
@@ -150,11 +154,11 @@ function AddProduct() {
       formattedApiInput.effectivePriceCalculationType = 1;
     }
 
-    if(formattedApiInput.returnPolicy.allowReturn){
-      formattedApiInput.returnPolicy.returnDays=Number(returnDays)
+    if (formattedApiInput.returnPolicy.allowReturn) {
+      formattedApiInput.returnPolicy.returnDays = Number(returnDays);
     }
-    if(formattedApiInput.prescription===1){
-      formattedApiInput.letterPadDocumentLink='letterPadDocumentLink'
+    if (formattedApiInput.prescription === 1) {
+      formattedApiInput.letterPadDocumentLink = "letterPadDocumentLink";
     }
 
     console.log(formattedApiInput);
@@ -163,7 +167,7 @@ function AddProduct() {
       .then((response) => {
         console.log(response);
         setCurrentProdId(response.id);
-        showToast('Product Added  Successfully', false);
+        showToast("Product Added  Successfully", false);
         setCurrentStep(currentStep + 1);
         setLoading(false);
       })
@@ -197,8 +201,8 @@ function AddProduct() {
         console.log(resp);
         setCurrentGroupId(resp.id);
         setLoading(false);
-        showToast('Group Created Successfully', false);
-        setCurrentStep(currentStep+1)
+        showToast("Group Created Successfully", false);
+        setCurrentStep(currentStep + 1);
       })
       .catch((err) => {
         console.log(err);
@@ -220,7 +224,9 @@ function AddProduct() {
     filterBuyrs(formattedApiInput)
       .then((resp) => {
         console.log(resp);
+        setBuyers(resp);
         setLoading(false);
+        setCurrentStep(currentStep + 1);
       })
       .catch((err) => {
         console.log(err);
@@ -326,7 +332,12 @@ function AddProduct() {
                 Select Existhhing Group
               </h1>
               <div className="p-2 flex items-center my-3">
-                <SelectExistingGroup register={register} errors={errors} groups={groups} currentGroup={existingGroupNo}/>
+                <SelectExistingGroup
+                  register={register}
+                  errors={errors}
+                  groups={groups}
+                  currentGroup={existingGroupNo}
+                />
                 <button
                   type="submit"
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
@@ -365,12 +376,35 @@ function AddProduct() {
           <div className="flex justify-start items-top min-h-screen  bg-cyan-900 ps-44">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full">
               <h1 className="text-4xl text-white mt-2">Occupation</h1>
-              <div className="p-2 flex items-center my-3">
+              <div className="p-2 flex items-start flex-col my-3">
                 <Occupation
                   register={register}
                   errors={errors}
                   occupation={occupation}
                 />
+                <div className="mt-4">
+                  <button
+                    type="submit"
+                    className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+                  >
+                    {loading ? <Loader /> : "Next"}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        );
+      case 5:
+        return (
+          <div className="p-10 ms-8  bg-cyan-900">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <ShowBuyer
+                setValue={setValue}
+                setRowSelectionModel={setRowSelectionModel}
+                rowSelectionModel={rowSelectionModel}
+                buyers={buyers}
+              />
+              <div className="flex mt-4 flex-row-reverse">
                 <button
                   type="submit"
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
@@ -378,16 +412,6 @@ function AddProduct() {
                   {loading ? <Loader /> : "Next"}
                 </button>
               </div>
-            </form>
-          </div>
-        );
-      case 5:
-        return (
-          <div className="flex justify-start items-top min-h-screen  bg-cyan-900 ps-44">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <h1 className="text-4xl text-white mt-2">
-                Select Existhhing Group
-              </h1>
             </form>
           </div>
         );
