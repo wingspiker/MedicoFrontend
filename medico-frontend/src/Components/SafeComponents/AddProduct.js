@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import ProductInformation from "../ProductComponents/CaseOne/ProductInfo";
 import ManufacturerInformation from "../ProductComponents/CaseOne/ManufacturerInfo";
@@ -8,13 +8,13 @@ import Occupation from "../ProductComponents/CaseFour/Occupation";
 import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
 import { decodeToken } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
-import { addGroup } from "../../Services/group";
+import { addGroup, getGroups } from "../../Services/group";
 import { filterBuyrs } from "../../Services/buyer";
 import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
 
 function AddProduct() {
-  const [currentStep, setCurrentStep] = React.useState(1);
+  const [currentStep, setCurrentStep] = React.useState(2);
   const [currentProdId, setCurrentProdId] = React.useState(null);
   const [currentGroupId, setCurrentGroupId] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
@@ -29,6 +29,21 @@ function AddProduct() {
       toast.success(message)
     }
   }
+
+  const [groups, setGroups] = useState([])
+  // const [currentGroup, setCurrentGroup] = useState(null)
+
+  useEffect(() => {
+    const user = decodeToken();
+    const keys = Object.keys(user);
+    const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+    getGroups(email)
+    .then((res) => {
+      // console.log(res);
+      setGroups(res)
+    })
+    .catch((err) => console.log(err))
+  }, [])
 
   const {
     register,
@@ -311,7 +326,7 @@ function AddProduct() {
                 Select Existhhing Group
               </h1>
               <div className="p-2 flex items-center my-3">
-                <SelectExistingGroup register={register} errors={errors} />
+                <SelectExistingGroup register={register} errors={errors} groups={groups} currentGroup={existingGroupNo}/>
                 <button
                   type="submit"
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
