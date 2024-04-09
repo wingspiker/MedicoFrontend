@@ -13,3 +13,10 @@
     scrollbar-width: none; /* Firefox */
   }
 }
+
+.table-header {
+  /* Use Tailwind CSS utility class for blue background color */
+  background-color: #00667a; /* Fallback color for older browsers */
+  background-color: #4cabc1; /* Actual color with alpha channel */
+  color: white; /* Text color */
+}
