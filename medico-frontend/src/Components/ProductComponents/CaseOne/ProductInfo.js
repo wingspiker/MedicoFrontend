@@ -31,7 +31,7 @@ function ProductInformation({ register, watch, errors, prescription }) {
             inputProps={register("productName", {
               required: "Product Name is required",
               pattern: {
-                value: /^[A-Za-z]+[A-Za-z0-9]*$/,
+                value: /^[A-Za-z0-9\s]+$/,
                 message:
                   "Product name must start with a letter and can contain letters and numbers.",
               },
@@ -85,7 +85,7 @@ function ProductInformation({ register, watch, errors, prescription }) {
             options={[
               { value: "", label: "Select a product type" },
               ...Object.keys(productTypeEnum).map((k, i) => {
-                return { value: i , label: productTypeEnum[k] };
+                return { value: i, label: productTypeEnum[k] };
               }),
             ]}
             inputProps={register("productType", {
@@ -134,7 +134,6 @@ function ProductInformation({ register, watch, errors, prescription }) {
 
         {prescription === "1" && (
           <div className="w-full md:w-1/4 p-2 mb-4 md:mb-0">
-            
             <CustomInput
               label={"Prescription Document"}
               placeholder={"Upload"}

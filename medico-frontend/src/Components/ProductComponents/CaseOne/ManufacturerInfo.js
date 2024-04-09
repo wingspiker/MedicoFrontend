@@ -47,7 +47,7 @@ function ManufacturerInformation({ register, errors, allowReturn }) {
           inputProps={register("manufacturerLicenseNumber", {
             required: "Manufacturer license number is required",
             pattern: {
-              value: /^[0-9]+$/,
+              value: /^[A-Za-z0-9]+$/,
               message:
                 "Manufacturer license number can only contain numeric values",
             },
