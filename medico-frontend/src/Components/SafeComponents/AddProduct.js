@@ -9,7 +9,7 @@ import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
 import { decodeToken } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
 import { addGroup, getGroups } from "../../Services/group";
-import { filterBuyrs } from "../../Services/buyer";
+import { addBuyers, filterBuyrs } from "../../Services/buyer";
 import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
 import ShowBuyer from "../ProductComponents/CaseFive/ShowBuyer";
@@ -74,8 +74,13 @@ function AddProduct() {
         FilterGroup(data);
       }
 
+      if(currentStep === 5){
+        AddBuyers(data)
+      }
+
       if (currentStep === 2) {
         if (data.existingGroupNo) {
+          console.log(data.existingGroupNo);
           setCurrentStep(5);
         } else {
           console.log("3 pe jaa");
@@ -233,6 +238,27 @@ function AddProduct() {
         setLoading(false);
       });
   };
+
+  const AddBuyers = () => {
+    // setLoading(true)
+    // setLoading(true)
+    const postData = {groupId:currentGroupId, buyerIds:rowSelectionModel??[]}
+
+    console.log(postData);
+
+    addBuyers(postData)
+    .then((res)=>{
+      console.log(res);
+      showToast('Buyers added successfully', false)
+      setLoading(false)
+      setCurrentStep(currentStep+1)
+    })
+    .catch((err)=>{
+      console.log(err);
+      showToast(err.response.data.title, true)
+      setLoading(false)
+    })
+  }
 
   const productName = watch("productName");
   const brandName = watch("brandName");
@@ -419,6 +445,7 @@ function AddProduct() {
         return (
           <div>
             <h2>Step 6: Final Review</h2>
+            {console.log('ffff')}
             <button type="submit">{loading ? <Loader /> : "Next"}</button>
           </div>
         );

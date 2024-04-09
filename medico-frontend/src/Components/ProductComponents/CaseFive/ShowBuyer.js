@@ -115,7 +115,7 @@ function ShowBuyer({ setRowSelectionModel, rowSelectionModel, buyers }) {
       documentLinks: null,
     },
   ];
-  const formattedBuyers = rows.map((b) => {
+  const formattedBuyers = buyers.map((b) => {
     console.log(b.firstName + " " + b.lastName);
     return {
       ...b,
