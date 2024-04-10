@@ -28,6 +28,9 @@ import CompleteDetails from "./Components/CompleteDetails";
 import AddOffer from "./Components/OfferComponents/AddOffer";
 import Offer from "./Components/OfferComponents/Offers";
 import { Sidebar } from "./Components/SafeComponents/Sidebar";
+import Division from "./Components/SafeComponents/Division";
+import Group from "./Components/SafeComponents/Group";
+import Article from "./Components/SafeComponents/Article";
 
 function App() {
   const loginStatus = token() !== null;
@@ -184,6 +187,39 @@ function App() {
                   <Sidebar changeLogin={logout} />
                   <AddOffer changeLogin={setIsLoggedIn} />
                 </>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/Division"
+            exact
+            element={
+              isLoggedIn ? (
+                <Division changeLogin={setIsLoggedIn} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/Group"
+            exact
+            element={
+              isLoggedIn ? (
+                <Group changeLogin={setIsLoggedIn} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/Article"
+            exact
+            element={
+              isLoggedIn ? (
+                <Article changeLogin={setIsLoggedIn} />
               ) : (
                 <Navigate to="/login" replace />
               )

@@ -4,8 +4,8 @@ import { IoCloseSharp, IoLogOut } from "react-icons/io5";
 import { MdHome, MdGroups, MdLocalOffer } from "react-icons/md";
 import { SiProducthunt } from "react-icons/si";
 import { BiSolidOffer } from "react-icons/bi";
-import { FaUserCircle } from "react-icons/fa";
-import { BsFillCartCheckFill } from "react-icons/bs";
+import { FaUserCircle, FaGift  } from "react-icons/fa";
+import { BsFillCartCheckFill, BsFillSignIntersectionYFill } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 
 const navItems = [
@@ -15,6 +15,8 @@ const navItems = [
   "Offer",
   "Salesman",
   "Order",
+  "Division",
+  "Article",
   "Profile",
 ];
 const navItemsIcons = [
@@ -24,6 +26,8 @@ const navItemsIcons = [
   <BiSolidOffer />,
   <MdLocalOffer />,
   <BsFillCartCheckFill />,
+  <BsFillSignIntersectionYFill />,
+  <FaGift />,
   <FaUserCircle />,
 ];
 

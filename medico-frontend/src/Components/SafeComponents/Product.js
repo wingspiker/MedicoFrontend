@@ -5,9 +5,23 @@ import { signOut, decodeToken } from "../../Services/auth";
 import { Toaster, toast } from "sonner";
 import { getProducts } from "../../Services/product";
 import "react-tabulator/lib/styles.css";
-import { ReactTabulator } from "react-tabulator";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
+
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Collapse from "@mui/material/Collapse";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import { red } from "@mui/material/colors";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ShareIcon from "@mui/icons-material/Share";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export default function Product(props) {
   const navigate = useNavigate();
@@ -63,37 +77,6 @@ export default function Product(props) {
       },
     },
   ];
-  const rows = [
-    {
-      id: 1,
-      drugName: "Product 1",
-      brandName: "Brand 1",
-      manufacturerName: "Manufacturer 1",
-      mrp: 10.99,
-    },
-    {
-      id: 2,
-      drugName: "Product 2",
-      brandName: "Brand 2",
-      manufacturerName: "Manufacturer 2",
-      mrp: 20.99,
-    },
-    {
-      id: 3,
-      drugName: "Product 3",
-      brandName: "Brand 3",
-      manufacturerName: "Manufacturer 3",
-      mrp: 30.99,
-    },
-    // Add more rows as needed
-  ];
-
-  // const columns = [
-  //   { title: "Product Name", field: "drugName", width: 150, formatter:'star' },
-  //   { title: "Brand Name", field: "brandName", width: 150 },
-  //   { title: "Manufacturer Name", field: "manufacturerName", width: 200 },
-  //   { title: "Maximum Retail Price", field: "mrp", hozAlign: "center" }
-  // ];
 
   useEffect(() => {
     const user = decodeToken();
@@ -137,7 +120,7 @@ export default function Product(props) {
       <Sidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
-          <div className=" p-2 flex justify-end">
+          <div className=" p-2 flex justify-end gap-4">
             <button
               onClick={onAddProduct}
               className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
@@ -147,15 +130,63 @@ export default function Product(props) {
           </div>
           <hr></hr>
         </div>
-        <div className=" p-8">
-          <DataGrid
+        <p className=" text-4xl text-white px-8 py-2">
+            Products
+          </p>
+        <div className=" h-[90vh] overflow-y-auto">
+        <div className=" p-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* <DataGrid
             rows={products}
             columns={columns}
             autoHeight
             disableColumnMenu
             hideFooter
             className="w-full h-full bg-cyan-100"
-          />
+          /> */}
+
+
+          {products.map((p, i) => {
+            return <Card sx={{ maxWidth: 345, padding:'8px' }} key={p.id}>
+                <CardHeader
+                  // avatar={
+                  //   <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                  //     R
+                  //   </Avatar>
+                  // }
+                  title={p.drugName}
+                  subheader={p.brandName}
+                />
+                <CardMedia
+                  component="img"
+                  image={p.photoUrl}
+                  alt="Paella dish"
+                  style={{ height: "250px" }}
+                />
+                <CardContent>
+                  <Typography variant="body2" color="text.secondary">
+                    {p.manufacturerName}
+                  </Typography>
+                  <Typography variant="body2" color="text.primary">
+                    MRP : <span className=" text-green-500 font-bold">₹ {p.mrp}</span> 
+                  </Typography>
+                  <Typography variant="body2" color="text.primary">
+                    Dimension :  
+                    <span className=" ms-2">X : <span className=" font-bold">{p.packSize.x}</span> </span> 
+                    <span className="ms-2">Y : <span className=" font-bold">{p.packSize.y}</span> </span> 
+                  </Typography>
+                </CardContent>
+                {/* <CardActions disableSpacing>
+        <IconButton aria-label="add to favorites">
+          <FavoriteIcon />
+        </IconButton>
+        <IconButton aria-label="share">
+          <ShareIcon />
+        </IconButton>
+
+      </CardActions> */}
+              </Card>;
+          })}
+        </div>
         </div>
       </div>
     </div>
