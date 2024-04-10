@@ -13,6 +13,7 @@ import { addBuyers, filterBuyrs } from "../../Services/buyer";
 import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
 import ShowBuyer from "../ProductComponents/CaseFive/ShowBuyer";
+import AddPricing from "../ProductComponents/CaseSix/AddPricing";
 
 function AddProduct() {
   const [currentStep, setCurrentStep] = React.useState(1);
@@ -34,9 +35,15 @@ function AddProduct() {
   const [buyers, setBuyers] = useState([]);
 
   const [groups, setGroups] = useState([]);
+
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
-  console.log(rowSelectionModel);
+  console.log("Selected Rows", rowSelectionModel);
+  const [updatedBuyer, setUpdatedBuyer] = useState([]);
+
+  console.log("row selection", rowSelectionModel);
+  // console.log("buyer", buyers);
+
   useEffect(() => {
     const user = decodeToken();
     const keys = Object.keys(user);
@@ -46,6 +53,7 @@ function AddProduct() {
         setGroups(res);
       })
       .catch((err) => console.log(err));
+    // console.log(rowSelectionModel);
   }, []);
 
   const {
@@ -58,7 +66,7 @@ function AddProduct() {
 
   const onSubmit = (data) => {
     data.talukaIds = sTaluka;
-
+    data.updatedBuyer = updatedBuyer;
     // data.selectedProducts = selectedProducts;
     console.log("data", data);
     if (currentStep < 6) {
@@ -74,8 +82,8 @@ function AddProduct() {
         FilterGroup(data);
       }
 
-      if(currentStep === 5){
-        AddBuyers(data)
+      if (currentStep === 5) {
+        AddBuyers(data);
       }
 
       if (currentStep === 2) {
@@ -242,23 +250,26 @@ function AddProduct() {
   const AddBuyers = () => {
     // setLoading(true)
     // setLoading(true)
-    const postData = {groupId:currentGroupId, buyerIds:rowSelectionModel??[]}
+    const postData = {
+      groupId: currentGroupId,
+      buyerIds: rowSelectionModel ?? [],
+    };
 
     console.log(postData);
 
     addBuyers(postData)
-    .then((res)=>{
-      console.log(res);
-      showToast('Buyers added successfully', false)
-      setLoading(false)
-      setCurrentStep(currentStep+1)
-    })
-    .catch((err)=>{
-      console.log(err);
-      showToast(err.response.data.title, true)
-      setLoading(false)
-    })
-  }
+      .then((res) => {
+        console.log(res);
+        showToast("Buyers added successfully", false);
+        setLoading(false);
+        setCurrentStep(currentStep + 1);
+      })
+      .catch((err) => {
+        console.log(err);
+        showToast(err.response.data.title, true);
+        setLoading(false);
+      });
+  };
 
   const productName = watch("productName");
   const brandName = watch("brandName");
@@ -443,10 +454,24 @@ function AddProduct() {
         );
       case 6:
         return (
-          <div>
-            <h2>Step 6: Final Review</h2>
-            {console.log('ffff')}
-            <button type="submit">{loading ? <Loader /> : "Next"}</button>
+          <div className="p-10 ms-8  bg-cyan-900">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <AddPricing
+                updatedBuyer={updatedBuyer}
+                setUpdatedBuyer={setUpdatedBuyer}
+                buyers={buyers}
+                defaultPrice={10}
+                rowSelectionModel={rowSelectionModel}
+              />
+              <div className="flex mt-4 flex-row-reverse">
+                <button
+                  type="submit"
+                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+                >
+                  {loading ? <Loader /> : "Next"}
+                </button>
+              </div>
+            </form>
           </div>
         );
       default:

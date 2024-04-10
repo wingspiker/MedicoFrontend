@@ -3,6 +3,7 @@ import { CustomSelect, CustomCheckbox } from "../../OfferComponents/Input";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
+
 function ShowBuyer({ setRowSelectionModel, rowSelectionModel, buyers }) {
   const columns = [
     // { field: "id", headerName: "ID", flex: 1 },
@@ -116,7 +117,7 @@ function ShowBuyer({ setRowSelectionModel, rowSelectionModel, buyers }) {
     },
   ];
   const formattedBuyers = buyers.map((b) => {
-    console.log(b.firstName + " " + b.lastName);
+    // console.log(b.firstName + " " + b.lastName);
     return {
       ...b,
       Name: b.firstName + " " + b.lastName,
@@ -146,6 +147,7 @@ function ShowBuyer({ setRowSelectionModel, rowSelectionModel, buyers }) {
           columns={columns}
           checkboxSelection
           onRowSelectionModelChange={(newRowSelectionModel) => {
+            console.log(newRowSelectionModel);
             setRowSelectionModel(newRowSelectionModel);
           }}
           rowSelectionModel={rowSelectionModel}
