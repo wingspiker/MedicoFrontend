@@ -17,8 +17,29 @@ import {
   FormHelperText,
 } from "@mui/material";
 import { prescriptionEnum, productTypeEnum } from "../../../Models/enums.model";
+import { handleImageUpload } from "../../../Services/upload";
 
-function ProductInformation({ register, watch, errors, prescription, divisions }) {
+function ProductInformation({ register, watch, errors, prescription, divisions, setValue }) {
+
+  const handleProductImageFileChange = (e) => {
+    handleImageUpload(e)
+    .then((res) => {
+      setValue('productImage',res.data)
+    })
+    .catch((err) => console.log("Error: ", err));
+    
+  }
+
+  const handlePrescriptionDocFileChange = (e) => {
+    handleImageUpload(e)
+    .then((res) => {
+      setValue('letterPadDocument',res.data)
+    })
+    .catch((err) => console.log("Error: ", err));
+    
+  }
+
+
   return (
     <fieldset className="p-4 border rounded-md mt-5 max-w-5xl">
       <legend className="text-2xl text-white">Product Information</legend>
@@ -60,10 +81,10 @@ function ProductInformation({ register, watch, errors, prescription, divisions }
           <CustomInput
             label={"Product Image"}
             placeholder={"Upload"}
-            inputProps={{
-              ...register("productImage", {
-                required: "Product Image is required",
-              }),
+            inputProps={
+              {
+              required: "Product Image is required",
+              onChange: handleProductImageFileChange,
               type: "file",
               accept: "image/*",
               className:
@@ -142,11 +163,10 @@ function ProductInformation({ register, watch, errors, prescription, divisions }
               label={"Prescription Document"}
               placeholder={"Upload"}
               inputProps={{
-                ...register("letterPadDocument", {
-                  required: "letter Pad document is required",
-                }),
+                required: "letter Pad document is required",
                 type: "file",
                 accept: "image/*",
+                onchange:handlePrescriptionDocFileChange,
                 className:
                   "file:border file:border-gray-300 file:rounded-md file:text-sm file:font-medium file:bg-white file:text-indigo-500 hover:file:bg-indigo-50",
               }}

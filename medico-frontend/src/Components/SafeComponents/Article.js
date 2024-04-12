@@ -27,6 +27,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { handleImageUpload } from "../../Services/upload";
 
 const AddArticleModal = ({ isOpen, onClose, setArticles, changeEffect }) => {
   const {
@@ -34,6 +35,7 @@ const AddArticleModal = ({ isOpen, onClose, setArticles, changeEffect }) => {
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -43,14 +45,27 @@ const AddArticleModal = ({ isOpen, onClose, setArticles, changeEffect }) => {
 
   const [loading, setLoading] = useState(false);
 
+  // const [url, setUrl] = useState(null);
+
+
+  const handleOnFileChange = (e) => {
+    console.log(e);
+    handleImageUpload(e)
+    .then((res) => {
+      console.log(res);
+      setValue('articleImg',res.data)
+    })
+    .catch((err) => console.log("Error: ", err));
+  }
+
   const onsubmit = (data) => {
     setLoading(true);
     const user = decodeToken();
     const keys = Object.keys(user);
     const email = user[keys.find((k) => k.endsWith("emailaddress"))];
-    console.log(data);
+    console.log('article',data);
     let articleData = data;
-    articleData.articlePhoto = "urllllllll";
+    articleData.articlePhoto = articleImg; 
     articleData.companyEmail = email;
     addArticle(articleData)
       .then((resp) => {
@@ -91,12 +106,11 @@ const AddArticleModal = ({ isOpen, onClose, setArticles, changeEffect }) => {
           <div className="w-full px-2 md:mb-4">
             <CustomInput
               label={"Article Image"}
-              placeholder={"Uplaod"}
+              placeholder={"Upload"}
               inputProps={{
-                ...register("articleImg", {
-                  required: "Article Image is required",
-                }),
+                required: "Article Image is required",
                 type: "file",
+                onChange:handleOnFileChange,
                 accept: "image/*",
               }}
               error={errors?.articleImg}
@@ -300,29 +314,27 @@ export default function Article(props) {
           </div>
           <hr></hr>
         </div>
-        <div className=" p-8">
-          
-          <Card sx={{ maxWidth: 345 }}>
+        <div className=" p-8 flex gap-6">
+          {articles.map(a=>{
+            return <Card className=" flex-1" sx={{ maxWidth: 345 }} key={a.id}>
             <CardHeader
               // avatar={
               //   <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
               //     R
               //   </Avatar>
               // }
-              title="Shrimp and Chorizo Paella"
+              title={a.articleName}
               // subheader="September 14, 2016"
             />
             <CardMedia
               component="img"
-              image="https://plus.unsplash.com/premium_photo-1664036154109-31e0624d29c7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8"
-              alt="Paella dish"
+              image={a.articlePhoto}
+              alt={a.articleName}
               style={{ height: "350px" }}
             />
             <CardContent>
               <Typography variant="body2" color="text.secondary">
-                This impressive paella is a perfect party dish and a fun meal to
-                cook together with your guests. Add 1 cup of frozen peas along
-                with the mussels, if you like.
+                {a.articleDescription}
               </Typography>
             </CardContent>
             {/* <CardActions disableSpacing>
@@ -334,7 +346,11 @@ export default function Article(props) {
         </IconButton>
 
       </CardActions> */}
-          </Card>
+          </Card>            
+           
+          })}
+          
+          
         </div>
       </div>
       {/* Modal for adding division */}

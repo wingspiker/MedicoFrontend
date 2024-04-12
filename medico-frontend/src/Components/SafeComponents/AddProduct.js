@@ -85,6 +85,7 @@ function AddProduct() {
     // console.log("data", data);
     if (currentStep < 6) {
       if (currentStep === 1) {
+        console.log('yele',data);
         AddProductData(data);
       }
 
@@ -168,6 +169,7 @@ function AddProduct() {
       discountOnMRP,
       marginOnRetail,
       returnDays,
+      productImage
     } = rawData;
 
     let formattedApiInput = {
@@ -179,7 +181,7 @@ function AddProduct() {
       division,
       prescription: Number(prescription),
       licenseNo: manufacturerLicenseNumber,
-      photoUrl: "urlllll",
+      photoUrl: productImage,
       manufacturerName: manufacturerName,
       contents: contains,
       mrp: Number(mrp),
@@ -212,7 +214,7 @@ function AddProduct() {
       formattedApiInput.returnPolicy.returnDays = Number(returnDays);
     }
     if (formattedApiInput.prescription === 1) {
-      formattedApiInput.letterPadDocumentLink = "letterPadDocumentLink";
+      formattedApiInput.letterPadDocumentLink = letterPadDocument;
     }
 
     console.log(formattedApiInput);
@@ -342,7 +344,7 @@ function AddProduct() {
   const sizeX = watch("sizeX");
   const sizeY = watch("sizeY");
   const contains = watch("contains");
-
+  const letterPadDocument = watch('letterPadDocument')
   const manufacturerName = watch("manufacturerName");
   const manufacturerLicenseNumber = watch("manufacturerLicenseNumber");
   const allowExchange = watch("allowExchange");
@@ -407,6 +409,7 @@ function AddProduct() {
                 errors={errors}
                 prescription={prescription}
                 divisions={divisions}
+                setValue={setValue}
               />
               <ManufacturerInformation
                 register={register}

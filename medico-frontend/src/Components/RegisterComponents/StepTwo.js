@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { Toaster, toast } from "sonner";
 import { setFormData } from "../../Services/auth";
+import Loader from "../../Loader";
 
 const StepTwo = (props) => {
 
@@ -10,6 +11,7 @@ const StepTwo = (props) => {
   
 
   const Validate = () => {
+    setLoading(true)
     if(formData.role===''||errors.role){
       toast.error(errors.role??'Role is required');
       return;
@@ -36,6 +38,7 @@ const StepTwo = (props) => {
     console.log(fD);
     setFormData(formData)
     signUp(fD)
+    // setLoading(false)
   }
   return (
     <>
@@ -124,11 +127,12 @@ const StepTwo = (props) => {
       </button> */}
         <button
           onClick={Validate}
-
           className="w-2/3 px-4 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600"
         >
-          Create Account
+          {loading?<Loader/>: 'Create Account'}
+          
         </button>
+          
       </div>
     </>
   );

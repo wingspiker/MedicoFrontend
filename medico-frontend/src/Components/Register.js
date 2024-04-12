@@ -25,6 +25,7 @@ import { Toaster, toast } from "sonner";
 import { getDistricts, getStates, getTalukas } from "../Services/location";
 import { handleImageUpload } from "../Services/upload";
 import { registerBuyer, registerCompany } from "../Services/user";
+import Loader from "../Loader";
 
 const Register = (props) => {
   const { changeLogin, setShowSidebar, setIsComplete } = props;
@@ -43,8 +44,8 @@ const Register = (props) => {
 
   // Your form state and functions...
   useEffect(() => {
-    setFormData(formdata)
-    setCurrStep(1)
+    setFormData(formdata);
+    setCurrStep(1);
     // signOut();
 
     const user = decodeToken();
@@ -68,8 +69,8 @@ const Register = (props) => {
         setCurrStep(3);
       } else if (user.isVerified === "False") {
         toast.error("You are not verified. kindly get verified.");
-        setFormData(formdata)
-        setCurrStep(1)
+        setFormData(formdata);
+        setCurrStep(1);
         signOut();
       } else {
         changeLogin(true);
@@ -101,7 +102,7 @@ const Register = (props) => {
     // console.log('loaded');
     signOut();
     setCurrStep(1);
-  }
+  };
   const [errors, setErrors] = useState({});
   const [emailVerified, setEmailVerified] = useState(false);
   const [otpEmailLoading, setOtpEmailLoading] = useState(false);
@@ -147,7 +148,7 @@ const Register = (props) => {
     },
   ];
 
-  let documentLinks = [];
+  const [documentLinks, setDocumentLinks] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -278,10 +279,10 @@ const Register = (props) => {
       setCurrDistrict(currDistrict);
     }
     if (name == "taluka") {
-      if(isBuyer===true){
+      if (isBuyer === true) {
         const currTaluka = talukas.find((e) => e.id == value).name;
         setCurrTaluka(currTaluka);
-      }else{
+      } else {
         const currTaluka = talukas.find((e) => e.name == value).name;
         setCurrTaluka(currTaluka);
       }
@@ -330,19 +331,47 @@ const Register = (props) => {
     }
   };
 
+  const [loadingstate, setloadingstate] = useState(false);
   const handleFileChange = (e) => {
+    setloadingstate(true)
     // console.log("tttt");
     // const file = e.target.files[0];
     // const name = e.target.name;
     // Update form data with the selected file
 
-    // handleImageUpload(e)
-    //   .then((url) => {
-    //     console.log(url);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    handleImageUpload(e)
+      .then((resp) => {
+        const urlData = resp.data;
+        // console.log(urlData);
+
+        const doc = {
+          name: e.target.name,
+          link: urlData,
+        };
+        console.log('doc',doc);
+        const existingDocIndex = documentLinks.findIndex(
+          (item) => {
+            console.log(item);
+            return item.name == doc.name
+          }
+        );
+        console.log(existingDocIndex);
+
+        if (existingDocIndex !== -1) {
+          console.log('hum yaha',existingDocIndex);
+          documentLinks[existingDocIndex].link = doc.link;
+        } else {
+          console.log('aa gaya');
+          documentLinks.push(doc);
+          console.log(documentLinks);
+        }
+        setloadingstate(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setloadingstate(false);
+        toast.error("Error in uploading Document!");
+      });
 
     // setFormData((prevState) => ({
     //   ...prevState,
@@ -350,21 +379,6 @@ const Register = (props) => {
     // }));
 
     // console.log(e.target.name);
-
-    const doc = {
-      name: e.target.name,
-      link: "hello",
-    };
-
-    const existingDocIndex = documentLinks.findIndex(
-      (item) => item.name === doc.name
-    );
-
-    if (existingDocIndex !== -1) {
-      documentLinks[existingDocIndex].link = doc.link;
-    } else {
-      documentLinks.push(doc);
-    }
   };
 
   const ValidateStep3 = () => {
@@ -577,7 +591,7 @@ const Register = (props) => {
         saveCompanyData(submitData);
         // console.log(formData.role);
       } else if (formData.role == 0) {
-        console.log('bbbyyysss');
+        console.log("bbbyyysss");
         const {
           email,
           firstName,
@@ -627,6 +641,7 @@ const Register = (props) => {
 
   const saveBuyerData = (bData) => {
     setSubmitLoading(true);
+    console.log("hhhhhhh",bData);
 
     registerBuyer(bData)
       .then((resp) => {
@@ -645,12 +660,12 @@ const Register = (props) => {
       });
   };
 
-  useEffect(()=>{
-    setIsBuyer(isbuyer)
-  },[])
+  useEffect(() => {
+    setIsBuyer(isbuyer);
+  }, []);
 
   const nextStep = () => {
-    if (formData.role === 0) {
+    if (formData.role == 0) {
       setIsBuyer(true);
     } else {
       setIsBuyer(false);
@@ -746,6 +761,13 @@ const Register = (props) => {
 
   return (
     <div className="min-h-screen bg-cyan-900 flex flex-col justify-center items-center">
+      {loadingstate && (
+        <div className="fixed h-screen w-screen bg-black bg-opacity-35">
+          <div className=" absolute top-1/2 left-1/2 text-white">
+            <Loader />
+          </div>
+        </div>
+      )}
       <Toaster
         position="top-center"
         toastOptions={{

@@ -9,10 +9,11 @@ const StepFour = ({
   handleSubmit,
   handleFileChange,
   documents,
-  submitLoading
+  submitLoading,
+  
 }) => {
 
-  return (
+  return (    
     <div className="border p-6 rounded-2xl">
       {documents.map((document, index) => (
         <div key={index} className="mb-4 border-b pb-4">
@@ -40,6 +41,7 @@ const StepFour = ({
         </button>
       </div>
     </div>
+    
   );
 };
 
