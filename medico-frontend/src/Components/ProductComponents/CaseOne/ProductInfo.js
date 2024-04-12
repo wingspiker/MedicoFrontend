@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { prescriptionEnum, productTypeEnum } from "../../../Models/enums.model";
 
-function ProductInformation({ register, watch, errors, prescription }) {
+function ProductInformation({ register, watch, errors, prescription, divisions }) {
   return (
     <fieldset className="p-4 border rounded-md mt-5 max-w-5xl">
       <legend className="text-2xl text-white">Product Information</legend>
@@ -99,10 +99,14 @@ function ProductInformation({ register, watch, errors, prescription }) {
           <CustomSelect
             label="Division"
             options={[
-              { value: "", label: "Select a division" },
-              { value: "Division 1", label: "Division 1" },
-              { value: "Division 2", label: "Division 2" },
+              // { value: "", label: "Select a division" },
+              // { value: "Division 1", label: "Division 1" },
+              // { value: "Division 2", label: "Division 2" },
               // Add more divisions as needed
+              { value: "", label: "Select a Division" },
+              ...divisions.map((k) => {
+                return { value: k.name, label: k.name };
+              }),
             ]}
             inputProps={register("division", {
               required: "Division is required",

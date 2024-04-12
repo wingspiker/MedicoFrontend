@@ -88,8 +88,8 @@ function SelectLocation({ register, errors, setsTaluka }) {
 
   return (
     <>
-      <fieldset>
-        <div className="flex items-center gap-6">
+      <fieldset className="">
+        <div className="flex flex-col md:flex-row items-center gap-6">
           <div>
             <CustomInput
               placeholder="Enter Group Name"

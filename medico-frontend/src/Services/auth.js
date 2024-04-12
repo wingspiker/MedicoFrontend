@@ -161,7 +161,45 @@ export let formdata  = {
     firstName: "",
     lastName: "",
     occupation: "",
-  };;
+  };
+
+  export let initialData  = {
+    email: "",
+    emailOtp: "",
+    mobile: "",
+    mobileOtp: "",
+    username: "",
+    role: "",
+    password: "",
+    confirmPassword: "",
+    role:"",
+
+    //step 3
+    companyEmail: "",
+    companyName: "",
+    licenseNumber: "",
+    gstNumber: "",
+    panCardNumber: "",
+    displayName: "",
+    state: "",
+    district: "",
+    taluka: "",
+    companyAddress1: "",
+    companyAddress2: "",
+    pincode: "",
+    logo: "",
+    drugLicenseNumber: "",
+    wholesaleLicenseNumber: "",
+    companyType: "",
+    chargeType: "",
+    subscription: "",
+
+    //Buyer
+    degree: "",
+    firstName: "",
+    lastName: "",
+    occupation: "",
+  };
 
 export const setFormData = (f) =>{
     formdata=f;

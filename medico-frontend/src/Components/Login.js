@@ -8,6 +8,7 @@ import {
   setCurrStep,
   setFormData,
   formdata,
+  initialData,
 } from "../Services/auth";
 import { Toaster, toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
@@ -83,11 +84,7 @@ const Login = (props) => {
           console.log(user);
           const keys = Object.keys(user);
           const role = keys.find(claim => claim.endsWith('role'));
-          if (user.isVerified === "False") {
-            toast.error("You are not verified. kindly get verified.");
-            signOut();
-          }
-          else if (user.isComplete === "False") {
+          if (user.isComplete === "False") {
             setShowSidebar(false);
             setFormData({...formdata, email:loginData.email})
             if(user[role]==="Buyer"){
@@ -96,6 +93,10 @@ const Login = (props) => {
             navigate("/register");
             setCurrStep(3)
           }
+          else if (user.isVerified === "False") {
+            toast.error("You are not verified. kindly get verified.");
+            signOut();
+          } 
           else{
             if(user[role]==="Buyer"){
               signOut()
@@ -203,6 +204,7 @@ const Login = (props) => {
               Don't have an account?{" "}
               <Link
                 to={"/register"}
+                onClick={() => {setCurrStep(1); setFormData(initialData); console.log(formdata);}}
                 className="font-semibold hover:text-cyan-600"
               >
                 Go to signup

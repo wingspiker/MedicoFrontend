@@ -17,6 +17,7 @@ import {
   decodeToken,
   signOut,
   setCurrStep,
+  initialData,
 } from "../Services/auth";
 
 import { Toaster, toast } from "sonner";
@@ -41,6 +42,10 @@ const Register = (props) => {
 
   // Your form state and functions...
   useEffect(() => {
+    setFormData(formdata)
+    setCurrStep(1)
+    // signOut();
+
     const user = decodeToken();
     // console.log(user);
     let usrData = {};
@@ -50,10 +55,7 @@ const Register = (props) => {
       const email = keys.find((claim) => claim.endsWith("emailaddress"));
       usrData.role = role;
       usrData.email = email;
-      if (user.isVerified === "False") {
-        toast.error("You are not verified. kindly get verified.");
-        signOut();
-      } else if (user.isComplete === "False") {
+      if (user.isComplete === "False") {
         setShowSidebar(false);
 
         setFormData({ ...formdata, email: user[usrData.email] });
@@ -63,6 +65,11 @@ const Register = (props) => {
         navigate("/register");
 
         setCurrStep(3);
+      } else if (user.isVerified === "False") {
+        toast.error("You are not verified. kindly get verified.");
+        setFormData(formdata)
+        setCurrStep(1)
+        signOut();
       } else {
         changeLogin(true);
         setShowSidebar(true);
@@ -81,49 +88,19 @@ const Register = (props) => {
   const currSt = currStep;
   const [step, setStep] = useState(currSt);
   const [red, isRed] = useState(true);
-  const initialForm = {
-    email: "",
-    emailOtp: "",
-    mobile: "",
-    mobileOtp: "",
-    username: "",
-    role: "",
-    password: "",
-    confirmPassword: "",
-
-    //step 3
-    companyEmail: "",
-    companyName: "",
-    licenseNumber: "",
-    gstNumber: "",
-    panCardNumber: "",
-    displayName: "",
-    state: "",
-    district: "",
-    taluka: "",
-    companyAddress1: "",
-    companyAddress2: "",
-    pincode: "",
-    logo: "",
-    drugLicenseNumber: "",
-    wholesaleLicenseNumber: "",
-    companyType: "",
-    chargeType: "",
-    subscription: "",
-
-    //Buyer
-    degree: "",
-    firstName: "",
-    lastName: "",
-    occupation: "",
-  };
-  const [formData, setFormData] = useState(formdata);
+  const [formData, setFormData] = useState(initialData);
 
   useEffect(() => {
     if (currStep === 1) {
-      setFormData(initialForm);
+      setFormData(initialData);
     }
   }, []);
+
+  window.onload = () => {
+    // console.log('loaded');
+    signOut();
+    setCurrStep(1);
+  }
   const [errors, setErrors] = useState({});
   const [emailVerified, setEmailVerified] = useState(false);
   const [otpEmailLoading, setOtpEmailLoading] = useState(false);
@@ -300,9 +277,13 @@ const Register = (props) => {
       setCurrDistrict(currDistrict);
     }
     if (name == "taluka") {
-      // console.log(value);
-      const currTaluka = talukas.find((e) => e.id == value).name;
-      setCurrTaluka(currTaluka);
+      if(isBuyer===true){
+        const currTaluka = talukas.find((e) => e.id == value).name;
+        setCurrTaluka(currTaluka);
+      }else{
+        const currTaluka = talukas.find((e) => e.name == value).name;
+        setCurrTaluka(currTaluka);
+      }
     }
   };
 
@@ -358,11 +339,18 @@ const Register = (props) => {
   };
 
   const handleFileChange = (e) => {
+    // console.log("tttt");
     // const file = e.target.files[0];
     // const name = e.target.name;
-    // Update form data with the selected file
+    // // Update form data with the selected file
 
-    // handleImageUpload(e).then((url) => {console.log(url)}).catch((err)=>{console.log(err)})
+    // handleImageUpload(e)
+    //   .then((url) => {
+    //     console.log(url);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
 
     // setFormData((prevState) => ({
     //   ...prevState,
@@ -650,7 +638,7 @@ const Register = (props) => {
     registerBuyer(bData)
       .then((resp) => {
         console.log(resp);
-        setFormData(initialForm);
+        setFormData(initialData);
         setCurrStep(1);
         navigate("/");
         signOut();

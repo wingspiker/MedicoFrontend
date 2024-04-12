@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { formdata, setCurrStep, setFormData } from '../Services/auth';
 
 
 const Home = () => {
@@ -12,7 +13,7 @@ const Home = () => {
         <h1 className="text-3xl font-bold">Medico  </h1>
         <div>
           <Link to="/login" className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mr-4">Login</Link>
-          <Link to="/register" className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Register</Link>
+          <Link onClick={() => {setCurrStep(1); setFormData(formdata)}} to="/register" className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Register</Link>
         </div>
       </header>
       <div className="flex justify-center items-center">

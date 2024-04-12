@@ -18,6 +18,13 @@ const Welcome = (props) => {
   const [isRed, setIsRed] = useState(true)
 
   useEffect(() => {
+    const user = decodeToken()
+    console.log(user);
+    if(user.isVerified === 'False'){
+      setIsRed(true)
+      toast.success("You are not verified kindly get verified", {autoClose: 1000});
+      signOut()
+    }
     
     if(showMessage){
     setIsRed(false)

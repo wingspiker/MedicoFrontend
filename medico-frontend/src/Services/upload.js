@@ -14,10 +14,9 @@ export const handleImageUpload = async (e) => {
         headers: {
             "Content-Type": "multipart/form-data",
             "Access-Control-Allow-Origin": "*",
-
           },
     }
     
 
-    return axios.post(cloudineryUrl + '/image/upload', formData, config)
+    return axios.post(cloudineryUrl, formData, config)
 }

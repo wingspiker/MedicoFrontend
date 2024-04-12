@@ -14,12 +14,14 @@ import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
 import ShowBuyer from "../ProductComponents/CaseFive/ShowBuyer";
 import AddPricing from "../ProductComponents/CaseSix/AddPricing";
+import { getDivisions } from "../../Services/division";
 
 function AddProduct() {
   const [currentStep, setCurrentStep] = React.useState(1);
   const [currentProdId, setCurrentProdId] = React.useState(null);
   const [currentGroupId, setCurrentGroupId] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
+  const [divisions, setDivisions] = React.useState([]);
 
   const [isRed, setIsRed] = useState(true);
 
@@ -54,6 +56,14 @@ function AddProduct() {
       })
       .catch((err) => console.log(err));
     // console.log(rowSelectionModel);
+
+    getDivisions()
+      .then((resp) => {
+        setDivisions(resp);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   const {
@@ -335,6 +345,7 @@ function AddProduct() {
                 watch={watch}
                 errors={errors}
                 prescription={prescription}
+                divisions={divisions}
               />
               <ManufacturerInformation
                 register={register}
@@ -366,7 +377,7 @@ function AddProduct() {
           <div className="flex justify-start items-top min-h-screen  bg-cyan-900 ps-44">
             <form onSubmit={handleSubmit(onSubmit)}>
               <h1 className="text-4xl text-white mt-2">
-                Select Existhhing Group
+                Select Existing Group
               </h1>
               <div className="p-2 flex items-center my-3">
                 <SelectExistingGroup
@@ -387,10 +398,10 @@ function AddProduct() {
         );
       case 3:
         return (
-          <div className="flex justify-start items-top min-h-screen  bg-cyan-900 ps-44">
+          <div className="flex justify-center items-top min-h-screen  bg-cyan-900">
             <form onSubmit={handleSubmit(onSubmit)}>
               <h1 className="text-4xl text-white mt-2">Select Location</h1>
-              <div className="p-2 flex items-center mt-3 my-3">
+              <div className="p-2 flex items-center justify-center mt-3 my-3">
                 <SelectLocation
                   register={register}
                   errors={errors}
