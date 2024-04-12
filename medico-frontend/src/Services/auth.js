@@ -122,6 +122,13 @@ export const  setCurrStep = (stepNum) =>{
     currStep=stepNum;
 };
 
+export let isbuyer = false;
+
+export const setIsBuyer = (b) => {
+    isbuyer = b;
+}
+
+
 
 // /formdata 
 

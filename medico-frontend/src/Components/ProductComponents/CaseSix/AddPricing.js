@@ -124,81 +124,121 @@
 import React, { useEffect, useState } from "react";
 
 function AddPricing({
-  buyers,
-  rowSelectionModel,
-  defaultPrice,
   setUpdatedBuyer,
   updatedBuyer,
+  data,
+  cols,
+  setData,
+  defaultPrice
 }) {
-  const [data, setData] = useState([]);
+  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    const temp = buyers.filter((b) => rowSelectionModel.includes(b.id));
-    const formattedBuyers = temp.map((t) => {
-      return {
-        id: t.id,
-        name: t.firstName || "" + " " + t.lastName || "",
-        occupation: t.occupation,
-        degree: t.degree || "NA",
-        price: defaultPrice,
-      };
-    });
-    setData(formattedBuyers);
-  }, []);
+  // useEffect(() => {
+  //   const selectedBuyers = buyers.filter((b) =>
+  //     rowSelectionModel.includes(b.id)
+  //   );
+  //   const formattedBuyers = selectedBuyers.map((buyer) => ({
+  //     id: buyer.id,
+  //     name: `${buyer.firstName} ${buyer.lastName}`,
+  //     occupation: buyer.occupation,
+  //     degree: buyer.degree || "NA",
+  //     price: defaultPrice,
+  //   }));
+  //   setData(formattedBuyers);
+  //   if (formattedBuyers.length > 0) {
+  //     setCols(Object.keys(formattedBuyers[0]));
+  //   }
+  // }, [buyers, rowSelectionModel, defaultPrice]);
 
   const handleInputChange = (e, id) => {
+    const newPrice = e.target.value;
     const newData = data.map((item) => {
       if (item.id === id) {
-        return { ...item, price: e.target.value };
+        return { ...item, price: newPrice };
       }
       return item;
     });
     setData(newData);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [id]:
+        newPrice < defaultPrice
+          ? "Price must be higher than default price."
+          : "",
+    }));
   };
 
   return (
     <>
       <div className="overflow-x-auto">
-        {data && (
-          <table className="min-w-full">
-            <thead>
-              <tr className="bg-gray-200">
-                {Object.keys(data[0]).map((k) => {
-                  if (k === "id") {
-                    return null;
-                  }
-                  return <th key={k}>{k}</th>;
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row) => (
-                <tr key={row.id} className="border-b border-gray-200">
-                  {Object.keys(data[0]).map((k) => {
-                    if (k === "id") {
-                      return null;
-                    }
-                    if (k === "price") {
-                      return (
-                        <td key={k} className="text-left py-2 px-4">
-                          <input
-                            type="number"
-                            value={row[k]}
-                            onChange={(e) => handleInputChange(e, row.id)}
-                          />
-                        </td>
-                      );
-                    }
+        {data.length > 0 && (
+          <div className="rounded-lg overflow-hidden border border-gray-600">
+            <table className="min-w-full text-white">
+              <thead className="bg-cyan-300">
+                <tr>
+                  {cols.map((col, index) => {
+                    if (col === "id") return null;
                     return (
-                      <td key={k} className="text-left py-2 px-4">
-                        {row[k]}
-                      </td>
+                      <th
+                        key={col}
+                        className={`text-lg text-gray-700 font-semibold py-2 px-4 capitalize ${
+                          index !== cols.length - 1 ? "border-r" : ""
+                        } border-gray-600`}
+                      >
+                        {col}
+                      </th>
                     );
                   })}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="border-b text-gray-900 border-gray-600 bg-gray-200"
+                  >
+                    {cols.map((col, index) => {
+                      if (col === "id") return null;
+                      if (col === "price") {
+                        return (
+                          <td
+                            key={col}
+                            className={`text-lg py-2 px-4 border-2 ${
+                              index !== cols.length - 1 ? "border-r" : ""
+                            } border-gray-600 border-y-0`}
+                          >
+                            <div>
+                              <input
+                                type="number"
+                                value={row[col]}
+                                onChange={(e) => handleInputChange(e, row.id)}
+                                className="w-full border-2 bg-gray-100 border-gray-600 rounded-md py-1 px-2 focus:outline-none focus:border-blue-500"
+                              />
+                              {errors[row.id] && (
+                                <div className="text-red-500 text-xs mt-1">
+                                  {errors[row.id]}
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      }
+                      return (
+                        <td
+                          key={col}
+                          className={`text-lg py-2 px-4 ${
+                            index !== cols.length - 1 ? "border-r" : ""
+                          } border-gray-600`}
+                        >
+                          {row[col]}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </>

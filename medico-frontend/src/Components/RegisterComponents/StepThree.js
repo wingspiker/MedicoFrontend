@@ -393,14 +393,14 @@ const StepThree = (props) => {
 
         {/* Modal content */}
         <h2 className="text-lg font-bold mb-4">Select a Plan</h2>
-        <div className="grid grid-cols-1 gap-4">
+        <div className="flex gap-4 justify-between">
           {plans.map((plan) => (
-            <div key={plan.id} className={`${(selectedPlan!==null && selectedPlan.id===plan.id)?'bg-cyan-200':'bg-gray-100'} bg-gray-100 rounded-md p-4`}>
+            <div key={plan.id} className={` flex-1 ${(selectedPlan!==null && selectedPlan.id===plan.id)?'bg-cyan-200':'bg-gray-100'} bg-gray-100 rounded-md p-4 flex flex-col justify-between`}>
               <h3 className="text-lg font-semibold">{plan.name}</h3>
               {/* {console.log(selectedPlan)} */}
-              <p className="text-gray-600">{plan.price}</p>
+              <p className="text-gray-600 min-h-16">{plan.price}</p>
               <button
-                className="mt-2 px-4 py-2 bg-cyan-900 text-white rounded hover:bg-cyan-700 focus:outline-none focus:bg-cyan-700"
+                className="mt-2 px-4 py-2 bg-cyan-900 align-baseline text-white rounded hover:bg-cyan-700 focus:outline-none focus:bg-cyan-700"
                 onClick={() => setSelectedPlan(plan)}
               >
                 {(selectedPlan!==null && selectedPlan.id === plan.id)?'Selected':'Select'} 

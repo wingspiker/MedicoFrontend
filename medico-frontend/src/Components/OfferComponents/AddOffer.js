@@ -556,39 +556,27 @@ function AddOffer() {
                       control={
                         <Checkbox
                           checked={
-                            allowedUser && allowedUser.includes("Doctor")
+                            allowedUser && allowedUser.includes("Buyer")
                           }
                         />
                       }
                       {...register("allowedUser", {
                         required: "At least one user should be allowed",
                       })}
-                      value={"Doctor"}
-                      label="Doctor"
+                      value={"Buyer"}
+                      label="Buyer"
                     />
                     <FormControlLabel
                       control={
                         <Checkbox
                           checked={
-                            allowedUser && allowedUser.includes("Engineer")
+                            allowedUser && allowedUser.includes("Salesman")
                           }
                         />
                       }
                       {...register("allowedUser")}
-                      value={"Engineer"}
-                      label="Engineer"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={
-                            allowedUser && allowedUser.includes("Farmer")
-                          }
-                        />
-                      }
-                      {...register("allowedUser")}
-                      value={"Farmer"}
-                      label="Farmer"
+                      value={"Salesman"}
+                      label="Salesman"
                     />
                   </FormGroup>
 
@@ -633,9 +621,28 @@ function AddOffer() {
                     value={values}
                     onChange={handleChange}
                     aria-label="basic tabs example"
+                    sx={{
+                      "& .MuiTabs-flexContainer": {
+                        justifyContent: "space-between", // Align tabs evenly
+                        // gap:"15"
+                      },
+                      "& .MuiTab-root": {
+                        maxWidth: "unset", // Remove max width
+                        flex: 1, // Allow tabs to grow equally
+                        color:"white"
+                      },
+                      "& .Mui-selected": {
+                        // Styles for the active tab
+                        color: "primary.main", // Change text color
+                        borderBottom: "2px solid primary.main", // Add bottom border
+                        background:"white"
+
+                      },
+                    }}
                   >
                     <Tab
                       label="Group"
+                      
                       {...a11yProps(0)}
                       style={{ maxWidth: "unset", flex: 1 }}
                     />
@@ -702,10 +709,11 @@ function AddOffer() {
                     {conditions.map(({ productOffers }, idx) => {
                       return (
                         <>
-                          <div className="w-full justify-center text-xl text-center">
+                          <div className="w-full justify-center text-2xl text-left">
                             Group {idx + 1}
                           </div>
-                          <div className="flex flex-wrap gap-5">
+                          <hr/>
+                          <div className="flex flex-col md:flex-row gap-5">
                             {productOffers.map((product, index) => (
                               <PreviewCard
                                 boxBase={offerType === "Box Base"}
@@ -926,7 +934,7 @@ function AddOffer() {
                                     <div className="w-full justify-center text-xl text-center">
                                       Group {idx + 1}
                                     </div>
-                                    <div className="flex flex-wrap gap-5">
+                                    <div className="flex flex-col md:flex-row flex-wrap gap-5">
                                       {articleWithQuantities.map(
                                         (article, index) => (
                                           <ArticlePreviewCard

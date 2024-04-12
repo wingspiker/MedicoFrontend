@@ -1,22 +1,22 @@
 import axios from 'axios';
 
-const cloudineryUrl = process.env.REACT_APP_CLOUDINERY_URL
+const url = process.env.REACT_APP_API_BASE_URL
 
 export const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'documents');
-    formData.append('api_key', '163183753378642');
+    const t = localStorage.getItem('token');
 
 
     const config = {
         headers: {
             "Content-Type": "multipart/form-data",
             "Access-Control-Allow-Origin": "*",
+            'Authorization': `Bearer ${t}`
           },
     }
     
 
-    return axios.post(cloudineryUrl, formData, config)
+    return axios.post(url+'/api/upload', formData, config)
 }

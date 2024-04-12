@@ -9,6 +9,7 @@ import {
   setFormData,
   formdata,
   initialData,
+  setIsBuyer,
 } from "../Services/auth";
 import { Toaster, toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
@@ -88,7 +89,13 @@ const Login = (props) => {
             setShowSidebar(false);
             setFormData({...formdata, email:loginData.email})
             if(user[role]==="Buyer"){
-              setFormData({...formdata, role:'Buyer'})
+              setFormData({...formdata, role:0})
+              setIsBuyer(true)
+              
+            }
+            if(user[role]==="Company"){
+              setFormData({...formdata, role:1})
+              setIsBuyer(false)
             }
             navigate("/register");
             setCurrStep(3)

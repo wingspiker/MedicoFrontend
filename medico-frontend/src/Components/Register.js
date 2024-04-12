@@ -18,6 +18,7 @@ import {
   signOut,
   setCurrStep,
   initialData,
+  isbuyer,
 } from "../Services/auth";
 
 import { Toaster, toast } from "sonner";
@@ -329,20 +330,11 @@ const Register = (props) => {
     }
   };
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files[0];
-    // You may want to perform further validation or processing of the file here
-    setFormData((prevState) => ({
-      ...prevState,
-      logo: file,
-    }));
-  };
-
   const handleFileChange = (e) => {
     // console.log("tttt");
     // const file = e.target.files[0];
     // const name = e.target.name;
-    // // Update form data with the selected file
+    // Update form data with the selected file
 
     // handleImageUpload(e)
     //   .then((url) => {
@@ -585,6 +577,7 @@ const Register = (props) => {
         saveCompanyData(submitData);
         // console.log(formData.role);
       } else if (formData.role == 0) {
+        console.log('bbbyyysss');
         const {
           email,
           firstName,
@@ -652,8 +645,12 @@ const Register = (props) => {
       });
   };
 
+  useEffect(()=>{
+    setIsBuyer(isbuyer)
+  },[])
+
   const nextStep = () => {
-    if (formData.role == 0) {
+    if (formData.role === 0) {
       setIsBuyer(true);
     } else {
       setIsBuyer(false);

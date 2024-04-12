@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ProductInformation from "../ProductComponents/CaseOne/ProductInfo";
 import ManufacturerInformation from "../ProductComponents/CaseOne/ManufacturerInfo";
@@ -9,7 +10,7 @@ import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
 import { decodeToken } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
 import { addGroup, getGroups } from "../../Services/group";
-import { addBuyers, filterBuyrs } from "../../Services/buyer";
+import { addBuyerGroup, addBuyers, filterBuyrs } from "../../Services/buyer";
 import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
 import ShowBuyer from "../ProductComponents/CaseFive/ShowBuyer";
@@ -24,6 +25,8 @@ function AddProduct() {
   const [divisions, setDivisions] = React.useState([]);
 
   const [isRed, setIsRed] = useState(true);
+
+  const navigate = useNavigate();
 
   const showToast = (message, isRed) => {
     setIsRed(isRed);
@@ -40,10 +43,11 @@ function AddProduct() {
 
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
-  console.log("Selected Rows", rowSelectionModel);
+  // console.log("Selected Rows", rowSelectionModel);
   const [updatedBuyer, setUpdatedBuyer] = useState([]);
 
-  console.log("row selection", rowSelectionModel);
+  const [psdata, setData] = useState([]);
+  const [cols, setCols] = useState([]);
   // console.log("buyer", buyers);
 
   useEffect(() => {
@@ -77,7 +81,7 @@ function AddProduct() {
   const onSubmit = (data) => {
     data.talukaIds = sTaluka;
     data.updatedBuyer = updatedBuyer;
-    // data.selectedProducts = selectedProducts;
+    // data.rowSelectionModel = rowSelectionModel;
     console.log("data", data);
     if (currentStep < 6) {
       if (currentStep === 1) {
@@ -93,8 +97,23 @@ function AddProduct() {
       }
 
       if (currentStep === 5) {
-        AddBuyers(data);
+        AddBuyers();
+        const selectedBuyers = buyers.filter((b) =>
+          rowSelectionModel.includes(b.id)
+        );
+        const formattedBuyers = selectedBuyers.map((buyer) => ({
+          id: buyer.id,
+          name: `${buyer.firstName} ${buyer.lastName}`,
+          occupation: buyer.occupation,
+          degree: buyer.degree || "NA",
+          price: sp,
+        }));
+        setData(formattedBuyers);
+        if (formattedBuyers.length > 0) {
+          setCols(Object.keys(formattedBuyers[0]));
+        }
       }
+
 
       if (currentStep === 2) {
         if (data.existingGroupNo) {
@@ -108,9 +127,21 @@ function AddProduct() {
         // setCurrentStep(currentStep + 1);
       }
     } else {
-      console.log("Final Submission", data);
+      console.log("final maal",psdata);
+      console.log(currentProdId);
+
+      const buyerProd = psdata.map(ps=>{
+        return {
+          buyerId:ps.id,
+          productId:currentProdId,
+          price:Number(ps.price),
+        }
+      });
+
+      AddBuyerProduct(buyerProd)
     }
   };
+
 
   const AddProductData = (rawData) => {
     setLoading(true);
@@ -264,9 +295,6 @@ function AddProduct() {
       groupId: currentGroupId,
       buyerIds: rowSelectionModel ?? [],
     };
-
-    console.log(postData);
-
     addBuyers(postData)
       .then((res) => {
         console.log(res);
@@ -280,6 +308,31 @@ function AddProduct() {
         setLoading(false);
       });
   };
+
+  const AddBuyerProduct = (buyProd) => {
+    setLoading(true)
+    addBuyerGroup(buyProd)
+    .then((resp) => {
+      console.log(resp);
+      setLoading(false)
+      setIsRed(false)
+      toast.success('Added Successfully!')
+      setTimeout(() => {
+        navigate("/Product")
+        setIsRed(true)
+      }, 3000);
+    })
+    .catch((err)=>{
+      console.log(err);
+      setLoading(false)
+      setIsRed(true)
+      toast.success('Something Went Wrong')
+      setTimeout(() => {
+        navigate("/Product")
+        setIsRed(true); 
+      }, 3000);
+    })
+  }
 
   const productName = watch("productName");
   const brandName = watch("brandName");
@@ -315,6 +368,8 @@ function AddProduct() {
   const mrp = watch("mrp");
   const discount = watch("discountOnMRP");
 
+  const [sp, setSp] = useState(0);
+
   // console.log(existingGroupNo);
   const validateRetailPrice = (value) => {
     return (
@@ -325,10 +380,16 @@ function AddProduct() {
 
   const calculateSellingPrice = () => {
     if (pricingMethod === "0" && mrp && discount) {
-      return (mrp - (mrp * discount) / 100).toFixed(2);
+      const sp = (mrp - (mrp * discount) / 100).toFixed(2);
+      // setValue('sellingPrice', sp);
+      setSp(sp);
+      return sp;
     } else if (pricingMethod === "1" && retailPrice && margin) {
       // console.log(retailPrice, margin);
-      return (retailPrice * (1 + margin * 0.01)).toFixed(2);
+      const sp = (retailPrice * (1 + margin * 0.01)).toFixed(2);
+      setSp(sp);
+      // setValue('sellingPrice', sp);
+      return sp;
     }
     return 0;
   };
@@ -470,9 +531,10 @@ function AddProduct() {
               <AddPricing
                 updatedBuyer={updatedBuyer}
                 setUpdatedBuyer={setUpdatedBuyer}
-                buyers={buyers}
-                defaultPrice={10}
-                rowSelectionModel={rowSelectionModel}
+                data={psdata}
+                cols={cols}
+                setData={setData}
+                defaultPrice={sp}
               />
               <div className="flex mt-4 flex-row-reverse">
                 <button
