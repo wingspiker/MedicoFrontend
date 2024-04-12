@@ -31,6 +31,7 @@ import { Sidebar } from "./Components/SafeComponents/Sidebar";
 import Division from "./Components/SafeComponents/Division";
 import Group from "./Components/SafeComponents/Group";
 import Article from "./Components/SafeComponents/Article";
+import AddGroup from "./Components/SafeComponents/AddGroup";
 
 function App() {
   const loginStatus = token() !== null;
@@ -208,7 +209,24 @@ function App() {
             exact
             element={
               isLoggedIn ? (
+                <>
+                <Sidebar changeLogin={logout} />
                 <Group changeLogin={setIsLoggedIn} />
+                </>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+           <Route
+            path="/Group/add"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                <Sidebar changeLogin={logout} />
+                <AddGroup changeLogin={setIsLoggedIn} />
+                </>
               ) : (
                 <Navigate to="/login" replace />
               )

@@ -82,7 +82,7 @@ function AddProduct() {
     data.talukaIds = sTaluka;
     data.updatedBuyer = updatedBuyer;
     // data.rowSelectionModel = rowSelectionModel;
-    console.log("data", data);
+    // console.log("data", data);
     if (currentStep < 6) {
       if (currentStep === 1) {
         AddProductData(data);
@@ -127,8 +127,8 @@ function AddProduct() {
         // setCurrentStep(currentStep + 1);
       }
     } else {
-      console.log("final maal",psdata);
-      console.log(currentProdId);
+      // console.log("final maal",psdata);
+      // console.log(currentProdId);
 
       const buyerProd = psdata.map(ps=>{
         return {
