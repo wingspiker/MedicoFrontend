@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import { CustomInput } from "./Input";
 import {
@@ -21,270 +21,16 @@ import PreviewCard from "./PreviewCard";
 import { toast, Toaster } from "sonner";
 import ArticleCard from "./ArticleCard";
 import ArticlePreviewCard from "./ArticlesPreviewCard";
+import { handleImageUpload } from "../../Services/upload";
+import { decodeToken } from "../../Services/auth";
+import { getProducts } from "../../Services/product";
+import { addOffer } from "../../Services/offer";
 
 const BenefitType = {
   DISCOUNT: "Discount Offer",
   FREE_GOODS: "Free Goods Offer",
   FREE_PRODUCTS: "Free Products Offer",
 };
-
-const DEMO_PRODUCTS = [
-  {
-    id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    type: 0,
-    division: "Oral",
-    brandName: "Tylenol",
-    drugName: "Acetaminophen",
-    manufacturingName: "ABC Pharmaceuticals",
-    manufacturerName: "ABC Manufacturing Inc.",
-    prescription: 1,
-    letterPadDocument: "ABC123",
-    licenseNo: "ABC-456",
-    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
-    mrp: 50,
-    retailPrice: 40,
-    sellingPrice: 35,
-    packSize: {
-      id: "1",
-      x: 50,
-      y: 20,
-    },
-    returnPolicy: {
-      id: "1",
-      returnDays: 30,
-      allowReturn: true,
-      allowExchange: true,
-    },
-    productBatches: [
-      {
-        id: "1",
-        manufacturingDate: "2023-01-01",
-        expiryDate: "2024-12-31",
-        quantity: 100,
-        price: 30,
-        isSold: false,
-        isVisible: true,
-      },
-      {
-        id: "2",
-        manufacturingDate: "2023-03-15",
-        expiryDate: "2024-12-31",
-        quantity: 200,
-        price: 25,
-        isSold: false,
-        isVisible: true,
-      },
-    ],
-    contents: "Acetaminophen 500mg tablets",
-    effectivePriceCalculationType: 0,
-    value: 0,
-  },
-  {
-    id: "3fa85f64-5717-4562-b3fc-2c963f66asdfa6",
-    type: 1,
-    division: "Injectable",
-    brandName: "Advil",
-    drugName: "Ibuprofen",
-    manufacturingName: "XYZ Pharmaceuticals",
-    manufacturerName: "XYZ Manufacturing Inc.",
-    prescription: 1,
-    letterPadDocument: "XYZ789",
-    licenseNo: "XYZ-123",
-    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
-    mrp: 60,
-    retailPrice: 50,
-    sellingPrice: 45,
-    packSize: {
-      id: "2",
-      x: 50,
-      y: 10,
-    },
-    returnPolicy: {
-      id: "2",
-      returnDays: 30,
-      allowReturn: true,
-      allowExchange: true,
-    },
-    productBatches: [
-      {
-        id: "3",
-        manufacturingDate: "2023-02-01",
-        expiryDate: "2024-12-31",
-        quantity: 50,
-        price: 40,
-        isSold: false,
-        isVisible: true,
-      },
-    ],
-    contents: "Ibuprofen 200mg injection",
-    effectivePriceCalculationType: 0,
-    value: 0,
-  },
-  {
-    id: "3",
-    type: 0,
-    division: "Oral",
-    brandName: "Allegra",
-    drugName: "Fexofenadine",
-    manufacturingName: "DEF Pharmaceuticals",
-    manufacturerName: "DEF Manufacturing Inc.",
-    prescription: 1,
-    letterPadDocument: "DEF456",
-    licenseNo: "DEF-789",
-    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
-    mrp: 70,
-    retailPrice: 60,
-    sellingPrice: 55,
-    packSize: {
-      id: "3",
-      x: 15,
-      y: 30,
-    },
-    returnPolicy: {
-      id: "3",
-      returnDays: 30,
-      allowReturn: true,
-      allowExchange: true,
-    },
-    productBatches: [
-      {
-        id: "4",
-        manufacturingDate: "2023-03-01",
-        expiryDate: "2024-12-31",
-        quantity: 80,
-        price: 50,
-        isSold: false,
-        isVisible: true,
-      },
-    ],
-    contents: "Fexofenadine 120mg tablets",
-    effectivePriceCalculationType: 0,
-    value: 0,
-  },
-  {
-    id: "4",
-    type: 1,
-    division: "Injectable",
-    brandName: "Benadryl",
-    drugName: "Diphenhydramine",
-    manufacturingName: "GHI Pharmaceuticals",
-    manufacturerName: "GHI Manufacturing Inc.",
-    prescription: 1,
-    letterPadDocument: "GHI123",
-    licenseNo: "GHI-456",
-    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
-    mrp: 80,
-    retailPrice: 70,
-    sellingPrice: 65,
-    packSize: {
-      id: "4",
-      x: 10,
-      y: 20,
-    },
-    returnPolicy: {
-      id: "4",
-      returnDays: 30,
-      allowReturn: true,
-      allowExchange: true,
-    },
-    productBatches: [
-      {
-        id: "5",
-        manufacturingDate: "2023-04-01",
-        expiryDate: "2024-12-31",
-        quantity: 70,
-        price: 60,
-        isSold: false,
-        isVisible: true,
-      },
-    ],
-    contents: "Diphenhydramine 25mg injection",
-    effectivePriceCalculationType: 0,
-    value: 0,
-  },
-  {
-    id: "5",
-    type: 0,
-    division: "Oral",
-    brandName: "Zyrtec",
-    drugName: "Cetirizine",
-    manufacturingName: "JKL Pharmaceuticals",
-    manufacturerName: "JKL Manufacturing Inc.",
-    prescription: 1,
-    letterPadDocument: "JKL789",
-    licenseNo: "JKL-123",
-    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
-    mrp: 90,
-    retailPrice: 80,
-    sellingPrice: 75,
-    packSize: {
-      id: "5",
-      x: 20,
-      y: 40,
-    },
-    returnPolicy: {
-      id: "5",
-      returnDays: 30,
-      allowReturn: true,
-      allowExchange: true,
-    },
-    productBatches: [
-      {
-        id: "6",
-        manufacturingDate: "2023-05-01",
-        expiryDate: "2024-12-31",
-        quantity: 60,
-        price: 70,
-        isSold: false,
-        isVisible: true,
-      },
-    ],
-    contents: "Cetirizine 10mg tablets",
-    effectivePriceCalculationType: 0,
-    value: 0,
-  },
-  {
-    id: "6",
-    type: 1,
-    division: "Injectable",
-    brandName: "Claritin",
-    drugName: "Loratadine",
-    manufacturingName: "MNO Pharmaceuticals",
-    manufacturerName: "MNO Manufacturing Inc.",
-    prescription: 1,
-    letterPadDocument: "MNO456",
-    licenseNo: "MNO-789",
-    photoUrl: "https://5.imimg.com/data5/SELLER/Default/2022/9/YZ/RK/ZM/126733516/tylenol-extra-strength-caplets-with-500-mg-acetaminophen-pain-reliever-fever-reducer-100-count-500x500.jpg",
-    mrp: 100,
-    retailPrice: 90,
-    sellingPrice: 85,
-    packSize: {
-      id: "6",
-      x: 25,
-      y: 50,
-    },
-    returnPolicy: {
-      id: "6",
-      returnDays: 30,
-      allowReturn: true,
-      allowExchange: true,
-    },
-    productBatches: [
-      {
-        id: "7",
-        manufacturingDate: "2023-06-01",
-        expiryDate: "2024-12-31",
-        quantity: 40,
-        price: 80,
-        isSold: false,
-        isVisible: true,
-      },
-    ],
-    contents: "Loratadine 5mg injection",
-    effectivePriceCalculationType: 0,
-    value: 0,
-  },
-];
 
 const DEMO_ARTICLES = [
   {
@@ -370,6 +116,13 @@ function removeUndefinedEntries(array) {
 
 function AddOffer() {
   const [currentStep, setCurrentStep] = React.useState(1);
+  const [products, setProducts] = React.useState([]);
+  const [data, setData] = useState({
+    offerId: "",
+    basicDetails: {},
+    groups: {},
+    benefits: {},
+  });
   const {
     register,
     handleSubmit,
@@ -381,13 +134,52 @@ function AddOffer() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    if (currentStep < 3) {
-      if (offerType === "Price Centric" && currentStep === 1) setCurrentStep(1);
-      else setCurrentStep(currentStep + 1);
-    } else {
-      console.log("Final Submission", data);
+  useEffect(() => {
+    if (currentStep === 2) {
+      const user = decodeToken();
+      const keys = Object.keys(user);
+      const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+      getProducts(email)
+        .then((res) => {
+          console.log(res);
+          setProducts(res);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [currentStep]);
+
+  const onSubmit = (formData) => {
+    console.log("Form Data:", formData);
+    switch (currentStep) {
+      case 1:
+        if (offerType === "Price Centric") {
+          const user = decodeToken();
+          const keys = Object.keys(user);
+          const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+          const res = addOffer({
+            ...formData,
+            offerType: 0,
+            companyEmail: email,
+          });
+          if (res?.id) {
+            setData((prev) => ({ ...prev, offerId: res.id }));
+          }
+          setCurrentStep(3);
+        } else {
+          setCurrentStep(currentStep + 1);
+        }
+        setData((prev) => ({ ...prev, basicDetails: formData }));
+        break;
+      case 2:
+        // setCurrentStep(currentStep + 1);
+        setData((prev) => ({ ...prev, groups: formData }));
+        break;
+      case 3:
+        setData((prev) => ({ ...prev, basicDetails: formData }));
+        console.log("Final Submission", data);
+        break;
+      default:
+        break;
     }
   };
 
@@ -396,9 +188,8 @@ function AddOffer() {
   const offerPhoto = watch("offerPhoto");
   const offerDescription = watch("offerDescription");
   const offerType = watch("offerType");
-  const expiryDate = watch("expiryDate");
-  const allowedUser = watch("allowedUser");
-  const offerDiscount = watch("offerDiscount");
+  const allowedUsers = watch("allowedUsers");
+  const priceCentricOffer = watch("priceCentricOffer");
   const selectedProducts = watch("selectedProducts");
   const selectedArticles = watch("selectedArticles");
   const benefitType = watch("benefitType");
@@ -443,12 +234,17 @@ function AddOffer() {
                   label={"Offer Photo"}
                   placeholder={"Upload"}
                   inputProps={{
-                    ...register("offerPhoto", {
-                      required: "Offer photo is required",
-                    }),
+                    // value: offerPhoto,
                     type: "file",
                     accept: "image/*",
                     className: "py-2 text-xs",
+                    onChange: async (e) => {
+                      const res = await handleImageUpload(e);
+                      if (res.status === 200) {
+                        setValue("offerPhoto", res.data);
+                        console.log(res.data);
+                      }
+                    },
                   }}
                   error={errors?.offerPhoto}
                 />
@@ -470,7 +266,7 @@ function AddOffer() {
                 />
               </div>
 
-              <div className="mt-5 grid grid-cols-4">
+              <div className={"mt-5 grid grid-cols-4"}>
                 <div className="flex flex-col">
                   <label className="text-black text-lg">Offer Type</label>
                   <FormGroup>
@@ -510,18 +306,6 @@ function AddOffer() {
                     </span>
                   )}
                 </div>
-                {offerType === "Price Centric" && (
-                  <div className="flex">
-                    <CustomInput
-                      label={"Offer discount"}
-                      placeholder={"Enter discount"}
-                      inputProps={register("offerDiscount", {
-                        required: "Offer discount is required",
-                      })}
-                      error={errors?.offerDiscount}
-                    />
-                  </div>
-                )}
                 <div className="flex flex-col">
                   <label className="text-black text-lg">Expiry Date</label>
                   <Controller
@@ -530,7 +314,7 @@ function AddOffer() {
                     rules={{ required: "Expiry date is required" }}
                     render={({ field }) => (
                       <ReactDatePicker
-                        className="h-10 bg-gray-400 py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 pl-2"
+                        className="h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 pl-2"
                         {...field}
                         dateFormat="d MMM yyyy"
                         minDate={new Date()}
@@ -549,18 +333,18 @@ function AddOffer() {
                     </span>
                   )}
                 </div>
-                <div className="flex flex-col mt-5">
+                <div className="flex flex-col">
                   <label className="text-black text-lg">Allowed User</label>
                   <FormGroup>
                     <FormControlLabel
                       control={
                         <Checkbox
                           checked={
-                            allowedUser && allowedUser.includes("Buyer")
+                            allowedUsers && allowedUsers.includes("Buyer")
                           }
                         />
                       }
-                      {...register("allowedUser", {
+                      {...register("allowedUsers", {
                         required: "At least one user should be allowed",
                       })}
                       value={"Buyer"}
@@ -570,23 +354,194 @@ function AddOffer() {
                       control={
                         <Checkbox
                           checked={
-                            allowedUser && allowedUser.includes("Salesman")
+                            allowedUsers && allowedUsers.includes("Salesman")
                           }
                         />
                       }
-                      {...register("allowedUser")}
+                      {...register("allowedUsers")}
                       value={"Salesman"}
                       label="Salesman"
                     />
                   </FormGroup>
 
-                  {errors?.allowedUser && (
+                  {errors?.allowedUsers && (
                     <span className="text-[red] mt-1">
-                      {errors?.allowedUser?.message}
+                      {errors?.allowedUsers?.message}
                     </span>
                   )}
                 </div>
+                {offerType === "Price Centric" && (
+                  <div className="flex flex-col">
+                    <label className="text-black text-lg">
+                      Price Centric SubType
+                    </label>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Radio
+                            checked={
+                              priceCentricOffer?.priceCentricOfferSubType == 0
+                            }
+                            onChange={() =>
+                              setValue(
+                                "priceCentricOffer.priceCentricOfferSubType",
+                                0
+                              )
+                            }
+                          />
+                        }
+                        label="Amount"
+                        value={0}
+                      />
+                      <FormControlLabel
+                        control={
+                          <Radio
+                            checked={
+                              priceCentricOffer?.priceCentricOfferSubType == 1
+                            }
+                            onChange={() =>
+                              setValue(
+                                "priceCentricOffer.priceCentricOfferSubType",
+                                1
+                              )
+                            }
+                          />
+                        }
+                        label="Order History"
+                        value={1}
+                      />
+                    </FormGroup>
+
+                    {errors?.priceCentricOffer?.priceCentricOfferSubType && (
+                      <span className="text-[red] mt-1">
+                        {
+                          errors?.priceCentricOffer?.priceCentricOfferSubType
+                            ?.message
+                        }
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
+              {(priceCentricOffer?.priceCentricOfferSubType == 0 ||
+                priceCentricOffer?.priceCentricOfferSubType) && (
+                <div className="mt-5 grid grid-cols-4">
+                  {priceCentricOffer.priceCentricOfferSubType == 0 && (
+                    <CustomInput
+                      label={"Amount"}
+                      placeholder={"Enter amount"}
+                      inputProps={{
+                        ...register("priceCentricOffer.amount", {
+                          required: "Offer amount is required",
+                          valueAsNumber: true,
+                        }),
+                        type: "number",
+                      }}
+                      error={errors?.amount}
+                    />
+                  )}
+                  {priceCentricOffer.priceCentricOfferSubType == 1 && (
+                    <>
+                      <CustomInput
+                        label={"Amount"}
+                        placeholder={"Enter amount"}
+                        inputProps={{
+                          ...register("priceCentricOffer.orderHistory.amount", {
+                            required: "Offer amount is required",
+                            valueAsNumber: true,
+                          }),
+                          type: "number",
+                        }}
+                        error={errors?.priceCentricOffer?.orderHistory?.amount}
+                      />
+                      <CustomInput
+                        label={"History Amoumt"}
+                        placeholder={"Enter amount"}
+                        inputProps={{
+                          ...register(
+                            "priceCentricOffer.orderHistory.historyAmount",
+                            {
+                              required: "Offer history amount is required",
+                              valueAsNumber: true,
+                            }
+                          ),
+                          type: "number",
+                        }}
+                        error={
+                          errors?.priceCentricOffer?.orderHistory?.historyAmount
+                        }
+                      />
+                      <div className="flex flex-col">
+                        <label className="text-black text-lg">
+                          Starting Date
+                        </label>
+                        <Controller
+                          name="priceCentricOffer.orderHistory.startingDate"
+                          control={control}
+                          rules={{ required: "Starting date is required" }}
+                          render={({ field }) => (
+                            <ReactDatePicker
+                              className="h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 pl-2"
+                              {...field}
+                              dateFormat="d MMM yyyy"
+                              minDate={new Date()}
+                              selected={
+                                field.value ? new Date(field.value) : null
+                              }
+                              showTimeSelect={false}
+                              dropdownMode="select"
+                              placeholderText="Select expiry date"
+                              shouldCloseOnSelect
+                              onChange={(date) => field.onChange(date)}
+                            />
+                          )}
+                        />
+                        {errors?.priceCentricOffer?.orderHistory
+                          ?.startingDate && (
+                          <span className="text-[red] mt-1">
+                            {
+                              errors?.priceCentricOffer?.orderHistory
+                                ?.startingDate?.message
+                            }
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="text-black text-lg">Last Date</label>
+                        <Controller
+                          name="priceCentricOffer.orderHistory.lastDate"
+                          control={control}
+                          rules={{ required: "Last date is required" }}
+                          render={({ field }) => (
+                            <ReactDatePicker
+                              className="h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 pl-2"
+                              {...field}
+                              dateFormat="d MMM yyyy"
+                              minDate={new Date()}
+                              selected={
+                                field.value ? new Date(field.value) : null
+                              }
+                              showTimeSelect={false}
+                              dropdownMode="select"
+                              placeholderText="Select expiry date"
+                              shouldCloseOnSelect
+                              onChange={(date) => field.onChange(date)}
+                            />
+                          )}
+                        />
+                        {errors?.priceCentricOffer?.orderHistory?.lastDate && (
+                          <span className="text-[red] mt-1">
+                            {
+                              errors?.priceCentricOffer?.orderHistory?.lastDate
+                                ?.message
+                            }
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
               <div className="w-full flex justify-center mt-24">
                 <button
                   className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
@@ -629,20 +584,18 @@ function AddOffer() {
                       "& .MuiTab-root": {
                         maxWidth: "unset", // Remove max width
                         flex: 1, // Allow tabs to grow equally
-                        color:"white"
+                        color: "white",
                       },
                       "& .Mui-selected": {
                         // Styles for the active tab
                         color: "primary.main", // Change text color
                         borderBottom: "2px solid primary.main", // Add bottom border
-                        background:"white"
-
+                        background: "white",
                       },
                     }}
                   >
                     <Tab
                       label="Group"
-                      
                       {...a11yProps(0)}
                       style={{ maxWidth: "unset", flex: 1 }}
                     />
@@ -656,14 +609,14 @@ function AddOffer() {
                 <CustomTabPanel value={values} index={0}>
                   {offerType === "Product Centric" && (
                     <div className="grid grid-cols-3 gap-4">
-                      {DEMO_PRODUCTS.map((product) => (
+                      {products.map((product) => (
                         <ProductCard product={product} />
                       ))}
                     </div>
                   )}
                   {offerType === "Box Base" && (
                     <div className="grid grid-cols-4">
-                      {DEMO_PRODUCTS.map((product) => (
+                      {products.map((product) => (
                         <ProductCard product={product} boxBase={true} />
                       ))}
                     </div>
@@ -691,7 +644,7 @@ function AddOffer() {
                           setValue("conditions", [
                             ...conditions,
                             {
-                              id: Math.random(),
+                              // id: Math.random(),
                               productOffers:
                                 removeUndefinedEntries(selectedProducts),
                             },
@@ -712,13 +665,13 @@ function AddOffer() {
                           <div className="w-full justify-center text-2xl text-left">
                             Group {idx + 1}
                           </div>
-                          <hr/>
+                          <hr />
                           <div className="flex flex-col md:flex-row gap-5">
                             {productOffers.map((product, index) => (
                               <PreviewCard
                                 boxBase={offerType === "Box Base"}
                                 product={{
-                                  ...DEMO_PRODUCTS.find(
+                                  ...products.find(
                                     (el) => el.id === product.productId
                                   ),
                                   ...product,
@@ -871,7 +824,7 @@ function AddOffer() {
                           ? DEMO_ARTICLES.map((article) => (
                               <ArticleCard article={article} />
                             ))
-                          : DEMO_PRODUCTS.map((product) => (
+                          : products.map((product) => (
                               <ProductCard product={product} />
                             ))}
                       </div>
@@ -965,7 +918,7 @@ function AddOffer() {
                                         (product, index) => (
                                           <PreviewCard
                                             product={{
-                                              ...DEMO_PRODUCTS.find(
+                                              ...products.find(
                                                 (el) =>
                                                   el.id === product.productId
                                               ),
