@@ -124,7 +124,7 @@ function removeUndefinedEntries(array) {
 }
 
 function AddOffer() {
-  const [currentStep, setCurrentStep] = React.useState(3);
+  const [currentStep, setCurrentStep] = React.useState(1);
   const [products, setProducts] = React.useState([]);
   const [articles, setArticles] = React.useState([]);
   const [loading, setLoading] = useState(false);
@@ -676,7 +676,7 @@ function AddOffer() {
                   className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                   type="submit"
                 >
-                   {loading ? <Loader/> : 'Next'}
+                  {loading ? <Loader /> : "Next"}
                 </button>
               </div>
             </form>
@@ -1198,7 +1198,7 @@ function AddOffer() {
                     className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                     type="submit"
                   >
-                    {loading ? <Loader /> : "Next"}
+                    Next
                   </button>
                 </div>
               </form>
