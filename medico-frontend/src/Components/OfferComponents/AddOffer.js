@@ -156,14 +156,19 @@ function AddOffer() {
           const user = decodeToken();
           const keys = Object.keys(user);
           const email = user[keys.find((k) => k.endsWith("emailaddress"))];
-          const res = addOffer({
+          const amt = formData.amount??0
+          addOffer({
             ...formData,
-            offerType: 0,
+            offerType: 0, 
             companyEmail: email,
-          });
-          if (res?.id) {
+            amount:amt
+          }).then((res)=>{
+            console.log(res);
             setData((prev) => ({ ...prev, offerId: res.id }));
-          }
+          }).catch(err=>{
+            console.log(err);
+          });
+          
           setCurrentStep(3);
         } else {
           setCurrentStep(currentStep + 1);

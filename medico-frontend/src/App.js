@@ -32,6 +32,8 @@ import Division from "./Components/SafeComponents/Division";
 import Group from "./Components/SafeComponents/Group";
 import Article from "./Components/SafeComponents/Article";
 import AddGroup from "./Components/SafeComponents/AddGroup";
+import AdminPage from "./Components/Admin/AdminPage";
+import AdminVerify from "./Components/Admin/AdminVerify";
 
 function App() {
   const loginStatus = token() !== null;
@@ -242,6 +244,16 @@ function App() {
                 <Navigate to="/login" replace />
               )
             }
+          />
+          <Route
+            path="/admin"
+            exact
+            element={<AdminPage/>} 
+          />
+          <Route
+            path="/admin/home"
+            exact
+            element={<AdminVerify/>} 
           />
         </Routes>
       </div>

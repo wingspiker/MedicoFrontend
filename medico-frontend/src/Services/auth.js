@@ -217,3 +217,81 @@ export let showMessage = false;
 export const setMessage = (b) => {
     showMessage = b;
 }
+
+
+
+export const getAllUnverifiedBuyers = async () => {
+    // const url = development.url + '/api/auth/login';
+
+    // console.log(login);
+
+    return axios.get(url+ '/api/user/all-unverified-buyers')
+        .then(response => {
+            // Handle successful response
+            console.log(response);
+            return response; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });
+    
+}
+
+export const getAllVerifiedBuyers = async () => {
+    // const url = development.url + '/api/auth/login';
+
+    // console.log(login);
+
+    return axios.get(url+ '/api/user/all-verified-buyers')
+        .then(response => {
+            // Handle successful response
+            console.log(response);
+            return response; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });
+    
+}
+
+export const getAllUnverifiedCompanies = async () => {
+    // const url = development.url + '/api/auth/login';
+
+    // console.log(login);
+
+    return axios.get(url+ '/api/user/all-unverified-companies')
+        .then(response => {
+            // Handle successful response
+            console.log(response);
+            return response; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });
+    
+}
+
+export const getAllVerifiedCompanies = async () => {
+    // const url = development.url + '/api/auth/login';
+
+    // console.log(login);
+
+    return axios.get(url+ '/api/user/all-verified-companies')
+        .then(response => {
+            // Handle successful response
+            console.log(response);
+            return response; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });
+    
+}
