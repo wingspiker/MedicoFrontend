@@ -19,6 +19,7 @@ import AddProduct from "./Components/SafeComponents/AddProduct";
 import {
   decodeToken,
   formdata,
+  isAdmin,
   setCurrStep,
   setFormData,
   signOut,
@@ -38,6 +39,8 @@ import AdminVerify from "./Components/Admin/AdminVerify";
 function App() {
   const loginStatus = token() !== null;
   const [isLoggedIn, setIsLoggedIn] = useState(loginStatus);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(isAdmin);
+  // console.log(isAdminLoggedIn);
   const [isComplete, setIsComplete] = useState(true);
   const [showSidebar, setShowSidebar] = useState(loginStatus);
   // console.log(showSidebar, isLoggedIn);
@@ -248,12 +251,16 @@ function App() {
           <Route
             path="/admin"
             exact
-            element={<AdminPage/>} 
+            element={
+            <AdminPage setIsAdminLoggedIn={setIsAdminLoggedIn}
+            />} 
           />
           <Route
-            path="/admin/home"
+            path="/admin/dashboard"
             exact
-            element={<AdminVerify/>} 
+            element={
+              isAdminLoggedIn?(<AdminVerify/>):(<Navigate to="/admin" replace />)
+            } 
           />
         </Routes>
       </div>

@@ -8,9 +8,11 @@ import {
   getAllUnverifiedCompanies,
   getAllVerifiedBuyers,
   getAllVerifiedCompanies,
+  signOut,
 } from "../../Services/auth";
 
 import { Typography, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Button } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 export default function AdminVerify() {
   const [value, setValue] = useState(0);
   const [effect, setEffect] = useState(false);
@@ -18,6 +20,8 @@ export default function AdminVerify() {
   const [vBuyers, setvBuyers] = useState([]);
   const [unvCompanies, setUnvCompanies] = useState([]);
   const [vCompanies, setvCompanies] = useState([]);
+
+  const navigate = useNavigate()
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -61,9 +65,10 @@ export default function AdminVerify() {
     if (buyer === null) {
       return;
     }
+    console.log('f',buyer);
     return (
-      <TableRow key={buyer.email}>
-        <TableCell>{buyer.firstName + " " + buyer.lastName}</TableCell>
+      <TableRow key={buyer.id}>
+        <TableCell>{buyer.displayName}</TableCell>
         <TableCell>{buyer.occupation}</TableCell>
         {/* <TableCell>{buyer.email}</TableCell> */}
         <TableCell>
@@ -134,13 +139,24 @@ export default function AdminVerify() {
     .catch((err) => alert("Error verifying company"));
   }
 
+  const onlogout = () => {
+    signOut();
+    navigate('/admin');
+  }
 
-console.log('veri buy', vCompanies);
-console.log('unveri buy', unvCompanies); 
+
+// console.log('veri buy', vBuyers); 
+// console.log('unveri buy', unvBuyers); 
   return (
     <>
-      <div className=" p-4 ">
+      <div className=" p-4 flex justify-between">
         <h1 className=" text-3xl text-white font-bold ">Medico</h1>
+        <button
+          onClick={onlogout}
+          className=" bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-indigo-600"
+        >
+          Logout
+        </button>
       </div>
       <hr />
       <div className=" mx-8 mt-2">
@@ -172,7 +188,7 @@ console.log('unveri buy', unvCompanies);
                 <TableHead>
                   <TableRow>
                     <TableCell>Name</TableCell>
-                    <TableCell>Occupation</TableCell>
+                    <TableCell>Email</TableCell>
                     {/* <TableCell>Email</TableCell> */}
                     <TableCell>Action</TableCell>
                   </TableRow>
@@ -181,7 +197,7 @@ console.log('unveri buy', unvCompanies);
                   {vBuyers.map(renderBuyerRow)}
                 </TableBody>
               </Table>
-              {vBuyers.filter(p=>p!==null).length===0 && 
+              {unvBuyers.filter(p=>p!==null).length===0 && 
                   <p className=" text-center w-full p-2 text-2xl">No data</p>
                   }
             </TableContainer>
@@ -192,13 +208,13 @@ console.log('unveri buy', unvCompanies);
                 <TableHead>
                   <TableRow>
                     <TableCell>Name</TableCell>
-                    <TableCell>Company</TableCell>
+                    <TableCell>Email</TableCell>
                     {/* <TableCell>Email</TableCell> */}
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {unvBuyers.map(renderVerBuyerRow)}
+                  {vBuyers.map(renderVerBuyerRow)}
                 </TableBody>
               </Table>
               {unvBuyers.filter(p=>p!==null).length===0 && 

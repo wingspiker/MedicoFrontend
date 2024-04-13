@@ -116,6 +116,15 @@ export const decodeToken = () => {
     return token()? jwt_decode(token()) : null;
 }
 
+export const isAdmin = () => {
+    const user = decodeToken();
+    if(user){
+        const key = Object.keys(user).find((key)=> key.endsWith('role'))
+        return user[key]==='Admin'
+    }
+    return false
+}
+
 export let currStep = 1;
 
 export const  setCurrStep = (stepNum) =>{

@@ -20,6 +20,9 @@ const Welcome = (props) => {
   useEffect(() => {
     const user = decodeToken()
     console.log(user);
+    if(!user){
+      return;
+    }
     if(user.isVerified === 'False'){
       setIsRed(true)
       toast.success("You are not verified kindly get verified", {autoClose: 1000});

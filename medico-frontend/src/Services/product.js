@@ -37,6 +37,7 @@ export const getProducts = async (email) => {
         }
       };
       console.log(config);
+    //   const p = email.replace('@','%40')
     
     return axios.get(url+ `/api/product/products-by-company?companyEmail=${email}`, config)
         .then(response => {
