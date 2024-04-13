@@ -24,7 +24,8 @@ import ArticlePreviewCard from "./ArticlesPreviewCard";
 import { handleImageUpload } from "../../Services/upload";
 import { decodeToken } from "../../Services/auth";
 import { getProducts } from "../../Services/product";
-import { addOffer } from "../../Services/offer";
+import { addDiscountBenefit, addOffer } from "../../Services/offer";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 const BenefitType = {
   DISCOUNT: "Discount Offer",
@@ -117,12 +118,7 @@ function removeUndefinedEntries(array) {
 function AddOffer() {
   const [currentStep, setCurrentStep] = React.useState(1);
   const [products, setProducts] = React.useState([]);
-  const [data, setData] = useState({
-    offerId: "",
-    basicDetails: {},
-    groups: {},
-    benefits: {},
-  });
+  const [offerId, setOfferId] = useState();
   const {
     register,
     handleSubmit,
@@ -141,13 +137,18 @@ function AddOffer() {
       const email = user[keys.find((k) => k.endsWith("emailaddress"))];
       getProducts(email)
         .then((res) => {
-          console.log(res);
           setProducts(res);
         })
         .catch((err) => console.log(err));
     }
   }, [currentStep]);
-
+  function sanitizeObject(obj) {
+    return Object.fromEntries(
+      Object.entries(obj).filter(
+        ([key, value]) => value !== "" && value !== undefined
+      )
+    );
+  }
   const onSubmit = (formData) => {
     console.log("Form Data:", formData);
     switch (currentStep) {
@@ -156,32 +157,86 @@ function AddOffer() {
           const user = decodeToken();
           const keys = Object.keys(user);
           const email = user[keys.find((k) => k.endsWith("emailaddress"))];
-          const amt = formData.amount??0
+          const amt = formData.amount ?? 0;
           addOffer({
             ...formData,
-            offerType: 0, 
+            offerType: 0,
             companyEmail: email,
-            amount:amt
-          }).then((res)=>{
-            console.log(res);
-            setData((prev) => ({ ...prev, offerId: res.id }));
-          }).catch(err=>{
-            console.log(err);
-          });
-          
-          setCurrentStep(3);
+            amount: amt,
+          })
+            .then((res) => {
+              setOfferId(res.id);
+              setCurrentStep(3);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         } else {
           setCurrentStep(currentStep + 1);
         }
-        setData((prev) => ({ ...prev, basicDetails: formData }));
         break;
       case 2:
-        // setCurrentStep(currentStep + 1);
-        setData((prev) => ({ ...prev, groups: formData }));
+        if (offerType === "Product Centric") {
+          const user = decodeToken();
+          const keys = Object.keys(user);
+          const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+          addOffer(
+            sanitizeObject({
+              ...formData,
+              offerType: 1,
+              companyEmail: email,
+              conditions: undefined,
+              productCentricOffer: { conditions: formData.conditions },
+            })
+          )
+            .then((res) => {
+              setOfferId(res.id);
+              setCurrentStep(currentStep + 1);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else if (offerType === "Box Base") {
+          const user = decodeToken();
+          const keys = Object.keys(user);
+          const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+          addOffer(
+            sanitizeObject({
+              ...formData,
+              offerType: 2,
+              companyEmail: email,
+              conditions: undefined,
+              boxBaseOffer: {
+                id: boxBaseOfferProducts[0].productId,
+                boxBaseOfferProducts: formData.boxBaseOfferProducts,
+              },
+              boxBaseOfferProducts: undefined,
+            })
+          )
+            .then((res) => {
+              setOfferId(res.id);
+              setCurrentStep(currentStep + 1);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
         break;
       case 3:
-        setData((prev) => ({ ...prev, basicDetails: formData }));
-        console.log("Final Submission", data);
+        console.log("Final Submission", formData);
+        if (benefitType === BenefitType.DISCOUNT) {
+          addDiscountBenefit(offerId, {
+            discountPercentage: formData.discountPercentage,
+            maximumDiscount: formData.maximumDiscount,
+          })
+            .then((res) => {
+              console.log("res", res);
+              setOfferId(res.id);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
         break;
       default:
         break;
@@ -199,6 +254,7 @@ function AddOffer() {
   const selectedArticles = watch("selectedArticles");
   const benefitType = watch("benefitType");
   const conditions = watch("conditions", []);
+  const boxBaseOfferProducts = watch("boxBaseOfferProducts", []);
   const goodsBenefitConditions = watch("goodsBenefitConditions", []);
   const productsBenefitConditions = watch("productsBenefitConditions", []);
 
@@ -321,6 +377,7 @@ function AddOffer() {
                       <ReactDatePicker
                         className="h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 pl-2"
                         {...field}
+                        autoComplete="off"
                         dateFormat="d MMM yyyy"
                         minDate={new Date()}
                         selected={field.value ? new Date(field.value) : null}
@@ -493,6 +550,7 @@ function AddOffer() {
                               selected={
                                 field.value ? new Date(field.value) : null
                               }
+                              autoComplete="off"
                               showTimeSelect={false}
                               dropdownMode="select"
                               placeholderText="Select expiry date"
@@ -526,6 +584,7 @@ function AddOffer() {
                               selected={
                                 field.value ? new Date(field.value) : null
                               }
+                              autoComplete="off"
                               showTimeSelect={false}
                               dropdownMode="select"
                               placeholderText="Select expiry date"
@@ -613,14 +672,14 @@ function AddOffer() {
                 </Box>
                 <CustomTabPanel value={values} index={0}>
                   {offerType === "Product Centric" && (
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="flex gap-2 flex-wrap">
                       {products.map((product) => (
                         <ProductCard product={product} />
                       ))}
                     </div>
                   )}
                   {offerType === "Box Base" && (
-                    <div className="grid grid-cols-4">
+                    <div className="flex gap-2 flex-wrap">
                       {products.map((product) => (
                         <ProductCard product={product} boxBase={true} />
                       ))}
@@ -645,49 +704,134 @@ function AddOffer() {
                       onClick={async () => {
                         await trigger();
                         if (Object.keys(errors).length === 0) {
-                          toast.success("Group created");
-                          setValue("conditions", [
-                            ...conditions,
-                            {
-                              // id: Math.random(),
-                              productOffers:
-                                removeUndefinedEntries(selectedProducts),
-                            },
-                          ]);
+                          if (offerType === "Product Centric") {
+                            toast.success("Group created");
+                            setValue("conditions", [
+                              ...conditions,
+                              {
+                                // id: Math.random(),
+                                productOffers:
+                                  removeUndefinedEntries(selectedProducts),
+                              },
+                            ]);
+                          } else {
+                            toast.success("Product added");
+                            setValue("boxBaseOfferProducts", [
+                              ...boxBaseOfferProducts,
+                              {
+                                ...selectedProducts[0],
+                                quantity: undefined,
+                                sizeX: undefined,
+                                sizeY: undefined,
+                                id: selectedProducts[0].productId,
+                                unitBoxQuantity:
+                                  +selectedProducts[0]?.sizeX *
+                                  +selectedProducts[0]?.sizeY *
+                                  +selectedProducts[0]?.quantity,
+                              },
+                              ,
+                              ,
+                            ]);
+                          }
+                          setValue("selectedProducts", []);
                         }
                       }}
                     >
-                      Create Group
+                      {offerType === "Product Centric" ? "Create Group" : "Add"}
                     </Fab>
                   </Box>
                 </CustomTabPanel>
                 <CustomTabPanel value={values} index={1}>
-                  {/* {offerType === "Product Centric" && ( */}
-                  <div className="flex flex-col gap-5">
-                    {conditions.map(({ productOffers }, idx) => {
-                      return (
-                        <>
-                          <div className="w-full justify-center text-2xl text-left">
-                            Group {idx + 1}
-                          </div>
-                          <hr />
-                          <div className="flex flex-col md:flex-row gap-5">
-                            {productOffers.map((product, index) => (
+                  {offerType === "Product Centric" && (
+                    <div className="flex flex-col gap-5">
+                      {conditions.map(({ productOffers }, idx) => {
+                        return (
+                          <>
+                            <div className="flex w-full gap-3 text-2xl text-left items-center">
+                              <div className="text-center align-middle">
+                                Group {idx + 1}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const filteredConditions = conditions.filter(
+                                    (el, index) => idx !== index
+                                  );
+                                  setValue("conditions", filteredConditions);
+                                  toast.success("Group removed");
+                                }}
+                              >
+                                <DeleteRoundedIcon
+                                  color="error"
+                                  sx={{ height: "30px", width: "30px" }}
+                                />
+                              </button>
+                            </div>
+                            <hr />
+                            <div className="flex flex-col md:flex-row gap-5">
+                              {productOffers.map((product, index) => (
+                                <PreviewCard
+                                  boxBase={offerType === "Box Base"}
+                                  product={{
+                                    ...products.find(
+                                      (el) => el.id === product.productId
+                                    ),
+                                    ...product,
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {offerType === "Box Base" && (
+                    <div className="flex flex-col gap-5">
+                      {boxBaseOfferProducts.map((boxOffer, idx) => {
+                        return (
+                          <>
+                            <div className="w-full justify-center text-2xl text-left">
+                              <div className="text-center align-middle">
+                                Group {idx + 1}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const filteredProducts =
+                                    boxBaseOfferProducts.filter(
+                                      (el, index) => idx !== index
+                                    );
+                                  setValue(
+                                    "boxBaseOfferProducts",
+                                    filteredProducts
+                                  );
+                                  toast.success("Group removed");
+                                }}
+                              >
+                                <DeleteRoundedIcon
+                                  color="error"
+                                  sx={{ height: "30px", width: "30px" }}
+                                />
+                              </button>
+                            </div>
+                            <hr />
+                            <div className="flex flex-col md:flex-row gap-5">
                               <PreviewCard
-                                boxBase={offerType === "Box Base"}
+                                boxBase={true}
                                 product={{
                                   ...products.find(
-                                    (el) => el.id === product.productId
+                                    (el) => el.id === boxOffer.productId
                                   ),
-                                  ...product,
+                                  ...boxOffer,
                                 }}
                               />
-                            ))}
-                          </div>
-                        </>
-                      );
-                    })}
-                  </div>
+                            </div>
+                          </>
+                        );
+                      })}
+                    </div>
+                  )}
                 </CustomTabPanel>
                 <div className="w-full flex justify-center mt-12">
                   <button
@@ -780,6 +924,7 @@ function AddOffer() {
                             message:
                               "Discount percentage should be less than 100",
                           },
+                          valueAsNumber: true,
                         }),
                         type: "number",
                       }}
@@ -791,6 +936,7 @@ function AddOffer() {
                       inputProps={{
                         ...register("maximumDiscount", {
                           required: "Maximum discount is required",
+                          valueAsNumber: true,
                         }),
                         type: "number",
                       }}

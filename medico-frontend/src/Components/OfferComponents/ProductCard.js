@@ -11,25 +11,28 @@ const ProductCard = ({ product, boxBase }) => {
   );
   const [expanded, setExpanded] = useState(checked);
 
-  useEffect(() => {
-    if (!watchSelectedProducts[product.id]) return;
-    const { sizeX, sizeY, quantity } = watchSelectedProducts[product.id];
-    if (!sizeX || !sizeY || !quantity) return;
-    const unitBoxQuantity = +sizeX * +sizeY * +quantity;
-    setValue(`selectedProducts.${product.id}.unitBoxQuantity`, unitBoxQuantity);
-  }, [watchSelectedProducts, product, setValue]);
+  // useEffect(() => {
+  //   if (!watchSelectedProducts[product.id]) return;
+  //   const { sizeX, sizeY, quantity } = watchSelectedProducts[product.id];
+  //   if (!sizeX || !sizeY || !quantity) return;
+  //   const unitBoxQuantity = +sizeX * +sizeY * +quantity;
+  //   console.log("unitBoxQuantity", unitBoxQuantity);
+  //   setValue(`selectedProducts.${product.id}.unitBoxQuantity`, unitBoxQuantity);
+  // }, [watchSelectedProducts, product, setValue]);
 
   const handleCheckboxChange = (event) => {
-    const updatedSelectedProducts = [...watchSelectedProducts];
+    let updatedSelectedProducts = [...watchSelectedProducts];
     if (event.target.checked) {
       if (boxBase)
-        updatedSelectedProducts.push({
-          productId: product.id,
-          sizeX: product?.packSize?.x,
-          sizeY: "",
-          quantity: "",
-          unitBoxQuantity: 0,
-        });
+        updatedSelectedProducts = [
+          {
+            productId: product.id,
+            sizeX: product?.packSize?.x,
+            sizeY: "",
+            quantity: "",
+            unitBoxQuantity: 0,
+          },
+        ];
       else
         updatedSelectedProducts.push({
           productId: product.id,
@@ -59,7 +62,6 @@ const ProductCard = ({ product, boxBase }) => {
     <label htmlFor={`checkbox-${product.id}`} style={{ cursor: "pointer" }}>
       <Card
         variant="outlined"
-        
         style={{
           marginBottom: "16px",
           background: "#ffffff",
@@ -86,14 +88,14 @@ const ProductCard = ({ product, boxBase }) => {
               id={`checkbox-${product.id}`}
               checked={checked}
               onChange={handleCheckboxChange}
-              
+
               // style={{ color: "rgb(22 78 99)", marginRight: "16px" }}
             />
             <Typography
               variant="h5"
               component="div"
               className=" text-red-500 font-extralight"
-              style={{ letterSpacing:'0.125em'}}
+              style={{ letterSpacing: "0.125em" }}
             >
               {product.drugName}
             </Typography>
@@ -138,7 +140,11 @@ const ProductCard = ({ product, boxBase }) => {
                 color="text.secondary"
                 style={{ marginBottom: "4px", color: "#000000" }}
               >
-                MRP:  ₹ {Number(product.mrp).toPrecision(String(product.mrp).length+2)} /-
+                MRP: ₹{" "}
+                {Number(product.mrp).toPrecision(
+                  String(product.mrp).length + 2
+                )}{" "}
+                /-
               </Typography>
             </div>
           </div>
@@ -172,6 +178,7 @@ const ProductCard = ({ product, boxBase }) => {
                           inputProps={{
                             ...register(`selectedProducts[${index}].sizeY`, {
                               required: "Size Y is required",
+                              valueAsNumber: true,
                             }),
                             variant: "outlined",
                             type: "number",
@@ -187,6 +194,7 @@ const ProductCard = ({ product, boxBase }) => {
                           inputProps={{
                             ...register(`selectedProducts[${index}].quantity`, {
                               required: "Quantity is required",
+                              valueAsNumber: true,
                             }),
                             variant: "outlined",
                             type: "number",
@@ -224,6 +232,7 @@ const ProductCard = ({ product, boxBase }) => {
                               `selectedProducts[${index}].requiredQuantity`,
                               {
                                 required: "Quantity is required",
+                                valueAsNumber: true,
                               }
                             ),
                             variant: "outlined",
