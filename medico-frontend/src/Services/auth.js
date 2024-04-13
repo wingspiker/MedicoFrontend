@@ -295,3 +295,24 @@ export const getAllVerifiedCompanies = async () => {
         });
     
 }
+
+export const forceVerify = async (email) => {
+    // const url = development.url + '/api/auth/login';
+
+    // console.log(login);
+
+    const post = {email}
+
+    return axios.post(url+ '/api/user/force-verify', post)
+        .then(response => {
+            // Handle successful response
+            console.log(response);
+            return response; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });
+    
+}

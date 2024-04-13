@@ -3,6 +3,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import {
+  forceVerify,
   getAllUnverifiedBuyers,
   getAllUnverifiedCompanies,
   getAllVerifiedBuyers,
@@ -100,7 +101,7 @@ export default function AdminVerify() {
         <TableCell>{comp.companyEmail}</TableCell>
         {/* <TableCell>{buyer.email}</TableCell> */}
         <TableCell>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleVerify(comp.companyEmail)}>
             Verify
           </Button>
         </TableCell>
@@ -124,8 +125,18 @@ export default function AdminVerify() {
     );
   };
 
+  const handleVerify = (email) => () => {
+    forceVerify(email)
+    .then((res) => {
+      console.log(res);
+      setEffect(e=>!e)
+    })
+    .catch((err) => alert("Error verifying company"));
+  }
 
 
+console.log('veri buy', vCompanies);
+console.log('unveri buy', unvCompanies); 
   return (
     <>
       <div className=" p-4 ">
@@ -170,6 +181,9 @@ export default function AdminVerify() {
                   {vBuyers.map(renderBuyerRow)}
                 </TableBody>
               </Table>
+              {vBuyers.filter(p=>p!==null).length===0 && 
+                  <p className=" text-center w-full p-2 text-2xl">No data</p>
+                  }
             </TableContainer>
           
             <Typography variant="h5" gutterBottom>Verified Buyers</Typography>
@@ -187,6 +201,9 @@ export default function AdminVerify() {
                   {unvBuyers.map(renderVerBuyerRow)}
                 </TableBody>
               </Table>
+              {unvBuyers.filter(p=>p!==null).length===0 && 
+                  <p className=" text-center w-full p-2 text-2xl">No data</p>
+                  }
             </TableContainer>        
           </Box>
           
@@ -205,12 +222,16 @@ export default function AdminVerify() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {vCompanies.map(renderCompRow)}
+                  {unvCompanies.map(renderCompRow)} 
+                  
                 </TableBody>
               </Table>
+                {unvCompanies.filter(p=>p!==null).length===0 && 
+                  <p className=" text-center w-full p-2 text-2xl">No data</p>
+                  }
             </TableContainer>
           
-            <Typography variant="h5" gutterBottom>Verified Buyers</Typography>
+            <Typography variant="h5" gutterBottom>Verified Companies</Typography>
             <TableContainer component={Paper} sx={{ maxHeight: 400, overflow: 'auto' }}>
               <Table aria-label="Unverified Buyers">
                 <TableHead>
@@ -223,8 +244,12 @@ export default function AdminVerify() {
                 </TableHead>
                 <TableBody>
                   {vCompanies.map(renderVerCompRow)}
+                  
                 </TableBody>
               </Table>
+              {vCompanies.filter(p=>p!==null).length===0 && 
+                  <p className=" text-center w-full p-2 text-2xl">No data</p>
+                  }
             </TableContainer>        
           </Box>
             
