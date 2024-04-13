@@ -61,7 +61,7 @@ export const getOffers = async (email) => {
   };
 
   return axios
-    .get(url + `/company?companyEmail=${email}`, config)
+    .get(url + `/company/${email}`, config)
     .then((response) => {
       // Handle successful response
       return response.data; // Return data if needed

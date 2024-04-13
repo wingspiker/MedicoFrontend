@@ -26,6 +26,8 @@ import { decodeToken } from "../../Services/auth";
 import { getProducts } from "../../Services/product";
 import { addDiscountBenefit, addOffer } from "../../Services/offer";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import Loader from "../../Loader";
+import { useNavigate } from "react-router-dom";
 
 const BenefitType = {
   DISCOUNT: "Discount Offer",
@@ -118,11 +120,15 @@ function removeUndefinedEntries(array) {
 function AddOffer() {
   const [currentStep, setCurrentStep] = React.useState(1);
   const [products, setProducts] = React.useState([]);
-  const [offerId, setOfferId] = useState();
+  const [loading, setLoading] = useState(false);
+  const [offerId, setOfferId] = useState(null);
+
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     setValue,
     getValues,
     trigger,
@@ -154,6 +160,7 @@ function AddOffer() {
     switch (currentStep) {
       case 1:
         if (offerType === "Price Centric") {
+          setLoading(true)
           const user = decodeToken();
           const keys = Object.keys(user);
           const email = user[keys.find((k) => k.endsWith("emailaddress"))];
@@ -165,11 +172,14 @@ function AddOffer() {
             amount: amt,
           })
             .then((res) => {
+              console.log(res);
               setOfferId(res.id);
               setCurrentStep(3);
+              setLoading(false)
             })
             .catch((err) => {
               console.log(err);
+              setLoading(false)
             });
         } else {
           setCurrentStep(currentStep + 1);
@@ -177,9 +187,17 @@ function AddOffer() {
         break;
       case 2:
         if (offerType === "Product Centric") {
+          setLoading(true)
           const user = decodeToken();
           const keys = Object.keys(user);
           const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+          console.log(sanitizeObject({
+            ...formData,
+            offerType: 1,
+            companyEmail: email,
+            conditions: undefined,
+            productCentricOffer: { conditions: formData.conditions },
+          }));
           addOffer(
             sanitizeObject({
               ...formData,
@@ -190,11 +208,14 @@ function AddOffer() {
             })
           )
             .then((res) => {
+              console.log(res);
               setOfferId(res.id);
               setCurrentStep(currentStep + 1);
+              setLoading(false)
             })
             .catch((err) => {
               console.log(err);
+              setLoading(false)
             });
         } else if (offerType === "Box Base") {
           const user = decodeToken();
@@ -224,6 +245,7 @@ function AddOffer() {
         break;
       case 3:
         console.log("Final Submission", formData);
+        setLoading(true)
         if (benefitType === BenefitType.DISCOUNT) {
           addDiscountBenefit(offerId, {
             discountPercentage: formData.discountPercentage,
@@ -232,10 +254,26 @@ function AddOffer() {
             .then((res) => {
               console.log("res", res);
               setOfferId(res.id);
+              setLoading(false)
+              toast.success('Offer Added Successfully')
+              reset();
+              setTimeout(() => {
+                navigate('/Offer')
+              }, 2000);
+              
+              
             })
             .catch((err) => {
               console.log(err);
+              setLoading(false)
             });
+        }
+        if (benefitType === BenefitType.FREE_PRODUCTS){
+          //free products
+        }
+
+        if (benefitType === BenefitType.FREE_GOODS){
+          //free goods
         }
         break;
       default:
@@ -611,7 +649,7 @@ function AddOffer() {
                   className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                   type="submit"
                 >
-                  Next
+                  {loading ? <Loader/> : 'Next'}
                 </button>
               </div>
             </form>
@@ -1092,7 +1130,7 @@ function AddOffer() {
                     className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                     type="submit"
                   >
-                    Next
+                    {loading ? <Loader/> : 'Next'}
                   </button>
                 </div>
               </form>

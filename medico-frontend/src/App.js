@@ -61,7 +61,7 @@ function App() {
 
   return (
     <Router>
-      <div className="bg-cyan-900 h-screen">
+      <div className="bg-cyan-900 h-screen overflow-auto">
         {/* {(isLoggedIn && showSidebar) ? <Sidebar changeLogin={logout}  /> : ""} */}
 
         <Routes>
