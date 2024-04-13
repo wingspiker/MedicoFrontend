@@ -32,6 +32,8 @@ import {
 } from "../../Services/offer";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import { getArticles } from "../../Services/article";
+import Loader from "../../Loader";
+import { useNavigate } from "react-router-dom";
 
 const BenefitType = {
   DISCOUNT: "Discount Offer",
@@ -125,19 +127,20 @@ function AddOffer() {
   const [currentStep, setCurrentStep] = React.useState(3);
   const [products, setProducts] = React.useState([]);
   const [articles, setArticles] = React.useState([]);
-  const [offerId, setOfferId] = useState(
-    "0105b3e8-6c02-460b-b76e-869151c9c5c4"
-  );
+  const [loading, setLoading] = useState(false);
+  const [offerId, setOfferId] = useState(null);
   const email = useMemo(() => {
     const user = decodeToken();
     const keys = Object.keys(user);
     return user[keys.find((k) => k.endsWith("emailaddress"))];
   }, []);
 
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     setValue,
     getValues,
     trigger,
@@ -177,6 +180,7 @@ function AddOffer() {
       switch (currentStep) {
         case 1:
           if (formData.offerType === "Price Centric") {
+            setLoading(true);
             addOffer({
               ...formData,
               offerType: 0,
@@ -185,9 +189,11 @@ function AddOffer() {
               .then((res) => {
                 setOfferId(res.id);
                 setCurrentStep(3);
+                setLoading(false);
               })
               .catch((err) => {
                 console.log(err);
+                setLoading(false);
               });
           } else {
             setCurrentStep(currentStep + 1);
@@ -195,6 +201,7 @@ function AddOffer() {
           break;
         case 2:
           if (formData.offerType === "Product Centric") {
+            setLoading(true);
             addOffer(
               sanitizeObject({
                 ...formData,
@@ -207,11 +214,14 @@ function AddOffer() {
               .then((res) => {
                 setOfferId(res.id);
                 setCurrentStep(currentStep + 1);
+                setLoading(false);
               })
               .catch((err) => {
                 console.log(err);
+                setLoading(false);
               });
           } else if (formData.offerType === "Box Base") {
+            setLoading(true);
             addOffer(
               sanitizeObject({
                 ...formData,
@@ -228,15 +238,18 @@ function AddOffer() {
               .then((res) => {
                 setOfferId(res.id);
                 setCurrentStep(currentStep + 1);
+                setLoading(false);
               })
               .catch((err) => {
                 console.log(err);
+                setLoading(false);
               });
           }
           break;
         case 3:
           console.log("Final Submission", formData);
           if (formData.benefitType === BenefitType.DISCOUNT) {
+            setLoading(true);
             addDiscountBenefit(offerId, {
               discountPercentage: formData.discountPercentage,
               maximumDiscount: formData.maximumDiscount,
@@ -245,11 +258,17 @@ function AddOffer() {
                 toast.success("Offer created successfully");
                 setOfferId(res.id);
                 setCurrentStep(1);
+                setLoading(false);
+                setTimeout(() => {
+                  navigate("/Offer");
+                }, 2000);
               })
               .catch((err) => {
                 console.log(err);
+                setLoading(false);
               });
           } else if (formData.benefitType === BenefitType.FREE_GOODS) {
+            setLoading(true);
             addFreeGoodsBenefit(offerId, {
               articleOptions: formData.goodsBenefitConditions,
             })
@@ -257,11 +276,17 @@ function AddOffer() {
                 toast.success("Offer created successfully");
                 setOfferId(null);
                 setCurrentStep(1);
+                setLoading(false);
+                setTimeout(() => {
+                  navigate("/Offer");
+                }, 2000);
               })
               .catch((err) => {
                 console.log(err);
+                setLoading(false);
               });
           } else if (formData.benefitType === BenefitType.FREE_PRODUCTS) {
+            setLoading(true);
             addFreeProductsBenefit(offerId, {
               productOptions: formData.productsBenefitConditions,
             })
@@ -269,9 +294,14 @@ function AddOffer() {
                 toast.success("Offer created successfully");
                 setOfferId(null);
                 setCurrentStep(1);
+                setLoading(false);
+                setTimeout(() => {
+                  navigate("/Offer");
+                }, 2000);
               })
               .catch((err) => {
                 console.log(err);
+                setLoading(false);
               });
           }
           break;
@@ -282,10 +312,6 @@ function AddOffer() {
     [email, offerId, currentStep]
   );
 
-  const offerName = watch("offerName");
-  const offerCode = watch("offerCode");
-  const offerPhoto = watch("offerPhoto");
-  const offerDescription = watch("offerDescription");
   const offerType = watch("offerType");
   const allowedUsers = watch("allowedUsers");
   const priceCentricOffer = watch("priceCentricOffer");
@@ -650,7 +676,7 @@ function AddOffer() {
                   className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                   type="submit"
                 >
-                  Next
+                   {loading ? <Loader/> : 'Next'}
                 </button>
               </div>
             </form>
@@ -1172,7 +1198,7 @@ function AddOffer() {
                     className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                     type="submit"
                   >
-                    Next
+                    {loading ? <Loader /> : "Next"}
                   </button>
                 </div>
               </form>
