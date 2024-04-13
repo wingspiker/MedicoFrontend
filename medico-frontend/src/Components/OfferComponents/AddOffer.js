@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import { CustomInput } from "./Input";
 import {
@@ -24,8 +24,14 @@ import ArticlePreviewCard from "./ArticlesPreviewCard";
 import { handleImageUpload } from "../../Services/upload";
 import { decodeToken } from "../../Services/auth";
 import { getProducts } from "../../Services/product";
-import { addDiscountBenefit, addOffer } from "../../Services/offer";
+import {
+  addDiscountBenefit,
+  addFreeGoodsBenefit,
+  addFreeProductsBenefit,
+  addOffer,
+} from "../../Services/offer";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import { getArticles } from "../../Services/article";
 
 const BenefitType = {
   DISCOUNT: "Discount Offer",
@@ -116,9 +122,18 @@ function removeUndefinedEntries(array) {
 }
 
 function AddOffer() {
-  const [currentStep, setCurrentStep] = React.useState(1);
+  const [currentStep, setCurrentStep] = React.useState(3);
   const [products, setProducts] = React.useState([]);
-  const [offerId, setOfferId] = useState();
+  const [articles, setArticles] = React.useState([]);
+  const [offerId, setOfferId] = useState(
+    "0105b3e8-6c02-460b-b76e-869151c9c5c4"
+  );
+  const email = useMemo(() => {
+    const user = decodeToken();
+    const keys = Object.keys(user);
+    return user[keys.find((k) => k.endsWith("emailaddress"))];
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -131,117 +146,141 @@ function AddOffer() {
   } = useForm();
 
   useEffect(() => {
-    if (currentStep === 2) {
-      const user = decodeToken();
-      const keys = Object.keys(user);
-      const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+    if ((currentStep === 2 || currentStep === 3) && !products.length) {
       getProducts(email)
         .then((res) => {
           setProducts(res);
         })
         .catch((err) => console.log(err));
     }
+    if (currentStep === 3 && !articles.length) {
+      getArticles(email)
+        .then((res) => {
+          setArticles(res);
+        })
+        .catch((err) => console.log(err));
+    }
   }, [currentStep]);
-  function sanitizeObject(obj) {
+
+  const sanitizeObject = useCallback((obj) => {
     return Object.fromEntries(
       Object.entries(obj).filter(
         ([key, value]) => value !== "" && value !== undefined
       )
     );
-  }
-  const onSubmit = (formData) => {
-    console.log("Form Data:", formData);
-    switch (currentStep) {
-      case 1:
-        if (offerType === "Price Centric") {
-          const user = decodeToken();
-          const keys = Object.keys(user);
-          const email = user[keys.find((k) => k.endsWith("emailaddress"))];
-          const amt = formData.amount ?? 0;
-          addOffer({
-            ...formData,
-            offerType: 0,
-            companyEmail: email,
-            amount: amt,
-          })
-            .then((res) => {
-              setOfferId(res.id);
-              setCurrentStep(3);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else {
-          setCurrentStep(currentStep + 1);
-        }
-        break;
-      case 2:
-        if (offerType === "Product Centric") {
-          const user = decodeToken();
-          const keys = Object.keys(user);
-          const email = user[keys.find((k) => k.endsWith("emailaddress"))];
-          addOffer(
-            sanitizeObject({
+  }, []);
+
+  const onSubmit = useCallback(
+    (formData) => {
+      console.log("Form Data:", formData);
+      // const amt = formData.amount ?? 0;
+      switch (currentStep) {
+        case 1:
+          if (formData.offerType === "Price Centric") {
+            addOffer({
               ...formData,
-              offerType: 1,
+              offerType: 0,
               companyEmail: email,
-              conditions: undefined,
-              productCentricOffer: { conditions: formData.conditions },
             })
-          )
-            .then((res) => {
-              setOfferId(res.id);
-              setCurrentStep(currentStep + 1);
+              .then((res) => {
+                setOfferId(res.id);
+                setCurrentStep(3);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          } else {
+            setCurrentStep(currentStep + 1);
+          }
+          break;
+        case 2:
+          if (formData.offerType === "Product Centric") {
+            addOffer(
+              sanitizeObject({
+                ...formData,
+                offerType: 1,
+                companyEmail: email,
+                conditions: undefined,
+                productCentricOffer: { conditions: formData.conditions },
+              })
+            )
+              .then((res) => {
+                setOfferId(res.id);
+                setCurrentStep(currentStep + 1);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          } else if (formData.offerType === "Box Base") {
+            addOffer(
+              sanitizeObject({
+                ...formData,
+                offerType: 2,
+                companyEmail: email,
+                conditions: undefined,
+                boxBaseOffer: {
+                  boxBaseOfferProducts: formData.boxBaseOfferProducts,
+                },
+                selectedProducts: undefined,
+                boxBaseOfferProducts: undefined,
+              })
+            )
+              .then((res) => {
+                setOfferId(res.id);
+                setCurrentStep(currentStep + 1);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+          break;
+        case 3:
+          console.log("Final Submission", formData);
+          if (formData.benefitType === BenefitType.DISCOUNT) {
+            addDiscountBenefit(offerId, {
+              discountPercentage: formData.discountPercentage,
+              maximumDiscount: formData.maximumDiscount,
             })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else if (offerType === "Box Base") {
-          const user = decodeToken();
-          const keys = Object.keys(user);
-          const email = user[keys.find((k) => k.endsWith("emailaddress"))];
-          addOffer(
-            sanitizeObject({
-              ...formData,
-              offerType: 2,
-              companyEmail: email,
-              conditions: undefined,
-              boxBaseOffer: {
-                id: boxBaseOfferProducts[0].productId,
-                boxBaseOfferProducts: formData.boxBaseOfferProducts,
-              },
-              boxBaseOfferProducts: undefined,
+              .then((res) => {
+                toast.success("Offer created successfully");
+                setOfferId(res.id);
+                setCurrentStep(1);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          } else if (formData.benefitType === BenefitType.FREE_GOODS) {
+            addFreeGoodsBenefit(offerId, {
+              articleOptions: formData.goodsBenefitConditions,
             })
-          )
-            .then((res) => {
-              setOfferId(res.id);
-              setCurrentStep(currentStep + 1);
+              .then((res) => {
+                toast.success("Offer created successfully");
+                setOfferId(null);
+                setCurrentStep(1);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          } else if (formData.benefitType === BenefitType.FREE_PRODUCTS) {
+            addFreeProductsBenefit(offerId, {
+              productOptions: formData.productsBenefitConditions,
             })
-            .catch((err) => {
-              console.log(err);
-            });
-        }
-        break;
-      case 3:
-        console.log("Final Submission", formData);
-        if (benefitType === BenefitType.DISCOUNT) {
-          addDiscountBenefit(offerId, {
-            discountPercentage: formData.discountPercentage,
-            maximumDiscount: formData.maximumDiscount,
-          })
-            .then((res) => {
-              console.log("res", res);
-              setOfferId(res.id);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        }
-        break;
-      default:
-        break;
-    }
-  };
+              .then((res) => {
+                toast.success("Offer created successfully");
+                setOfferId(null);
+                setCurrentStep(1);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+          break;
+        default:
+          break;
+      }
+    },
+    [email, offerId, currentStep]
+  );
 
   const offerName = watch("offerName");
   const offerCode = watch("offerCode");
@@ -723,7 +762,6 @@ function AddOffer() {
                                 quantity: undefined,
                                 sizeX: undefined,
                                 sizeY: undefined,
-                                id: selectedProducts[0].productId,
                                 unitBoxQuantity:
                                   +selectedProducts[0]?.sizeX *
                                   +selectedProducts[0]?.sizeY *
@@ -791,7 +829,7 @@ function AddOffer() {
                       {boxBaseOfferProducts.map((boxOffer, idx) => {
                         return (
                           <>
-                            <div className="w-full justify-center text-2xl text-left">
+                            <div className="flex w-full justify-start text-xl text-center gap-3">
                               <div className="text-center align-middle">
                                 Group {idx + 1}
                               </div>
@@ -972,7 +1010,7 @@ function AddOffer() {
                     <CustomTabPanel value={values} index={0}>
                       <div className="flex gap-5 flex-wrap">
                         {benefitType === BenefitType.FREE_GOODS
-                          ? DEMO_ARTICLES.map((article) => (
+                          ? articles.map((article) => (
                               <ArticleCard article={article} />
                             ))
                           : products.map((product) => (
@@ -1006,20 +1044,20 @@ function AddOffer() {
                                 setValue("goodsBenefitConditions", [
                                   ...goodsBenefitConditions,
                                   {
-                                    id: Math.random(),
                                     articleWithQuantities:
                                       removeUndefinedEntries(selectedArticles),
                                   },
                                 ]);
+                                setValue("selectedArticles", []);
                               } else {
                                 setValue("productsBenefitConditions", [
                                   ...productsBenefitConditions,
                                   {
-                                    id: Math.random(),
                                     productWithQuantities:
                                       removeUndefinedEntries(selectedProducts),
                                   },
                                 ]);
+                                setValue("selectedProducts", []);
                               }
                             }
                           }}
@@ -1035,17 +1073,38 @@ function AddOffer() {
                               ({ articleWithQuantities }, idx) => {
                                 return (
                                   <>
-                                    <div className="w-full justify-center text-xl text-center">
-                                      Group {idx + 1}
+                                    <div className="flex w-full justify-start text-xl text-center gap-3">
+                                      <div className="text-center align-middle">
+                                        Group {idx + 1}
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const filteredConditions =
+                                            goodsBenefitConditions.filter(
+                                              (el, index) => idx !== index
+                                            );
+                                          setValue(
+                                            "goodsBenefitConditions",
+                                            filteredConditions
+                                          );
+                                          toast.success("Group removed");
+                                        }}
+                                      >
+                                        <DeleteRoundedIcon
+                                          color="error"
+                                          sx={{ height: "30px", width: "30px" }}
+                                        />
+                                      </button>
                                     </div>
                                     <div className="flex flex-col md:flex-row flex-wrap gap-5">
                                       {articleWithQuantities.map(
                                         (article, index) => (
                                           <ArticlePreviewCard
                                             article={{
-                                              ...DEMO_ARTICLES.find(
+                                              ...articles.find(
                                                 (el) =>
-                                                  el.id === article.productId
+                                                  el.id === article.articleId
                                               ),
                                               ...article,
                                             }}
@@ -1061,8 +1120,29 @@ function AddOffer() {
                               ({ productWithQuantities }, idx) => {
                                 return (
                                   <>
-                                    <div className="w-full justify-center text-xl text-center">
-                                      Group {idx + 1}
+                                    <div className="flex w-full justify-start text-xl text-center gap-3">
+                                      <div className="text-center align-middle">
+                                        Group {idx + 1}
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const filteredConditions =
+                                            productsBenefitConditions.filter(
+                                              (el, index) => idx !== index
+                                            );
+                                          setValue(
+                                            "productsBenefitConditions",
+                                            filteredConditions
+                                          );
+                                          toast.success("Group removed");
+                                        }}
+                                      >
+                                        <DeleteRoundedIcon
+                                          color="error"
+                                          sx={{ height: "30px", width: "30px" }}
+                                        />
+                                      </button>
                                     </div>
                                     <div className="flex flex-wrap gap-5">
                                       {productWithQuantities.map(

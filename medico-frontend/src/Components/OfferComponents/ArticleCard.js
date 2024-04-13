@@ -11,22 +11,22 @@ const ArticleCard = ({ article }) => {
   );
   const [expanded, setExpanded] = useState(checked);
 
-const handleCheckboxChange = (event) => {
-  const updatedSelectedArticles = [...watchSelectedArticles];
-  if (event.target.checked) {
-    updatedSelectedArticles.push({
-      articleId: article.id,
-    });
-    setExpanded(true);
-  } else {
-    const index = updatedSelectedArticles.findIndex(
-      (selectedArticle) => selectedArticle.articleId === article.id
-    );
-    updatedSelectedArticles.splice(index, 1);
-    setExpanded(false);
-  }
-  setValue("selectedArticles", updatedSelectedArticles);
-};
+  const handleCheckboxChange = (event) => {
+    const updatedSelectedArticles = [...watchSelectedArticles];
+    if (event.target.checked) {
+      updatedSelectedArticles.push({
+        articleId: article.id,
+      });
+      setExpanded(true);
+    } else {
+      const index = updatedSelectedArticles.findIndex(
+        (selectedArticle) => selectedArticle.articleId === article.id
+      );
+      updatedSelectedArticles.splice(index, 1);
+      setExpanded(false);
+    }
+    setValue("selectedArticles", updatedSelectedArticles);
+  };
 
   const handleInputChange = (event, field, index) => {
     const value = parseFloat(event.target.value);
@@ -113,7 +113,7 @@ const handleCheckboxChange = (event) => {
             </div>
           </div>
           <div className="h-[90px]">
-             {expanded &&
+            {expanded &&
               watchSelectedArticles.map((selectedArticle, index) => (
                 <div key={index}>
                   {selectedArticle.articleId === article.id && (
@@ -129,21 +129,17 @@ const handleCheckboxChange = (event) => {
                       <CustomInput
                         label={"Quantity"}
                         inputProps={{
-                          ...register(
-                            `selectedArticles[${index}].quantity`,
-                            {
-                              required: "Quantity is required",
-                            }
-                          ),
+                          ...register(`selectedArticles[${index}].quantity`, {
+                            required: "Quantity is required",
+                            valueAsNumber: true,
+                          }),
                           variant: "outlined",
                           type: "number",
                           onChange: (e) =>
                             handleInputChange(e, "quantity", index),
                           className: "!w-36",
                         }}
-                        error={
-                          errors?.selectedArticles?.[index]?.quantity
-                        }
+                        error={errors?.selectedArticles?.[index]?.quantity}
                         style={{ marginBottom: "8px" }}
                       />
                     </div>
