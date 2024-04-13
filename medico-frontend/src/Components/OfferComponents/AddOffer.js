@@ -229,10 +229,10 @@ function AddOffer() {
                 companyEmail: email,
                 conditions: undefined,
                 boxBaseOffer: {
-                  boxBaseOfferProducts: formData.boxBaseOfferProducts,
+                  boxBaseOfferProduct: formData.boxBaseOfferProduct,
                 },
                 selectedProducts: undefined,
-                boxBaseOfferProducts: undefined,
+                boxBaseOfferProduct: undefined,
               })
             )
               .then((res) => {
@@ -319,7 +319,7 @@ function AddOffer() {
   const selectedArticles = watch("selectedArticles");
   const benefitType = watch("benefitType");
   const conditions = watch("conditions", []);
-  const boxBaseOfferProducts = watch("boxBaseOfferProducts", []);
+  const boxBaseOfferProduct = watch("boxBaseOfferProduct", []);
   const goodsBenefitConditions = watch("goodsBenefitConditions", []);
   const productsBenefitConditions = watch("productsBenefitConditions", []);
 
@@ -781,8 +781,8 @@ function AddOffer() {
                             ]);
                           } else {
                             toast.success("Product added");
-                            setValue("boxBaseOfferProducts", [
-                              ...boxBaseOfferProducts,
+                            setValue("boxBaseOfferProduct", [
+                              ...boxBaseOfferProduct,
                               {
                                 ...selectedProducts[0],
                                 quantity: undefined,
@@ -852,7 +852,7 @@ function AddOffer() {
                   )}
                   {offerType === "Box Base" && (
                     <div className="flex flex-col gap-5">
-                      {boxBaseOfferProducts.map((boxOffer, idx) => {
+                      {boxBaseOfferProduct.map((boxOffer, idx) => {
                         return (
                           <>
                             <div className="flex w-full justify-start text-xl text-center gap-3">
@@ -863,11 +863,11 @@ function AddOffer() {
                                 type="button"
                                 onClick={() => {
                                   const filteredProducts =
-                                    boxBaseOfferProducts.filter(
+                                    boxBaseOfferProduct.filter(
                                       (el, index) => idx !== index
                                     );
                                   setValue(
-                                    "boxBaseOfferProducts",
+                                    "boxBaseOfferProduct",
                                     filteredProducts
                                   );
                                   toast.success("Group removed");
