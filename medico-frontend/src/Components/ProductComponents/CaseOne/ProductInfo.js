@@ -33,6 +33,7 @@ function ProductInformation({ register, watch, errors, prescription, divisions, 
   const handlePrescriptionDocFileChange = (e) => {
     handleImageUpload(e)
     .then((res) => {
+      console.log(res);
       setValue('letterPadDocument',res.data)
     })
     .catch((err) => console.log("Error: ", err));
@@ -166,7 +167,7 @@ function ProductInformation({ register, watch, errors, prescription, divisions, 
                 required: "letter Pad document is required",
                 type: "file",
                 accept: "image/*",
-                onchange:handlePrescriptionDocFileChange,
+                onChange:handlePrescriptionDocFileChange,
                 className:
                   "file:border file:border-gray-300 file:rounded-md file:text-sm file:font-medium file:bg-white file:text-indigo-500 hover:file:bg-indigo-50",
               }}

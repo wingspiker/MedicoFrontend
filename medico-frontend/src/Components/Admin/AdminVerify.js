@@ -145,8 +145,8 @@ export default function AdminVerify() {
   }
 
 
-// console.log('veri buy', vBuyers); 
-// console.log('unveri buy', unvBuyers); 
+console.log('veri buy', vBuyers); 
+console.log('unveri buy', unvBuyers); 
   return (
     <>
       <div className=" p-4 flex justify-between">

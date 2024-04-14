@@ -81,8 +81,7 @@ function AddProduct() {
   const onSubmit = (data) => {
     data.talukaIds = sTaluka;
     data.updatedBuyer = updatedBuyer;
-    // data.rowSelectionModel = rowSelectionModel;
-    // console.log("data", data);
+
     if (currentStep < 6) {
       if (currentStep === 1) {
         console.log('yele',data);
@@ -169,7 +168,8 @@ function AddProduct() {
       discountOnMRP,
       marginOnRetail,
       returnDays,
-      productImage
+      productImage,
+      letterPadDocument
     } = rawData;
 
     let formattedApiInput = {
@@ -216,7 +216,7 @@ function AddProduct() {
     if (formattedApiInput.prescription === 1) {
       formattedApiInput.letterPadDocumentLink = letterPadDocument;
     }
-
+    console.log(letterPadDocument);
     console.log(formattedApiInput);
 
     addProduct(formattedApiInput)
@@ -380,6 +380,8 @@ function AddProduct() {
     );
   };
 
+  const [errSix, setErSix] = useState(false);
+
   const calculateSellingPrice = () => {
     if (pricingMethod === "0" && mrp && discount) {
       const sp = (mrp - (mrp * discount) / 100).toFixed(2);
@@ -519,6 +521,7 @@ function AddProduct() {
               <div className="flex mt-4 flex-row-reverse">
                 <button
                   type="submit"
+                  
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
                   {loading ? <Loader /> : "Next"}
@@ -538,10 +541,13 @@ function AddProduct() {
                 cols={cols}
                 setData={setData}
                 defaultPrice={sp}
+                setErSix={setErSix}
+                
               />
               <div className="flex mt-4 flex-row-reverse">
                 <button
                   type="submit"
+                  disabled={errSix}
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
                   {loading ? <Loader /> : "Next"}

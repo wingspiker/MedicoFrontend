@@ -129,10 +129,16 @@ function AddPricing({
   data,
   cols,
   setData,
-  defaultPrice
+  defaultPrice,
+  setErSix
 }) {
   const [errors, setErrors] = useState({});
 
+  const isError = () =>{
+    const e = Object.keys(errors);
+    const e2 = e.map(el=>errors[el].length > 0);
+    setErSix(e2.length>0)
+  }
   // useEffect(() => {
   //   const selectedBuyers = buyers.filter((b) =>
   //     rowSelectionModel.includes(b.id)
@@ -151,6 +157,7 @@ function AddPricing({
   // }, [buyers, rowSelectionModel, defaultPrice]);
 
   const handleInputChange = (e, id) => {
+    isError();
     const newPrice = e.target.value;
     const newData = data.map((item) => {
       if (item.id === id) {
@@ -162,7 +169,7 @@ function AddPricing({
     setErrors((prevErrors) => ({
       ...prevErrors,
       [id]:
-        newPrice < defaultPrice
+        Number(newPrice) < Number(defaultPrice)
           ? "Price must be higher than default price."
           : "",
     }));

@@ -215,6 +215,7 @@ function AddOffer() {
                 setOfferId(res.id);
                 setCurrentStep(currentStep + 1);
                 setLoading(false);
+                toast.success("Offer created successfully");
               })
               .catch((err) => {
                 console.log(err);
@@ -255,12 +256,12 @@ function AddOffer() {
               maximumDiscount: formData.maximumDiscount,
             })
               .then((res) => {
-                toast.success("Offer created successfully");
+                toast.success("Offer updated successfully");
                 setOfferId(res.id);
-                setCurrentStep(1);
                 setLoading(false);
                 setTimeout(() => {
                   navigate("/Offer");
+                  setCurrentStep(1);
                 }, 2000);
               })
               .catch((err) => {
@@ -273,7 +274,7 @@ function AddOffer() {
               articleOptions: formData.goodsBenefitConditions,
             })
               .then((res) => {
-                toast.success("Offer created successfully");
+                toast.success("Offer updated successfully");
                 setOfferId(null);
                 setCurrentStep(1);
                 setLoading(false);
@@ -902,7 +903,7 @@ function AddOffer() {
                     className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                     type="submit"
                   >
-                    Next
+                    {loading?<Loader/>:'Next'} 
                   </button>
                 </div>
               </form>
@@ -1198,7 +1199,7 @@ function AddOffer() {
                     className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                     type="submit"
                   >
-                    Next
+                    {loading?<Loader/>:'Next'} 
                   </button>
                 </div>
               </form>
