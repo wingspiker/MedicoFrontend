@@ -136,8 +136,12 @@ function AddPricing({
 
   const isError = () =>{
     const e = Object.keys(errors);
-    const e2 = e.map(el=>errors[el].length > 0);
-    setErSix(e2.length>0)
+    let e1=0;
+    e.forEach(ee=>{
+      if(errors[ee]!=='')e1++;
+    })
+
+    setErSix(e1!==0)
   }
   // useEffect(() => {
   //   const selectedBuyers = buyers.filter((b) =>

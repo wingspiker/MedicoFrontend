@@ -9,7 +9,7 @@ import Occupation from "../ProductComponents/CaseFour/Occupation";
 import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
 import { decodeToken } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
-import { addGroup, getGroups } from "../../Services/group";
+import { addGroup, getGroupById, getGroups } from "../../Services/group";
 import { addBuyerGroup, addBuyers, filterBuyrs } from "../../Services/buyer";
 import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
@@ -84,7 +84,7 @@ function AddProduct() {
 
     if (currentStep < 6) {
       if (currentStep === 1) {
-        console.log('yele',data);
+        console.log("yele", data);
         AddProductData(data);
       }
 
@@ -114,11 +114,32 @@ function AddProduct() {
         }
       }
 
-
       if (currentStep === 2) {
         if (data.existingGroupNo) {
           console.log(data.existingGroupNo);
-          setCurrentStep(5);
+          getGroupById(data.existingGroupNo)
+            .then((g) => {
+              // console.log("ss");
+              // console.log(g);
+              // setBuyers(g.buyers);
+              // console.log(buyers);
+              const formattedBuyers = g.buyers.map((buyer) => ({
+                id: buyer.id,
+                name: `${buyer.firstName} ${buyer.lastName}`,
+                occupation: buyer.occupation,
+                degree: buyer.degree || "NA",
+                price: sp,
+              }));
+              setData(formattedBuyers);
+              if (formattedBuyers.length > 0) {
+                setCols(Object.keys(formattedBuyers[0]));
+              }
+              setCurrentStep(6);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error(err.response.title);
+            });
         } else {
           console.log("3 pe jaa");
           setCurrentStep(currentStep + 1);
@@ -130,18 +151,17 @@ function AddProduct() {
       // console.log("final maal",psdata);
       // console.log(currentProdId);
 
-      const buyerProd = psdata.map(ps=>{
+      const buyerProd = psdata.map((ps) => {
         return {
-          buyerId:ps.id,
-          productId:currentProdId,
-          price:Number(ps.price),
-        }
+          buyerId: ps.id,
+          productId: currentProdId,
+          price: Number(ps.price),
+        };
       });
 
-      AddBuyerProduct(buyerProd)
+      AddBuyerProduct(buyerProd);
     }
   };
-
 
   const AddProductData = (rawData) => {
     setLoading(true);
@@ -169,7 +189,7 @@ function AddProduct() {
       marginOnRetail,
       returnDays,
       productImage,
-      letterPadDocument
+      letterPadDocument,
     } = rawData;
 
     let formattedApiInput = {
@@ -312,29 +332,29 @@ function AddProduct() {
   };
 
   const AddBuyerProduct = (buyProd) => {
-    setLoading(true)
+    setLoading(true);
     addBuyerGroup(buyProd)
-    .then((resp) => {
-      console.log(resp);
-      setLoading(false)
-      setIsRed(false)
-      toast.success('Added Successfully!')
-      setTimeout(() => {
-        navigate("/Product")
-        setIsRed(true)
-      }, 3000);
-    })
-    .catch((err)=>{
-      console.log(err);
-      setLoading(false)
-      setIsRed(true)
-      toast.success('Something Went Wrong')
-      setTimeout(() => {
-        navigate("/Product")
-        setIsRed(true); 
-      }, 3000);
-    })
-  }
+      .then((resp) => {
+        console.log(resp);
+        setLoading(false);
+        setIsRed(false);
+        toast.success("Added Successfully!");
+        setTimeout(() => {
+          navigate("/Product");
+          setIsRed(true);
+        }, 3000);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+        setIsRed(true);
+        toast.success("Something Went Wrong");
+        setTimeout(() => {
+          navigate("/Product");
+          setIsRed(true);
+        }, 3000);
+      });
+  };
 
   const productName = watch("productName");
   const brandName = watch("brandName");
@@ -344,7 +364,7 @@ function AddProduct() {
   const sizeX = watch("sizeX");
   const sizeY = watch("sizeY");
   const contains = watch("contains");
-  const letterPadDocument = watch('letterPadDocument')
+  const letterPadDocument = watch("letterPadDocument");
   const manufacturerName = watch("manufacturerName");
   const manufacturerLicenseNumber = watch("manufacturerLicenseNumber");
   const allowExchange = watch("allowExchange");
@@ -521,7 +541,6 @@ function AddProduct() {
               <div className="flex mt-4 flex-row-reverse">
                 <button
                   type="submit"
-                  
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
                   {loading ? <Loader /> : "Next"}
@@ -542,7 +561,6 @@ function AddProduct() {
                 setData={setData}
                 defaultPrice={sp}
                 setErSix={setErSix}
-                
               />
               <div className="flex mt-4 flex-row-reverse">
                 <button
@@ -550,7 +568,8 @@ function AddProduct() {
                   disabled={errSix}
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
-                  {loading ? <Loader /> : "Next"}
+                  {loading ? <Loader /> : "Submit"}
+                  {console.log(errSix)}
                 </button>
               </div>
             </form>

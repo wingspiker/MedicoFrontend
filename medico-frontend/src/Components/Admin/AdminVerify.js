@@ -172,15 +172,15 @@ console.log('unveri buy', unvBuyers);
             }}
           >
             <Tab
-              label="Buyers"
-              sx={{ textTransform: "none", color: "secondary.main" }}
-            />
-            <Tab
               label="Companies"
               sx={{ textTransform: "none", color: "secondary.main" }}
             />
+            <Tab
+              label="Buyers"
+              sx={{ textTransform: "none", color: "secondary.main" }}
+            />
           </Tabs>
-          {value === 0 && (
+          {value === 1 && (
             <Box sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>Unverified Buyers</Typography>
             <TableContainer component={Paper} sx={{ mb: 4, maxHeight: 400, overflow: 'auto' }}>
@@ -224,7 +224,7 @@ console.log('unveri buy', unvBuyers);
           </Box>
           
           )}
-          {value === 1 && <Box sx={{ p: 3 }}>
+          {value === 0 && <Box sx={{ p: 3 }}>
 
           <Box sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>Unverified Buyers</Typography>
