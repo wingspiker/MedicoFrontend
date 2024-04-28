@@ -15,6 +15,7 @@ import { Toaster, toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../Loader";
 import { IoClose } from "react-icons/io5";
+import Textv1 from "./Global/Textv1";
 // import env from 'react-dotenv'
 
 const Login = (props) => {
@@ -25,7 +26,7 @@ const Login = (props) => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [isRed, setIsRed] = useState(true)
+  const [isRed, setIsRed] = useState(true);
 
   const navigate = useNavigate();
 
@@ -84,39 +85,37 @@ const Login = (props) => {
           const user = decodeToken();
           console.log(user);
           const keys = Object.keys(user);
-          const role = keys.find(claim => claim.endsWith('role'));
-          if(user[role] === 'Admin'){
-            toast.error("You are not authorized to login here. kindly login to admin panel.");
+          const role = keys.find((claim) => claim.endsWith("role"));
+          if (user[role] === "Admin") {
+            toast.error(
+              "You are not authorized to login here. kindly login to admin panel."
+            );
             signOut();
             return;
           }
           if (user.isComplete === "False") {
             setShowSidebar(false);
-            setFormData({...formdata, email:loginData.email})
-            if(user[role]==="Buyer"){
-              setFormData({...formdata, role:0})
-              setIsBuyer(true)
-              
+            setFormData({ ...formdata, email: loginData.email });
+            if (user[role] === "Buyer") {
+              setFormData({ ...formdata, role: 0 });
+              setIsBuyer(true);
             }
-            if(user[role]==="Company"){
-              setFormData({...formdata, role:1})
-              setIsBuyer(false)
+            if (user[role] === "Company") {
+              setFormData({ ...formdata, role: 1 });
+              setIsBuyer(false);
             }
             navigate("/register");
-            setCurrStep(3)
-          }
-          else if (user.isVerified === "False") {
+            setCurrStep(3);
+          } else if (user.isVerified === "False") {
             toast.error("You are not verified. kindly get verified.");
             signOut();
-          } 
-          else{
-            
-            if(user[role]==="Buyer"){
-              signOut()
-              navigate('/');
-              setFormData({...formdata, email:''})
-              setCurrStep(1)
-              return
+          } else {
+            if (user[role] === "Buyer") {
+              signOut();
+              navigate("/");
+              setFormData({ ...formdata, email: "" });
+              setCurrStep(1);
+              return;
             }
             changeLogin(true);
             setShowSidebar(true);
@@ -146,7 +145,7 @@ const Login = (props) => {
   return (
     <section className="h-screen flex items-center justify-center bg-cyan-900">
       <div className="max-w-md md:w-full mx-auto">
-        <div className="bg-white p-8 rounded-lg shadow-md relative">
+        <div className="bg-white p-8 rounded-2xl shadow-md relative">
           <button
             className="absolute top-4 right-4 text-gray-600 hover:text-cyan-700"
             onClick={handleClose}
@@ -155,9 +154,10 @@ const Login = (props) => {
             {/* Positioning close button */}
             <IoClose className="text-3xl" /> {/* Close icon */}
           </button>
-          <h2 className="text-3xl font-semibold text-center text-gray-900 mb-6">
-            Login
+          <h2 className="text-4xl text-center mb-6">
+            <Textv1>Login</Textv1>
           </h2>
+
           <Toaster
             position="top-center"
             toastOptions={{
@@ -217,7 +217,11 @@ const Login = (props) => {
               Don't have an account?{" "}
               <Link
                 to={"/register"}
-                onClick={() => {setCurrStep(1); setFormData(initialData); console.log(formdata);}}
+                onClick={() => {
+                  setCurrStep(1);
+                  setFormData(initialData);
+                  console.log(formdata);
+                }}
                 className="font-semibold hover:text-cyan-600"
               >
                 Go to signup
