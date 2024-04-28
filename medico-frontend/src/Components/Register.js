@@ -89,7 +89,7 @@ const Register = (props) => {
 
   const navigate = useNavigate();
   const currSt = currStep;
-  const [step, setStep] = useState(currSt);
+  const [step, setStep] = useState(1);
   const [red, isRed] = useState(true);
   const [formData, setFormData] = useState(initialData);
 

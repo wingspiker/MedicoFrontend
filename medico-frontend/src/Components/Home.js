@@ -10,7 +10,7 @@ const Home = () => {
         <div>
           <Link
             to="/login"
-            className="bg-red-100 hover:bg-red-200 text-red-600 font-bold py-2 px-4 rounded-2xl mr-4"
+            className="bg-blue-100 hover:bg-blue-200 text-blue-600 font-bold py-2 px-4 rounded-xl mr-4"
           >
             Login
           </Link>
@@ -20,7 +20,7 @@ const Home = () => {
               setFormData(formdata);
             }}
             to="/register"
-            className="bg-green-100 hover:bg-green-200 text-green-600 font-bold py-2 px-4 rounded-2xl"
+            className="bg-green-100 hover:bg-green-200 text-green-600 font-bold py-2 px-4 rounded-xl"
           >
             Register
           </Link>
