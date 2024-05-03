@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Sidebar } from "./Sidebar";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signOut, decodeToken } from "../../Services/auth";
 import { Toaster, toast } from "sonner";
 import { getProducts } from "../../Services/product";
@@ -146,7 +146,8 @@ export default function Product(props) {
 
 
           {products.map((p, i) => {
-            return <Card sx={{ maxWidth: 345, padding:'8px' }} key={p.id}>
+            return <Link to={`/Product/${i}`} state={p.id} key={p.id}>
+            <Card sx={{ maxWidth: 345, padding:'8px' }} >
                 <CardHeader
                   // avatar={
                   //   <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -184,7 +185,9 @@ export default function Product(props) {
         </IconButton>
 
       </CardActions> */}
-              </Card>;
+              </Card>
+            </Link>
+            ;
           })}
         </div>
         </div>

@@ -35,6 +35,7 @@ import Article from "./Components/SafeComponents/Article";
 import AddGroup from "./Components/SafeComponents/AddGroup";
 import AdminPage from "./Components/Admin/AdminPage";
 import AdminVerify from "./Components/Admin/AdminVerify";
+import ProductDetails from "./Components/SafeComponents/ProductDetails";
 
 function App() {
   const loginStatus = token() !== null;
@@ -151,6 +152,17 @@ function App() {
             element={
               isLoggedIn ? (
                 <Product changeLogin={setIsLoggedIn} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/Product/:id"
+            exact
+            element={
+              isLoggedIn ? (
+                <ProductDetails changeLogin={setIsLoggedIn} />
               ) : (
                 <Navigate to="/login" replace />
               )
