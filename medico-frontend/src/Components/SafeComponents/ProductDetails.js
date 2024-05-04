@@ -73,6 +73,10 @@ const AddProductDetailModal = ({
     //   });
   };
 
+  useEffect(() => {
+    setValue("price", product.sellingPrice);
+  }, [product]);
+
   return (
     <div
       className={`fixed inset-0  flex items-center justify-center bg-black bg-opacity-75  ${
@@ -133,7 +137,9 @@ const AddProductDetailModal = ({
                 id="editableInput"
                 {...register("price")}
                 defaultValue={product.sellingPrice}
-                onChange={(e) => setInputValue(e.target.value)}
+                onChange={(e) => {
+                  setValue("price", e.target.value);
+                }}
               />
             </div>
           </div>
@@ -298,7 +304,7 @@ export default function ProductDetails(props) {
           {Object.keys(product).length != 0 && (
             <p className=" text-white text-lg ">
               <div className="medicine-info bg-cyan-900 text-white p-4 rounded-md flex justify-between gap-3">
-                <div className="">
+                <div className="w-48">
                   <img
                     src={product.photoUrl}
                     alt={product.brandName}
@@ -307,9 +313,8 @@ export default function ProductDetails(props) {
                   <h2 className="text-2xl text-center mb-4">
                     Drug Name : {product.drugName}
                   </h2>
-                  <p></p>
                 </div>
-                <div>
+                <div className="w-48">
                   <div>Division: {product.division}</div>
                   <div>Type: {product.type}</div>
                   <div>Manufacturing Name: {product.manufacturingName}</div>
@@ -345,7 +350,7 @@ export default function ProductDetails(props) {
                   <div>Value: {product.value}</div>
                   <div>product Batches</div>
                 </div>
-                <div>
+                <div className="w-48">
                   <div>MRP: {product.mrp}</div>
                   <div>Retail Price: {product.retailPrice}</div>
                   <div>Selling Price: {product.sellingPrice}</div>
@@ -375,8 +380,6 @@ export default function ProductDetails(props) {
               </div>
             </p>
           )}
-
-          <p>{console.log(product)}</p>
           <AddProductDetailModal
             isOpen={isModalOpen}
             onClose={closeModal}
