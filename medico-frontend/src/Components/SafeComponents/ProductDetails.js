@@ -9,6 +9,8 @@ import Typography from "@mui/material/Typography";
 import { useForm } from "react-hook-form";
 import Loader from "../../Loader";
 import { productTypeEnum } from "../../Models/enums.model";
+import { addBatch } from "../../Services/batch";
+import { Toaster, toast } from "sonner";
 
 const AddProductDetailModal = ({
   isOpen,
@@ -16,6 +18,8 @@ const AddProductDetailModal = ({
   setproductDetail,
   changeEffect,
   product,
+  showSucc,
+  showErr
 }) => {
   const {
     register,
@@ -48,30 +52,23 @@ const AddProductDetailModal = ({
   // };
 
   const onsubmit = (data) => {
-    data.isSold = true;
     data.productId = product.id;
     console.log(data);
 
-    // setLoading(true);
-    // const user = decodeToken();
-    // const keys = Object.keys(user);
-    // const email = user[keys.find((k) => k.endsWith("emailaddress"))];
-    // console.log("article", data);
-    // let articleData = data;
-    // articleData.articlePhoto = articleImg;
-    // articleData.companyEmail = email;
-    // addArticle(articleData)
-    //   .then((resp) => {
-    //     console.log(resp);
-    //     setLoading(false);
-    //     changeEffect((e) => !e);
-    //     onClose();
-    //     reset();
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     setLoading(false);
-    //   });
+    setLoading(true);
+    addBatch(data)
+      .then((resp) => {
+        console.log(resp);
+        setLoading(false);
+        showSucc('Batch Added Successfully')
+        onClose();
+        reset();
+      })
+      .catch((err) => {
+        console.log(err);
+        showErr('Error adding batch', err)
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -86,7 +83,7 @@ const AddProductDetailModal = ({
     >
       <div className="bg-white text-black p-4 rounded-md mx-4 md:w-4/12">
         <form onSubmit={handleSubmit(onsubmit)}>
-          <p className="text-lg text-cyan-900 mb-6">Add Article</p>
+          <p className="text-lg text-cyan-900 mb-6">Add Batch - {product.drugName} </p>
           <div className="w-full px-2 md:mb-4 r">
             <CustomInput
               label={"Manufacturing Date"}
@@ -246,6 +243,16 @@ export default function ProductDetails(props) {
   const [currArt, setcurrArt] = useState(null);
 
   const [effect, setEffect] = useState(false);
+  const [isRed, setIsRed] = useState(false);
+
+  const showErr = (msg) => {
+    setIsRed(true)
+    toast.error(msg)
+  }
+  const showSucc = (msg) => {
+    setIsRed(false)
+    toast.success(msg)
+  }
 
   const history = useLocation();
 
@@ -263,6 +270,8 @@ export default function ProductDetails(props) {
   useEffect(() => {
     getProductById(history.state)
       .then((res) => {
+        console.log('prodd');
+        console.log(res);
         setProduct(res);
       })
       .catch((err) => {
@@ -288,12 +297,12 @@ export default function ProductDetails(props) {
 
   return (
     <div className="flex h-screen bg-cyan-900 text-white">
-      {/* <Toaster
+      <Toaster
         position="top-center"
         toastOptions={{
           style: { color: `${isRed?'red':'green'}`},
         }}
-      /> */}
+      />
       {/* <Sidebar /> Add the Sidebar component */}
       <Sidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
@@ -385,6 +394,8 @@ export default function ProductDetails(props) {
             setproductDetail={setproductDetail}
             changeEffect={setEffect}
             product={product}
+            showErr={showErr}
+            showSucc={showSucc}
           />
           <RemoveProductDetailModal
             isOpen={isModalOpen2}
