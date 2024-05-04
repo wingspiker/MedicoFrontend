@@ -8,7 +8,7 @@ export const CustomInput = ({ label, placeholder, inputProps, error }) => {
         {...inputProps}
         className={
           "w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900" +
-          " " + 
+          " " +
           inputProps?.className
         }
         placeholder={placeholder}

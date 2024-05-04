@@ -30,6 +30,10 @@ const AddProductDetailModal = ({
   const quantity = watch("quantity");
   const price = watch("price");
 
+  const [inputValue, setInputValue] = useState(product.sellingPrice);
+
+  console.log("asd", inputValue);
+
   const [loading, setLoading] = useState(false);
 
   // const [url, setUrl] = useState(null);
@@ -122,20 +126,28 @@ const AddProductDetailModal = ({
           </div>
 
           <div className="w-full px-2 md:mb-4">
-            <CustomInput
+            {/* <CustomInput
               label={"Price"}
               placeholder={"Enter Price"}
+              defaultValue={product.sellingPrice}
               inputProps={{
-                ...register("price", {
-                  required: "Price is required",
-                }),
+                ...register("price"),
                 type: "number",
-                value: product.sellingPrice,
               }}
-              error={errors?.price}
-            />
+            /> */}
+            <div className="flex flex-col">
+              <label className="text-black text-lg">Price</label>
+              <input
+                className="w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900"
+                label="Price"
+                type="number"
+                id="editableInput"
+                {...register("price")}
+                defaultValue={product.sellingPrice}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
+            </div>
           </div>
-
           <div className="mt-4 flex justify-end gap-4">
             <button
               type="button"
