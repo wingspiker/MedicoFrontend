@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { useForm } from "react-hook-form";
 import Loader from "../../Loader";
+import { productTypeEnum } from "../../Models/enums.model";
 
 const AddProductDetailModal = ({
   isOpen,
@@ -106,6 +107,9 @@ const AddProductDetailModal = ({
               inputProps={{
                 ...register("expiryDate", {
                   required: "Expiry Date is required",
+                  validate: (value) =>
+                    (value && value >= manufacturingDate) ||
+                    "Expiry Date cannot be before Manufacturing Date",
                 }),
                 type: "date",
               }}
@@ -135,12 +139,17 @@ const AddProductDetailModal = ({
                 label="Price"
                 type="number"
                 id="editableInput"
-                {...register("price")}
+                {...register("price", {
+                  required: "Price is required",
+                })}
                 defaultValue={product.sellingPrice}
                 onChange={(e) => {
                   setValue("price", e.target.value);
                 }}
               />
+              {errors?.price && (
+                <p className="text-red-500">{errors.price.message}</p>
+              )}
             </div>
           </div>
 
@@ -303,8 +312,8 @@ export default function ProductDetails(props) {
         <div className=" h-[90vh] overflow-y-auto no-scrollbar">
           {Object.keys(product).length != 0 && (
             <p className=" text-white text-lg ">
-              <div className="medicine-info bg-cyan-900 text-white p-4 rounded-md flex justify-between gap-3">
-                <div className="w-48">
+              <div className="medicine-info bg-cyan-900 text-white text-sm p-4 rounded-md flex justify-between ">
+                <div className="w-1/3 m-4 rounded-md border border-solid p-4">
                   <img
                     src={product.photoUrl}
                     alt={product.brandName}
@@ -313,23 +322,40 @@ export default function ProductDetails(props) {
                   <h2 className="text-2xl text-center mb-4">
                     Drug Name : {product.drugName}
                   </h2>
-                </div>
-                <div className="w-48">
-                  <div>Division: {product.division}</div>
-                  <div>Type: {product.type}</div>
-                  <div>Manufacturing Name: {product.manufacturingName}</div>
+                  <div className="">Brand Name: {product.brandName}</div>
+                  <div className="">
+                    Manufacturing Name: {product.manufacturingName}
+                  </div>
                   <div>Manufacturer Name: {product.manufacturerName}</div>
-                  <div>LetterPad Document: {product.letterPadDocument}</div>
+
+                  <div>
+                    Letterpad Document: {product.letterPadDocument}
+                    <button
+                      className={` my-2 cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+                    >
+                      Show Letterpad
+                    </button>
+                  </div>
+                </div>
+                <div className="w-2/3 m-4 rounded-md border border-solid p-4">
+                  <div>Contents: {product.contents}</div>
+                  <div>Division: {product.division}</div>
+                  <div>
+                    Type:{" "}
+                    {
+                      productTypeEnum[
+                        Object.keys(productTypeEnum)[product.type]
+                      ]
+                    }
+                  </div>
                   <div>
                     Prescription Required: {product.prescription ? "Yes" : "No"}
                   </div>
+                  <div>MRP: {product.mrp}</div>
+                  <div>Retail Price: {product.retailPrice}</div>
+                  <div>Selling Price: {product.sellingPrice}</div>
                   <div>License Number: {product.licenseNo}</div>
-                  <div>MRP: {product.mrp}</div>
-                  <div>Retail Price: {product.retailPrice}</div>
-                  <div>Selling Price: {product.sellingPrice}</div>
-                  <div>
-                    Pack Size: {product.packSize.x} x {product.packSize.y}
-                  </div>
+
                   <div>
                     Return Policy:{" "}
                     {product.returnPolicy.allowReturn
@@ -342,34 +368,7 @@ export default function ProductDetails(props) {
                       ? "Allow Exchange"
                       : "No Exchange Allowed"}
                   </div>
-                  <div>Contents: {product.contents}</div>
-                  <div>
-                    Effective Price Calculation Type:{" "}
-                    {product.effectivePriceCalculationType}
-                  </div>
-                  <div>Value: {product.value}</div>
-                  <div>product Batches</div>
-                </div>
-                <div className="w-48">
-                  <div>MRP: {product.mrp}</div>
-                  <div>Retail Price: {product.retailPrice}</div>
-                  <div>Selling Price: {product.sellingPrice}</div>
-                  <div>
-                    Pack Size: {product.packSize.x} x {product.packSize.y}
-                  </div>
-                  <div>
-                    Return Policy:{" "}
-                    {product.returnPolicy.allowReturn
-                      ? "Allow Return"
-                      : "No Return Allowed"}
-                  </div>
-                  <div>
-                    Exchange Policy:{" "}
-                    {product.returnPolicy.allowExchange
-                      ? "Allow Exchange"
-                      : "No Exchange Allowed"}
-                  </div>
-                  <div>Contents: {product.contents}</div>
+
                   <div>
                     Effective Price Calculation Type:{" "}
                     {product.effectivePriceCalculationType}
