@@ -30,6 +30,8 @@ const AddProductDetailModal = ({
   const quantity = watch("quantity");
   const price = watch("price");
 
+  const [inputValue, setInputValue] = useState(product.sellingPrice);
+
   const [loading, setLoading] = useState(false);
 
   // const [url, setUrl] = useState(null);
@@ -122,18 +124,18 @@ const AddProductDetailModal = ({
           </div>
 
           <div className="w-full px-2 md:mb-4">
-            <CustomInput
-              label={"Price"}
-              placeholder={"Enter Price"}
-              inputProps={{
-                ...register("price", {
-                  required: "Price is required",
-                }),
-                type: "number",
-                value: product.sellingPrice,
-              }}
-              error={errors?.price}
-            />
+            <div className="flex flex-col">
+              <label className="text-black text-lg">Price</label>
+              <input
+                className="w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900"
+                label="Price"
+                type="number"
+                id="editableInput"
+                {...register("price")}
+                defaultValue={product.sellingPrice}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
+            </div>
           </div>
 
           <div className="mt-4 flex justify-end gap-4">
@@ -295,8 +297,8 @@ export default function ProductDetails(props) {
         <div className=" h-[90vh] overflow-y-auto no-scrollbar">
           {Object.keys(product).length != 0 && (
             <p className=" text-white text-lg ">
-              <div className="medicine-info bg-cyan-900 text-white p-4 rounded-md flex justify-between">
-                <div className=" flex-grow-0">                  
+              <div className="medicine-info bg-cyan-900 text-white p-4 rounded-md flex justify-between gap-3">
+                <div className="">
                   <img
                     src={product.photoUrl}
                     alt={product.brandName}
@@ -305,75 +307,72 @@ export default function ProductDetails(props) {
                   <h2 className="text-2xl text-center mb-4">
                     Drug Name : {product.drugName}
                   </h2>
-                  <p>
-                    
-                  </p>
+                  <p></p>
                 </div>
                 <div>
-                <div>Division: {product.division}</div>
-                <div>Type: {product.type}</div>
-                <div>Manufacturing Name: {product.manufacturingName}</div>
-                <div>Manufacturer Name: {product.manufacturerName}</div>
-                <div>LetterPad Document: {product.letterPadDocument}</div>
-                <div>
-                  Prescription Required: {product.prescription ? "Yes" : "No"}
-                </div>
-                <div>License Number: {product.licenseNo}</div>
-                <div>MRP: {product.mrp}</div>
-                <div>Retail Price: {product.retailPrice}</div>
-                <div>Selling Price: {product.sellingPrice}</div>
-                <div>
-                  Pack Size: {product.packSize.x} x {product.packSize.y}
-                </div>
-                <div>
-                  Return Policy:{" "}
-                  {product.returnPolicy.allowReturn
-                    ? "Allow Return"
-                    : "No Return Allowed"}
-                </div>
-                <div>
-                  Exchange Policy:{" "}
-                  {product.returnPolicy.allowExchange
-                    ? "Allow Exchange"
-                    : "No Exchange Allowed"}
-                </div>
-                <div>Contents: {product.contents}</div>
-                <div>
-                  Effective Price Calculation Type:{" "}
-                  {product.effectivePriceCalculationType}
-                </div>
-                <div>Value: {product.value}</div>
-                <div>product Batches</div>
-                </div>
-                <div>
-                
-                <div>MRP: {product.mrp}</div>
-                <div>Retail Price: {product.retailPrice}</div>
-                <div>Selling Price: {product.sellingPrice}</div>
-                <div>
-                  Pack Size: {product.packSize.x} x {product.packSize.y}
+                  <div>Division: {product.division}</div>
+                  <div>Type: {product.type}</div>
+                  <div>Manufacturing Name: {product.manufacturingName}</div>
+                  <div>Manufacturer Name: {product.manufacturerName}</div>
+                  <div>LetterPad Document: {product.letterPadDocument}</div>
+                  <div>
+                    Prescription Required: {product.prescription ? "Yes" : "No"}
+                  </div>
+                  <div>License Number: {product.licenseNo}</div>
+                  <div>MRP: {product.mrp}</div>
+                  <div>Retail Price: {product.retailPrice}</div>
+                  <div>Selling Price: {product.sellingPrice}</div>
+                  <div>
+                    Pack Size: {product.packSize.x} x {product.packSize.y}
+                  </div>
+                  <div>
+                    Return Policy:{" "}
+                    {product.returnPolicy.allowReturn
+                      ? "Allow Return"
+                      : "No Return Allowed"}
+                  </div>
+                  <div>
+                    Exchange Policy:{" "}
+                    {product.returnPolicy.allowExchange
+                      ? "Allow Exchange"
+                      : "No Exchange Allowed"}
+                  </div>
+                  <div>Contents: {product.contents}</div>
+                  <div>
+                    Effective Price Calculation Type:{" "}
+                    {product.effectivePriceCalculationType}
+                  </div>
+                  <div>Value: {product.value}</div>
+                  <div>product Batches</div>
                 </div>
                 <div>
-                  Return Policy:{" "}
-                  {product.returnPolicy.allowReturn
-                    ? "Allow Return"
-                    : "No Return Allowed"}
+                  <div>MRP: {product.mrp}</div>
+                  <div>Retail Price: {product.retailPrice}</div>
+                  <div>Selling Price: {product.sellingPrice}</div>
+                  <div>
+                    Pack Size: {product.packSize.x} x {product.packSize.y}
+                  </div>
+                  <div>
+                    Return Policy:{" "}
+                    {product.returnPolicy.allowReturn
+                      ? "Allow Return"
+                      : "No Return Allowed"}
+                  </div>
+                  <div>
+                    Exchange Policy:{" "}
+                    {product.returnPolicy.allowExchange
+                      ? "Allow Exchange"
+                      : "No Exchange Allowed"}
+                  </div>
+                  <div>Contents: {product.contents}</div>
+                  <div>
+                    Effective Price Calculation Type:{" "}
+                    {product.effectivePriceCalculationType}
+                  </div>
+                  <div>Value: {product.value}</div>
+                  <div>product Batches</div>
                 </div>
-                <div>
-                  Exchange Policy:{" "}
-                  {product.returnPolicy.allowExchange
-                    ? "Allow Exchange"
-                    : "No Exchange Allowed"}
-                </div>
-                <div>Contents: {product.contents}</div>
-                <div>
-                  Effective Price Calculation Type:{" "}
-                  {product.effectivePriceCalculationType}
-                </div>
-                <div>Value: {product.value}</div>
-                <div>product Batches</div>
-                </div>
-                </div>
+              </div>
             </p>
           )}
 
