@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 import { Sidebar } from "./Sidebar";
 import { signOut, decodeToken } from "../../Services/auth";
@@ -9,6 +9,8 @@ import {
 } from "../OfferComponents/Input";
 import { useForm } from "react-hook-form";
 import Loader from "../../Loader";
+import { getDistricts, getStates, getTalukas } from "../../Services/location";
+import { registerSalesman } from "../../Services/user";
 
 const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
   const {
@@ -20,24 +22,23 @@ const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
     formState: { errors },
   } = useForm();
 
+
   const firstName = watch("firstName");
   const lastName = watch("lastName");
   const email = watch("email");
-  const mobileNumer = watch("mobileNumer");
+  const mobileNumber = watch("mobileNumber");
+  const [state, setState] = useState('');
+  const [district, setDistrict] = useState('');
+  const [taluka, setTaluka] = useState('');
+  const [talukaId, setTalukaId] = useState(-1);
 
   const [loading, setLoading] = useState(false);
 
-  // const [url, setUrl] = useState(null);
+  const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [talukas, setTalukas] = useState([]);
 
-  // const handleOnFileChange = (e) => {
-  //   console.log(e);
-  //   handleImageUpload(e)
-  //   .then((res) => {
-  //     console.log(res);
-  //     setValue('articleImg',res.data)
-  //   })
-  //   .catch((err) => console.log("Error: ", err));
-  // }
+  const [errs, setErrs] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,44 +47,102 @@ const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
     if (name === "state") {
       if (value === "") {
         error = "State is required";
+      } else {
+        setState(states.find(s=>s.id==value).name)
+        getDistricts(value)
+          .then((d) => {
+            setDistricts(d);
+          })
+          .catch((err) => console.log(err));
       }
-      // if (value === "") {
-      //   error = "State is required";
-      // } else {
-      //   getDistricts(value)
-      //     .then((d) => {
-      //       setDistricts(d);
-      //     })
-      //     .catch((err) => console.log(err));
-      // }
     }
+    if (name === "district") {
+      if (value === "") {
+        error = "District is required";
+      } else {
+        setDistrict(districts.find(s=>s.id==value).name)
+        getTalukas(value)
+          .then((d) => {
+            setTalukas(d);
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+
+    if (name === "taluka") {
+      if (value === "") {
+        error = "Taluka is required";
+      } else {
+        setTaluka(talukas.find(s=>s.id==value).name);
+        setTalukaId(Number(value))
+      }
+    }
+
+    setErrs(prev=>{
+      return {...prev, [name]:error}
+    })
   };
+
+  useEffect(() => {
+    getStates()
+      .then((res) => {
+        setStates(res);
+      })
+      .catch((err) => console.log("Error: ", err));
+  }, []);
+
+  const validateAddress = () => {
+    let err=''
+    if(state===''){
+      setErrs(prev=>{
+        return {...prev, state:err}
+      })
+    }
+    else if(district===''){
+      setErrs(prev=>{
+        return {...prev, district:err}
+      })
+    }
+    else if(taluka===''){
+      setErrs(prev=>{
+        return {...prev, taluka:err}
+      })
+    }else{
+      setErrs({})
+    }
+  }
+
 
   const onsubmit = (data) => {
-    data.areaAssignedTalukaId = 0;
+
+    validateAddress();
+    if(Object.keys(errs).length>0){
+      return;
+    }
+    data.areaAssignedTalukaId = talukaId;
+    console.log(data);
+    const address = {
+      state, district, taluka
+    }
+    data.address = address;
+
     console.log(data);
 
-    // setLoading(true);
-    // const user = decodeToken();
-    // const keys = Object.keys(user);
-    // const email = user[keys.find((k) => k.endsWith("emailaddress"))];
-    // console.log('article',data);
-    // let articleData = data;
-    // articleData.articlePhoto = articleImg;
-    // articleData.companyEmail = email;
-    // addArticle(articleData)
-    //   .then((resp) => {
-    //     console.log(resp);
-    //     setLoading(false);
-    //     changeEffect((e) => !e);
-    //     onClose();
-    //     reset();
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     setLoading(false);
-    //   });
+    addSalesman(data);
+
   };
+
+  const addSalesman = (salesman) => {
+    registerSalesman(salesman)
+      .then((res)=>{
+        console.log(res);
+        reset();
+        onClose();
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+  }
 
   return (
     <div
@@ -141,7 +200,7 @@ const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
                 label={"Mobile Number"}
                 placeholder={"Enter Mobile Number"}
                 inputProps={{
-                  ...register("mobileNumer", {
+                  ...register("mobileNumber", {
                     required: "Mobile Number is required",
                   }),
                   type: "text",
@@ -157,26 +216,24 @@ const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
                 <label htmlFor="state" className="text-black text-lg">
                   State
                 </label>
-                <select
+                <select 
                   name="state"
                   // value={formData.state}
                   onChange={handleChange}
                   className="w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 "
                 >
-                  <option value="" disabled>
+                  <option value="" selected disabled>
                     Select State
                   </option>
-                  <option value="option1">Option 1</option>
-                  <option value="option2">Option 2</option>
-                  <option value="option3">Option 3</option>
-                  {/* {states.map((state) => (
-                <option key={state.id} value={state.id}>
-                  {state.name}
-                </option>
-              ))} */}
+                  {states.map((state) => (
+                    <option key={state.id} value={state.id}>
+                      {state.name}
+                    </option>
+                  ))}
                 </select>
-                {errors.state && (
-                  <span className="text-red-500">{errors.state}</span>
+                {console.log(errs)}
+                {errs.state && (
+                  <span className="text-red-500">{errs.state}</span>
                 )}
               </div>
             </div>
@@ -185,26 +242,29 @@ const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
                 <label htmlFor="state" className="text-black text-lg">
                   District
                 </label>
-                <select
+                <select 
                   name="district"
                   // value={formData.state}
+
                   onChange={handleChange}
                   className="w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 "
                 >
-                  <option value="" disabled>
+                  <option value="" selected disabled>
                     Select District
                   </option>
-                  <option value="option1">Option 1</option>
-                  <option value="option2">Option 2</option>
-                  <option value="option3">Option 3</option>
+                  {districts.map((state) => (
+                    <option key={state.id} value={state.id}>
+                      {state.name}
+                    </option>
+                  ))}
                   {/* {states.map((state) => (
                 <option key={state.id} value={state.id}>
                   {state.name}
                 </option>
               ))} */}
                 </select>
-                {errors.state && (
-                  <span className="text-red-500">{errors.state}</span>
+                {errs.state && (
+                  <span className="text-red-500">{errs.state}</span>
                 )}
               </div>
             </div>
@@ -214,26 +274,28 @@ const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
               <label htmlFor="state" className="text-black text-lg">
                 Taluka
               </label>
-              <select
-                name="talika"
+              <select 
+                name="taluka"
                 // value={formData.state}
                 onChange={handleChange}
                 className="w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 "
               >
-                <option value="" disabled>
+                <option value="" selected disabled>
                   Select Taluka
                 </option>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
+                {talukas.map((state) => (
+                  <option key={state.id} value={state.id}>
+                    {state.name}
+                  </option>
+                ))}
                 {/* {states.map((state) => (
                 <option key={state.id} value={state.id}>
                   {state.name}
                 </option>
               ))} */}
               </select>
-              {errors.state && (
-                <span className="text-red-500">{errors.state}</span>
+              {errs.state && (
+                <span className="text-red-500">{errs.state}</span>
               )}
             </div>
           </div>

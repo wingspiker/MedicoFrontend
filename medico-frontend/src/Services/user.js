@@ -7,7 +7,6 @@ const jwtToken = token();
 
 export const registerBuyer = async (buyerDetails) => {
     const t = localStorage.getItem('token');
-    console.log(t);
     const config = {
         
         headers: {
@@ -42,6 +41,31 @@ export const registerCompany = async (companyDetails) => {
       };
     
     return axios.post(url+ '/api/user/company', companyDetails, config)
+        .then(response => {
+            // Handle successful response
+            return response.data; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });
+    
+}
+
+export const registerSalesman = async (salesmanDetails) => {
+    const t = localStorage.getItem('token');
+    const config = {
+        
+        headers: {
+            'Content-Type': 'application/json', 
+            'Accept': 'application/json', 
+            'Authorization': `Bearer ${t}`
+        }
+      };
+      console.log(config);
+    
+    return axios.post(url+ '/api/user/salesman', salesmanDetails, config)
         .then(response => {
             // Handle successful response
             return response.data; // Return data if needed

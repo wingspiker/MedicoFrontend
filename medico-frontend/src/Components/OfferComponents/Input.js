@@ -19,6 +19,8 @@ export const CustomInput = ({ label, placeholder, inputProps, error }) => {
 };
 
 export const CustomSelect = ({ label, options, inputProps, error }) => {
+  // console.log('hhh');
+  // console.log(options);
   return (
     <div className="flex flex-col">
       <label className="text-black text-lg">{label}</label>
