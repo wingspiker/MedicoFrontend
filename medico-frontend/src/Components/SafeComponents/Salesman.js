@@ -12,7 +12,14 @@ import Loader from "../../Loader";
 import { getDistricts, getStates, getTalukas } from "../../Services/location";
 import { registerSalesman } from "../../Services/user";
 
-const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
+const AddSalesmanModal = ({
+  isOpen,
+  onClose,
+  setSalesman,
+  changeEffect,
+  showSucc,
+  showErr,
+}) => {
   const {
     register,
     handleSubmit,
@@ -20,67 +27,71 @@ const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm();
-
+  } = useForm({
+    mode: "onChange", // This option makes the form validate on change
+  });
 
   const firstName = watch("firstName");
   const lastName = watch("lastName");
   const email = watch("email");
   const mobileNumber = watch("mobileNumber");
-  const [state, setState] = useState('');
-  const [district, setDistrict] = useState('');
-  const [taluka, setTaluka] = useState('');
-  const [talukaId, setTalukaId] = useState(-1);
-
-  const [loading, setLoading] = useState(false);
+  const state = watch("state");
+  const district = watch("district");
+  const taluka = watch("taluka");
 
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [talukas, setTalukas] = useState([]);
+  const [talukaId, setTalukaId] = useState(-1);
 
-  const [errs, setErrs] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    let error = "";
+  const onsubmit = (data) => {
+    data.areaAssignedTalukaId = talukaId;
+    const add = {
+      state: states.find((s) => s.id == state).name,
+      district: districts.find((d) => d.id == district).name,
+      taluka: talukas.find((t) => t.id == taluka).name,
+    };
+    data.address = add;
 
-    if (name === "state") {
-      if (value === "") {
-        error = "State is required";
-      } else {
-        setState(states.find(s=>s.id==value).name)
-        getDistricts(value)
-          .then((d) => {
-            setDistricts(d);
-          })
-          .catch((err) => console.log(err));
-      }
-    }
-    if (name === "district") {
-      if (value === "") {
-        error = "District is required";
-      } else {
-        setDistrict(districts.find(s=>s.id==value).name)
-        getTalukas(value)
-          .then((d) => {
-            setTalukas(d);
-          })
-          .catch((err) => console.log(err));
-      }
-    }
+    const {
+      firstName,
+      lastName,
+      address,
+      mobileNumber,
+      email,
+      areaAssignedTalukaId,
+    } = data;
 
-    if (name === "taluka") {
-      if (value === "") {
-        error = "Taluka is required";
-      } else {
-        setTaluka(talukas.find(s=>s.id==value).name);
-        setTalukaId(Number(value))
-      }
-    }
+    const salesmanData = {
+      firstName,
+      lastName,
+      mobileNumber,
+      email,
+      address,
+      areaAssignedTalukaId,
+    };
+    console.log(salesmanData);
 
-    setErrs(prev=>{
-      return {...prev, [name]:error}
-    })
+    addSalesman(data);
+  };
+
+  const addSalesman = (salesman) => {
+    setLoading(true);
+    registerSalesman(salesman)
+      .then((res) => {
+        console.log(res);
+        showSucc("Salesman Added Successfully");
+        reset();
+        setLoading(false);
+        onClose();
+      })
+      .catch((err) => {
+        showErr("Error adding batch", err);
+        setLoading(false);
+        console.log(err);
+      });
   };
 
   useEffect(() => {
@@ -91,58 +102,50 @@ const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
       .catch((err) => console.log("Error: ", err));
   }, []);
 
-  const validateAddress = () => {
-    let err=''
-    if(state===''){
-      setErrs(prev=>{
-        return {...prev, state:err}
-      })
+  useEffect(() => {
+    if (state) {
+      getDistricts(state)
+        .then((res) => {
+          setDistricts(res);
+        })
+        .catch((err) => console.log("Error fetching districts: ", err));
+    } else {
+      setDistricts([]); // Clear districts if no state is selected
     }
-    else if(district===''){
-      setErrs(prev=>{
-        return {...prev, district:err}
-      })
+  }, [state]);
+
+  useEffect(() => {
+    if (district) {
+      getTalukas(district)
+        .then((res) => {
+          // console.log(res);
+          setTalukas(res);
+        })
+        .catch((err) => console.log("Error fetching districts: ", err));
+    } else {
+      setTalukas([]); // Clear districts if no state is selected
     }
-    else if(taluka===''){
-      setErrs(prev=>{
-        return {...prev, taluka:err}
-      })
-    }else{
-      setErrs({})
+  }, [district]);
+
+  useEffect(() => {
+    if (taluka) {
+      setTalukaId(Number(taluka));
+    } else {
+      setTalukaId(-1); // Clear districts if no state is selected
     }
-  }
+  }, [taluka]);
 
+  const stateOptions = states.map((s) => {
+    return { value: s.id, label: s.name };
+  });
 
-  const onsubmit = (data) => {
+  const districtOptions = districts.map((s) => {
+    return { value: s.id, label: s.name };
+  });
 
-    validateAddress();
-    if(Object.keys(errs).length>0){
-      return;
-    }
-    data.areaAssignedTalukaId = talukaId;
-    console.log(data);
-    const address = {
-      state, district, taluka
-    }
-    data.address = address;
-
-    console.log(data);
-
-    addSalesman(data);
-
-  };
-
-  const addSalesman = (salesman) => {
-    registerSalesman(salesman)
-      .then((res)=>{
-        console.log(res);
-        reset();
-        onClose();
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
-  }
+  const talukaOptions = talukas.map((s) => {
+    return { value: s.id, label: s.name };
+  });
 
   return (
     <div
@@ -201,103 +204,65 @@ const AddSalesmanModal = ({ isOpen, onClose, setSalesman, changeEffect }) => {
                 placeholder={"Enter Mobile Number"}
                 inputProps={{
                   ...register("mobileNumber", {
-                    required: "Mobile Number is required",
+                    required: "Mobile number is required",
                   }),
+
                   type: "text",
                 }}
-                error={errors?.mobileNumer}
+                error={errors?.mobileNumber}
               />
             </div>
           </div>
 
           <div className="flex">
             <div className="w-full px-2 md:mb-4">
-              <div className="flex flex-col">
-                <label htmlFor="state" className="text-black text-lg">
-                  State
-                </label>
-                <select 
-                  name="state"
-                  // value={formData.state}
-                  onChange={handleChange}
-                  className="w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 "
-                >
-                  <option value="" selected disabled>
-                    Select State
-                  </option>
-                  {states.map((state) => (
-                    <option key={state.id} value={state.id}>
-                      {state.name}
-                    </option>
-                  ))}
-                </select>
-                {console.log(errs)}
-                {errs.state && (
-                  <span className="text-red-500">{errs.state}</span>
-                )}
-              </div>
+              <CustomSelect
+                label="Choose an Option"
+                options={[
+                  { value: "", label: "Select State" },
+                  ...stateOptions,
+                ]}
+                inputProps={{
+                  ...register("state", {
+                    required: "Selection is required",
+                    validate: (value) => value !== "" || "State is required",
+                  }),
+                  defaultValue: "",
+                }}
+                error={errors?.state}
+              />
             </div>
             <div className="w-full px-2 md:mb-4">
-              <div className="flex flex-col">
-                <label htmlFor="state" className="text-black text-lg">
-                  District
-                </label>
-                <select 
-                  name="district"
-                  // value={formData.state}
-
-                  onChange={handleChange}
-                  className="w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 "
-                >
-                  <option value="" selected disabled>
-                    Select District
-                  </option>
-                  {districts.map((state) => (
-                    <option key={state.id} value={state.id}>
-                      {state.name}
-                    </option>
-                  ))}
-                  {/* {states.map((state) => (
-                <option key={state.id} value={state.id}>
-                  {state.name}
-                </option>
-              ))} */}
-                </select>
-                {errs.state && (
-                  <span className="text-red-500">{errs.state}</span>
-                )}
-              </div>
+              <CustomSelect
+                label="Choose District"
+                options={[
+                  { value: "", label: "Select..." },
+                  ...districtOptions,
+                ]}
+                inputProps={{
+                  ...register("district", {
+                    required: "District is required",
+                    validate: (value) => value !== "" || "District is required",
+                  }),
+                  defaultValue: "",
+                }}
+                error={errors?.district}
+              />
             </div>
           </div>
           <div className="w-full px-2 md:mb-4">
-            <div className="flex flex-col">
-              <label htmlFor="state" className="text-black text-lg">
-                Taluka
-              </label>
-              <select 
-                name="taluka"
-                // value={formData.state}
-                onChange={handleChange}
-                className="w-52 h-10 bg-white py-2 px-2 text-sm rounded-md outline-none border border-solid border-gray-900 text-black placeholder-gray-900 "
-              >
-                <option value="" selected disabled>
-                  Select Taluka
-                </option>
-                {talukas.map((state) => (
-                  <option key={state.id} value={state.id}>
-                    {state.name}
-                  </option>
-                ))}
-                {/* {states.map((state) => (
-                <option key={state.id} value={state.id}>
-                  {state.name}
-                </option>
-              ))} */}
-              </select>
-              {errs.state && (
-                <span className="text-red-500">{errs.state}</span>
-              )}
-            </div>
+            <CustomSelect
+              label="Choose an Option"
+              options={[{ value: "", label: "Select..." }, ...talukaOptions]}
+              inputProps={{
+                ...register("taluka", {
+                  required: "Taluka is required",
+                  validate: (value) => value !== "" || "Taluka is required",
+                }),
+                defaultValue: "",
+              }}
+              error={errors?.taluka}
+            />
           </div>
 
           <div className="mt-4 flex justify-end gap-4">
@@ -394,6 +359,17 @@ export default function Salesman(props) {
   const [effect, setEffect] = useState(false);
 
   const [isRed, setIsRed] = useState(false);
+  const [fl, setFl] = useState(false);
+
+  const showErr = (msg) => {
+    setIsRed(true);
+    toast.error(msg);
+  };
+  const showSucc = (msg) => {
+    setIsRed(false);
+    toast.success(msg);
+    setFl((f) => !f);
+  };
 
   const logout = () => {
     signOut();
@@ -446,7 +422,8 @@ export default function Salesman(props) {
         onClose={closeModal}
         setSalesman={setSalesman}
         changeEffect={setEffect}
-        l
+        showErr={showErr}
+        showSucc={showSucc}
       />
       <RemoveSalesmanModal
         isOpen={isModalOpen2}

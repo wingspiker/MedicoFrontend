@@ -903,7 +903,7 @@ function AddOffer() {
                     className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                     type="submit"
                   >
-                    {loading?<Loader/>:'Next'} 
+                    {loading ? <Loader /> : "Next"}
                   </button>
                 </div>
               </form>
@@ -1199,7 +1199,7 @@ function AddOffer() {
                     className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                     type="submit"
                   >
-                    {loading?<Loader/>:'Next'} 
+                    {loading ? <Loader /> : "Next"}
                   </button>
                 </div>
               </form>
