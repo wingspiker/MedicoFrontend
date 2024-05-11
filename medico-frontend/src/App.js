@@ -34,9 +34,9 @@ import Group from "./Components/SafeComponents/Group";
 import Article from "./Components/SafeComponents/Article";
 import AddGroup from "./Components/SafeComponents/AddGroup";
 import AdminPage from "./Components/Admin/AdminPage";
-import AdminVerify from "./Components/Admin/AdminVerify";
 import ProductDetails from "./Components/SafeComponents/ProductDetails";
 import Salesman from "./Components/SafeComponents/Salesman";
+import AdminLanding from "./Components/Admin/AdminLanding";
 
 function App() {
   const loginStatus = token() !== null;
@@ -283,7 +283,7 @@ function App() {
             path="/admin/dashboard"
             exact
             element={
-              isAdminLoggedIn?(<AdminVerify/>):(<Navigate to="/admin" replace />)
+              isAdminLoggedIn?(<AdminLanding/>):(<Navigate to="/admin" replace />)
             } 
           />
         </Routes>
