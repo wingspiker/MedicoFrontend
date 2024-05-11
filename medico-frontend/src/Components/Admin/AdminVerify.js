@@ -11,145 +11,154 @@ import {
   signOut,
 } from "../../Services/auth";
 
-import { Typography, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Button } from '@mui/material';
+import {
+  Typography,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  Button,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 export default function AdminVerify() {
-  const [value, setValue] = useState(0);
-  const [effect, setEffect] = useState(false);
-  const [unvBuyers, setUnvBuyers] = useState([]);
-  const [vBuyers, setvBuyers] = useState([]);
-  const [unvCompanies, setUnvCompanies] = useState([]);
-  const [vCompanies, setvCompanies] = useState([]);
+  //   const [value, setValue] = useState(0);
+  //   const [effect, setEffect] = useState(false);
+  //   const [unvBuyers, setUnvBuyers] = useState([]);
+  //   const [vBuyers, setvBuyers] = useState([]);
+  //   const [unvCompanies, setUnvCompanies] = useState([]);
+  //   const [vCompanies, setvCompanies] = useState([]);
 
-  const navigate = useNavigate()
+  //   const navigate = useNavigate()
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  //   const handleChange = (event, newValue) => {
+  //     setValue(newValue);
+  //   };
 
-  useEffect(() => {
-    getAllUnverifiedBuyers()
-      .then((resp) => {
-        setUnvBuyers(resp.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  //   useEffect(() => {
+  //     getAllUnverifiedBuyers()
+  //       .then((resp) => {
+  //         setUnvBuyers(resp.data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
 
-    getAllVerifiedBuyers()
-      .then((resp) => {
-        setvBuyers(resp.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  //     getAllVerifiedBuyers()
+  //       .then((resp) => {
+  //         setvBuyers(resp.data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
 
-    getAllUnverifiedCompanies()
-      .then((resp) => {
-        setUnvCompanies(resp.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  //     getAllUnverifiedCompanies()
+  //       .then((resp) => {
+  //         setUnvCompanies(resp.data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
 
-    getAllVerifiedCompanies()
-      .then((resp) => {
-        setvCompanies(resp.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [effect]);
+  //     getAllVerifiedCompanies()
+  //       .then((resp) => {
+  //         setvCompanies(resp.data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   }, [effect]);
 
-  const renderBuyerRow = (buyer) => {
-    if (buyer === null) {
-      return;
-    }
-    console.log('f',buyer);
-    return (
-      <TableRow key={buyer.id}>
-        <TableCell>{buyer.displayName}</TableCell>
-        <TableCell>{buyer.occupation}</TableCell>
-        {/* <TableCell>{buyer.email}</TableCell> */}
-        <TableCell>
-          <Button variant="contained" color="primary">
-            Verify
-          </Button>
-        </TableCell>
-      </TableRow>
-    );
-  };
+  //   const renderBuyerRow = (buyer) => {
+  //     if (buyer === null) {
+  //       return;
+  //     }
+  //     console.log('f',buyer);
+  //     return (
+  //       <TableRow key={buyer.id}>
+  //         <TableCell>{buyer.displayName}</TableCell>
+  //         <TableCell>{buyer.occupation}</TableCell>
+  //         {/* <TableCell>{buyer.email}</TableCell> */}
+  //         <TableCell>
+  //           <Button variant="contained" color="primary">
+  //             Verify
+  //           </Button>
+  //         </TableCell>
+  //       </TableRow>
+  //     );
+  //   };
 
-  const renderVerBuyerRow = (buyer) => {
-    if (buyer === null) {
-      return;
-    }
-    return (
-      <TableRow key={buyer.email}>
-        <TableCell>{buyer.firstName + " " + buyer.lastName}</TableCell>
-        <TableCell>{buyer.occupation}</TableCell>
-        {/* <TableCell>{buyer.email}</TableCell> */}
-        <TableCell>
-          <p className=" text-2xl bg-green-200 w-fit px-3 py-1">Verified</p>
-        </TableCell>
-      </TableRow>
-    );
-  };
+  //   const renderVerBuyerRow = (buyer) => {
+  //     if (buyer === null) {
+  //       return;
+  //     }
+  //     return (
+  //       <TableRow key={buyer.email}>
+  //         <TableCell>{buyer.firstName + " " + buyer.lastName}</TableCell>
+  //         <TableCell>{buyer.occupation}</TableCell>
+  //         {/* <TableCell>{buyer.email}</TableCell> */}
+  //         <TableCell>
+  //           <p className=" text-2xl bg-green-200 w-fit px-3 py-1">Verified</p>
+  //         </TableCell>
+  //       </TableRow>
+  //     );
+  //   };
 
-  const renderCompRow = (comp) => {
-    if (comp === null) {
-      return;
-    }
-    return (
-      <TableRow key={comp.id}>
-        <TableCell>{comp.name}</TableCell>
-        <TableCell>{comp.companyEmail}</TableCell>
-        {/* <TableCell>{buyer.email}</TableCell> */}
-        <TableCell>
-          <Button variant="contained" color="primary" onClick={handleVerify(comp.companyEmail)}>
-            Verify
-          </Button>
-        </TableCell>
-      </TableRow>
-    );
-  };
+  //   const renderCompRow = (comp) => {
+  //     if (comp === null) {
+  //       return;
+  //     }
+  //     return (
+  //       <TableRow key={comp.id}>
+  //         <TableCell>{comp.name}</TableCell>
+  //         <TableCell>{comp.companyEmail}</TableCell>
+  //         {/* <TableCell>{buyer.email}</TableCell> */}
+  //         <TableCell>
+  //           <Button variant="contained" color="primary" onClick={handleVerify(comp.companyEmail)}>
+  //             Verify
+  //           </Button>
+  //         </TableCell>
+  //       </TableRow>
+  //     );
+  //   };
 
-  const renderVerCompRow = (comp) => {
-    if (comp === null) {
-      return;
-    }
-    return (
-      <TableRow key={comp.id}>
-        <TableCell>{comp.name}</TableCell>
-        <TableCell>{comp.companyEmail}</TableCell>
-        {/* <TableCell>{buyer.email}</TableCell> */}
-        <TableCell>
-          <p className=" text-2xl bg-green-200 w-fit px-3 py-1">Verified</p>
-        </TableCell>
-      </TableRow>
-    );
-  };
+  //   const renderVerCompRow = (comp) => {
+  //     if (comp === null) {
+  //       return;
+  //     }
+  //     return (
+  //       <TableRow key={comp.id}>
+  //         <TableCell>{comp.name}</TableCell>
+  //         <TableCell>{comp.companyEmail}</TableCell>
+  //         {/* <TableCell>{buyer.email}</TableCell> */}
+  //         <TableCell>
+  //           <p className=" text-2xl bg-green-200 w-fit px-3 py-1">Verified</p>
+  //         </TableCell>
+  //       </TableRow>
+  //     );
+  //   };
 
-  const handleVerify = (email) => () => {
-    forceVerify(email)
-    .then((res) => {
-      console.log(res);
-      setEffect(e=>!e)
-    })
-    .catch((err) => alert("Error verifying company"));
-  }
+  //   const handleVerify = (email) => () => {
+  //     forceVerify(email)
+  //     .then((res) => {
+  //       console.log(res);
+  //       setEffect(e=>!e)
+  //     })
+  //     .catch((err) => alert("Error verifying company"));
+  //   }
 
-  const onlogout = () => {
-    signOut();
-    navigate('/admin');
-  }
+  //   const onlogout = () => {
+  //     signOut();
+  //     navigate('/admin');
+  //   }
 
-
-console.log('veri buy', vBuyers); 
-console.log('unveri buy', unvBuyers); 
+  // console.log('veri buy', vBuyers);
+  // console.log('unveri buy', unvBuyers);
   return (
     <>
-      <div className=" p-4 flex justify-between">
+      {/* <div className=" p-4 flex justify-between">
         <h1 className=" text-3xl text-white font-bold ">Medico</h1>
         <button
           onClick={onlogout}
@@ -189,7 +198,7 @@ console.log('unveri buy', unvBuyers);
                   <TableRow>
                     <TableCell>Name</TableCell>
                     <TableCell>Email</TableCell>
-                    {/* <TableCell>Email</TableCell> */}
+                    
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -209,7 +218,7 @@ console.log('unveri buy', unvBuyers);
                   <TableRow>
                     <TableCell>Name</TableCell>
                     <TableCell>Email</TableCell>
-                    {/* <TableCell>Email</TableCell> */}
+                    
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -254,7 +263,7 @@ console.log('unveri buy', unvBuyers);
                   <TableRow>
                     <TableCell>Name</TableCell>
                     <TableCell>Company</TableCell>
-                    {/* <TableCell>Email</TableCell> */}
+                    
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -271,8 +280,8 @@ console.log('unveri buy', unvBuyers);
             
             
             </Box>}
-        </Box>
-      </div>
+        </Box> 
+      </div>*/}
     </>
   );
 }
