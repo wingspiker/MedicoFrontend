@@ -40,7 +40,8 @@ import AdminLanding from "./Components/Admin/AdminLanding";
 import AdminGroups from "./Components/Admin/AdminGroups";
 import AdminArticles from "./Components/Admin/AdminArticles";
 import AdminOffers from "./Components/Admin/AdminOffers";
-
+import AdminAddGroup from "./Components/Admin/AdminAddGroups";
+import AdminAddOffers from "./Components/Admin/AdminOfferComponents/AddOffer";
 function App() {
   const loginStatus = token() !== null;
   const [isLoggedIn, setIsLoggedIn] = useState(loginStatus);
@@ -305,6 +306,21 @@ function App() {
           />
 
           <Route
+            path="admin/Groups/add"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <Sidebar changeLogin={logout} />
+                  <AdminAddGroup changeLogin={setIsLoggedIn} />
+                </>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+
+          <Route
             path="/admin/Article"
             exact
             element={
@@ -322,6 +338,17 @@ function App() {
             element={
               isAdminLoggedIn ? (
                 <AdminOffers />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+          <Route
+            path="/admin/Offers/add"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <AdminAddOffers />
               ) : (
                 <Navigate to="/admin" replace />
               )
