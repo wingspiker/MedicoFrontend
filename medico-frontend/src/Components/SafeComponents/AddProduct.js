@@ -7,7 +7,7 @@ import PricingInformation from "../ProductComponents/CaseOne/PricingInfo";
 import SelectExistingGroup from "../ProductComponents/CaseTwo/SelectGroup";
 import Occupation from "../ProductComponents/CaseFour/Occupation";
 import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
-import { decodeToken } from "../../Services/auth";
+import { decodeToken, isCompanySelf } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
 import { addGroup, getGroupById, getGroups } from "../../Services/group";
 import { addBuyerGroup, addBuyers, filterBuyrs } from "../../Services/buyer";
@@ -84,7 +84,7 @@ function AddProduct() {
 
     if (currentStep < 6) {
       if (currentStep === 1) {
-        console.log("yele", data);
+        // console.log("yele", data);
         AddProductData(data);
       }
 
@@ -148,7 +148,7 @@ function AddProduct() {
         // setCurrentStep(currentStep + 1);
       }
     } else {
-      // console.log("final maal",psdata);
+      console.log("final maal",psdata);
       // console.log(currentProdId);
 
       const buyerProd = psdata.map((ps) => {
@@ -244,6 +244,9 @@ function AddProduct() {
         console.log(response);
         setCurrentProdId(response.id);
         showToast("Product Added  Successfully", false);
+        if(!isCompanySelf()){
+          navigate("/Product");
+        }
         setCurrentStep(currentStep + 1);
         setLoading(false);
       })
@@ -332,6 +335,7 @@ function AddProduct() {
   };
 
   const AddBuyerProduct = (buyProd) => {
+    console.log('yy');
     setLoading(true);
     addBuyerGroup(buyProd)
       .then((resp) => {
