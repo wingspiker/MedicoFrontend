@@ -145,6 +145,16 @@ export const Sidebar = ({ changeLogin }) => {
               </div>
             </React.Fragment>
           ))}
+          <div className={`absolute bottom-4 w-full flex justify-end px-1`}>
+            <button
+              onClick={toggleModal}
+              className={`${
+                isOpen ? "mx-4 w-full" : "me-2"
+              } cursor-pointer bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+            >
+              <IoLogOut /> {isOpen ? "Logout" : ""}
+            </button>
+          </div>
         </nav>
       </div>
     </aside>
