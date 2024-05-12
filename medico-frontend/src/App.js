@@ -327,6 +327,18 @@ function App() {
               )
             }
           />
+
+          <Route
+            path="/admin/Salesman"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <Salesman changeLogin={setIsLoggedIn} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
         </Routes>
       </div>
     </Router>

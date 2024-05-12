@@ -39,6 +39,7 @@ const navItems = [
   { label: "Offers", icon: <BiSolidOffer />, link: "/admin/Offers" },
   { label: "Article", icon: <FaGift />, link: "/admin/Article" },
   { label: "Orders", icon: <BsFillCartCheckFill />, link: "/admin/Orders" },
+  { label: "Salesman", icon: <BsFillCartCheckFill />, link: "/admin/Salesman" },
   {
     label: "Analysis",
     icon: <BsFillSignIntersectionYFill />,
