@@ -6,7 +6,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
-export default function AdminLanding() {
+export default function AdminGroups() {
     const navigate = useNavigate();
 
     const onlogout = () => {
@@ -16,13 +16,12 @@ export default function AdminLanding() {
   
     return (
       <>
-        <div className=" p-4 flex justify-between ms-12">
-        <h1 className="text-3xl font-bold text-white">Medico <p className=" text-red-500 text-sm text-right -me-6 -mt-2">Admin</p> </h1>
-          <button
-            onClick={onlogout}
-            className=" bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-indigo-600"
+        <div className=" p-5 flex justify-between ms-12">
+        <h1 className="text-3xl font-semibold text-white">Groups</h1>
+        <button
+            className="  cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2"
           >
-            Logout
+            Add Groups
           </button>
         </div>
         <hr />

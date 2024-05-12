@@ -16,36 +16,37 @@ import { RiMedicineBottleFill } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
 
 const navItems = [
-  { label: "Accounts", icon: <MdOutlineManageAccounts />, link: "/Accounts" },
+  { label: "Accounts", icon: <MdOutlineManageAccounts />, link: "/admin/Accounts" },
   {
     label: "Subscription",
     icon: <MdSubscriptions />,
-    link: "#",
+    link: "/admin/#",
     subItems: [
-      { label: "Percentage", link: "#" },
-      { label: "plan", link: "#" },
+      { label: "Percentage", link: "/admin/#" },
+      { label: "plan", link: "/admin/#" },
     ],
   },
   {
     label: "Companies",
     icon: <RiMedicineBottleFill />,
-    link: "#",
+    link: "/admin/#",
     subItems: [
-      { label: "Self Selling", link: "#" },
-      { label: "Admin Selling", link: "#" },
+      { label: "Self Selling", link: "/admin/#" },
+      { label: "Admin Selling", link: "/admin/#" },
     ],
   },
-  { label: "Groups", icon: <MdGroups />, link: "/Groups" },
-  { label: "Offers", icon: <BiSolidOffer />, link: "/Offers" },
-  { label: "Article", icon: <FaGift />, link: "/Article" },
-  { label: "Orders", icon: <BsFillCartCheckFill />, link: "/Orders" },
+  { label: "Groups", icon: <MdGroups />, link: "/admin/Groups" },
+  { label: "Offers", icon: <BiSolidOffer />, link: "/admin/Offers" },
+  { label: "Article", icon: <FaGift />, link: "/admin/Article" },
+  { label: "Orders", icon: <BsFillCartCheckFill />, link: "/admin/Orders" },
   {
     label: "Analysis",
     icon: <BsFillSignIntersectionYFill />,
-    link: "/Analysis",
+    link: "/admin/Analysis",
   },
-  { label: "Profile", icon: <FaUserCircle />, link: "/Profile" },
+  { label: "Profile", icon: <FaUserCircle />, link: "/admin/Profile" },
 ];
+
 
 export const Sidebar = ({ changeLogin }) => {
   const [isOpen, setIsOpen] = useState(false);

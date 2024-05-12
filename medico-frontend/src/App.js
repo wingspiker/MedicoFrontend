@@ -37,6 +37,9 @@ import AdminPage from "./Components/Admin/AdminPage";
 import ProductDetails from "./Components/SafeComponents/ProductDetails";
 import Salesman from "./Components/SafeComponents/Salesman";
 import AdminLanding from "./Components/Admin/AdminLanding";
+import AdminGroups from "./Components/Admin/AdminGroups";
+import AdminArticles from "./Components/Admin/AdminArticles";
+import AdminOffers from "./Components/Admin/AdminOffers";
 
 function App() {
   const loginStatus = token() !== null;
@@ -228,22 +231,22 @@ function App() {
             element={
               isLoggedIn ? (
                 <>
-                <Sidebar changeLogin={logout} />
-                <Group changeLogin={setIsLoggedIn} />
+                  <Sidebar changeLogin={logout} />
+                  <Group changeLogin={setIsLoggedIn} />
                 </>
               ) : (
                 <Navigate to="/login" replace />
               )
             }
           />
-           <Route
+          <Route
             path="/Group/add"
             exact
             element={
               isLoggedIn ? (
                 <>
-                <Sidebar changeLogin={logout} />
-                <AddGroup changeLogin={setIsLoggedIn} />
+                  <Sidebar changeLogin={logout} />
+                  <AddGroup changeLogin={setIsLoggedIn} />
                 </>
               ) : (
                 <Navigate to="/login" replace />
@@ -275,16 +278,54 @@ function App() {
           <Route
             path="/admin"
             exact
-            element={
-            <AdminPage setIsAdminLoggedIn={setIsAdminLoggedIn}
-            />} 
+            element={<AdminPage setIsAdminLoggedIn={setIsAdminLoggedIn} />}
           />
           <Route
             path="/admin/dashboard"
             exact
             element={
-              isAdminLoggedIn?(<AdminLanding/>):(<Navigate to="/admin" replace />)
-            } 
+              isAdminLoggedIn ? (
+                <AdminLanding />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/admin/Groups"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <AdminGroups />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/admin/Article"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <AdminArticles />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/admin/Offers"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <AdminOffers />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
           />
         </Routes>
       </div>
