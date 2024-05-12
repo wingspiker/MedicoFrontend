@@ -125,6 +125,18 @@ export const isAdmin = () => {
     return false
 }
 
+export const isCompanySelf = () => {
+    const user = decodeToken();
+    console.log(user);
+    if(user){
+        const key = Object.keys(user).find((key)=> key.endsWith('role'))
+        if(user[key]==='Company'){
+            return user['CompanyType']=='SelfSelling'
+        }
+    }
+    return false
+}
+
 export let currStep = 1;
 
 export const  setCurrStep = (stepNum) =>{

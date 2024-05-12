@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { Link, useNavigate } from "react-router-dom";
-import { signOut, decodeToken } from "../../Services/auth";
+import { signOut, decodeToken, isCompanySelf } from "../../Services/auth";
 import { Toaster, toast } from "sonner";
 import { getProducts } from "../../Services/product";
 import "react-tabulator/lib/styles.css";
@@ -88,6 +88,8 @@ export default function Product(props) {
         setProducts(res);
       })
       .catch((err) => console.log(err));
+
+      console.log(isCompanySelf());
   }, []);
 
   const onAddProduct = () => {
