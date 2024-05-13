@@ -4,11 +4,13 @@ import { useForm } from "react-hook-form";
 import CaseTwo from "./AdminGroupComponents/CaseTwo";
 import CaseThree from "./AdminGroupComponents/CaseThree";
 import { addGroup } from "../../Services/group";
-import { decodeToken } from "../../Services/auth";
 import { addBuyers, filterBuyrs } from "../../Services/buyer";
 import { useNavigate } from "react-router-dom";
+import { Sidebar } from "./Sidebar";
+import { decodeToken, signOut } from "../../Services/auth";
 
-function AdminAddGroup() {
+function AdminAddGroup(props) {
+  const { changeLogin } = props;
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = React.useState(1);
 
@@ -63,7 +65,7 @@ function AdminAddGroup() {
     const { groupName, groupDescription, sTaluka } = rawData;
 
     let formattedApiInput = {
-      companyEmail: email,
+      email: email,
       name: groupName,
       description: groupDescription,
       buyerIds: [],
@@ -109,6 +111,11 @@ function AdminAddGroup() {
         console.log(err);
         setLoading(false);
       });
+  };
+
+  const logout = () => {
+    signOut();
+    changeLogin(false);
   };
 
   const AddBuyers = () => {
@@ -214,6 +221,7 @@ function AdminAddGroup() {
 
   return (
     <>
+      <Sidebar changeLogin={logout} />
       <div className=" w-full">{renderStep()}</div>
     </>
   );

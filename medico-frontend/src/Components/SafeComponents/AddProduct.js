@@ -148,7 +148,7 @@ function AddProduct() {
         // setCurrentStep(currentStep + 1);
       }
     } else {
-      console.log("final maal",psdata);
+      console.log("final maal", psdata);
       // console.log(currentProdId);
 
       const buyerProd = psdata.map((ps) => {
@@ -244,7 +244,7 @@ function AddProduct() {
         console.log(response);
         setCurrentProdId(response.id);
         showToast("Product Added  Successfully", false);
-        if(!isCompanySelf()){
+        if (!isCompanySelf()) {
           navigate("/Product");
         }
         setCurrentStep(currentStep + 1);
@@ -266,7 +266,7 @@ function AddProduct() {
     const { groupName, groupDescription, talukaIds } = rawData;
 
     let formattedApiInput = {
-      companyEmail: email,
+      email: email,
       name: groupName,
       description: groupDescription,
       buyerIds: [],
@@ -335,7 +335,7 @@ function AddProduct() {
   };
 
   const AddBuyerProduct = (buyProd) => {
-    console.log('yy');
+    console.log("yy");
     setLoading(true);
     addBuyerGroup(buyProd)
       .then((resp) => {

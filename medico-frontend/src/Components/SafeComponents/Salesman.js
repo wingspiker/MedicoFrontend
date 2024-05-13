@@ -53,12 +53,12 @@ const AddSalesmanModal = ({
       district: districts.find((d) => d.id == district).name,
       taluka: talukas.find((t) => t.id == taluka).name,
     };
-    data.address = add;
+    data.addressRequest = add;
 
     const {
       firstName,
       lastName,
-      address,
+      addressRequest,
       mobileNumber,
       email,
       areaAssignedTalukaId,
@@ -69,12 +69,12 @@ const AddSalesmanModal = ({
       lastName,
       mobileNumber,
       email,
-      address,
+      addressRequest,
       areaAssignedTalukaId,
     };
     console.log(salesmanData);
 
-    addSalesman(data);
+    addSalesman(salesmanData);
   };
 
   const addSalesman = (salesman) => {
@@ -88,7 +88,7 @@ const AddSalesmanModal = ({
         onClose();
       })
       .catch((err) => {
-        showErr("Error adding batch", err);
+        showErr("Error adding Salesman", err);
         setLoading(false);
         console.log(err);
       });
@@ -205,8 +205,21 @@ const AddSalesmanModal = ({
                 inputProps={{
                   ...register("mobileNumber", {
                     required: "Mobile number is required",
+                    minLength: {
+                      value: 10,
+                      message:
+                        "Mobile number must be exactly 10 characters long",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message:
+                        "Mobile number must be exactly 10 characters long",
+                    },
+                    pattern: {
+                      value: /^[0-9]*$/,
+                      message: "Mobile number must contain only digits",
+                    },
                   }),
-
                   type: "text",
                 }}
                 error={errors?.mobileNumber}

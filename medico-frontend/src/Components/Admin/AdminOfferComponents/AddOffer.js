@@ -186,7 +186,7 @@ function AddOffer(props) {
             addOffer({
               ...formData,
               offerType: 0,
-              companyEmail: email,
+              email: email,
             })
               .then((res) => {
                 setOfferId(res.id);
@@ -208,7 +208,7 @@ function AddOffer(props) {
               sanitizeObject({
                 ...formData,
                 offerType: 1,
-                companyEmail: email,
+                email: email,
                 conditions: undefined,
                 productCentricOffer: { conditions: formData.conditions },
               })
@@ -229,7 +229,7 @@ function AddOffer(props) {
               sanitizeObject({
                 ...formData,
                 offerType: 2,
-                companyEmail: email,
+                email: email,
                 conditions: undefined,
                 boxBaseOffer: {
                   boxBaseOfferProduct: formData.boxBaseOfferProduct,

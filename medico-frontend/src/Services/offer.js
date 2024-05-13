@@ -113,7 +113,7 @@ export const getOffers = async (email) => {
   };
 
   return axios
-    .get(url + `/company/${email}`, config)
+    .get(url + `/user/${email}`, config)
     .then((response) => {
       // Handle successful response
       return response.data; // Return data if needed

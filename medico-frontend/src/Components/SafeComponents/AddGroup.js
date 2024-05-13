@@ -65,7 +65,7 @@ function AddGroup() {
     const { groupName, groupDescription, sTaluka } = rawData;
 
     let formattedApiInput = {
-      companyEmail: email,
+      email: email,
       name: groupName,
       description: groupDescription,
       buyerIds: [],
@@ -73,6 +73,7 @@ function AddGroup() {
       productIds: [],
     };
 
+    console.log("HELLLOOO");
     console.log(formattedApiInput);
 
     addGroup(formattedApiInput)

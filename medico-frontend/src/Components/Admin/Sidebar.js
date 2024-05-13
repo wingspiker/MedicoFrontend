@@ -16,7 +16,11 @@ import { RiMedicineBottleFill } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
 
 const navItems = [
-  { label: "Accounts", icon: <MdOutlineManageAccounts />, link: "/admin/Accounts" },
+  {
+    label: "Accounts",
+    icon: <MdOutlineManageAccounts />,
+    link: "/admin/Accounts",
+  },
   {
     label: "Subscription",
     icon: <MdSubscriptions />,
@@ -47,7 +51,6 @@ const navItems = [
   },
   { label: "Profile", icon: <FaUserCircle />, link: "/admin/Profile" },
 ];
-
 
 export const Sidebar = ({ changeLogin }) => {
   const [isOpen, setIsOpen] = useState(false);

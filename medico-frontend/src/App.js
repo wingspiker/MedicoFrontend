@@ -43,6 +43,7 @@ import AdminOffers from "./Components/Admin/AdminOffers";
 import AdminAddGroup from "./Components/Admin/AdminAddGroups";
 import AdminAddOffers from "./Components/Admin/AdminOfferComponents/AddOffer";
 import AdminAddSalesman from "./Components/Admin/AdminAddSalesman";
+
 function App() {
   const loginStatus = token() !== null;
   const [isLoggedIn, setIsLoggedIn] = useState(loginStatus);
@@ -312,7 +313,6 @@ function App() {
             element={
               isLoggedIn ? (
                 <>
-                  <Sidebar changeLogin={logout} />
                   <AdminAddGroup changeLogin={setIsLoggedIn} />
                 </>
               ) : (
