@@ -20,6 +20,10 @@ const navItems = [
     label: "Accounts",
     icon: <MdOutlineManageAccounts />,
     link: "/admin/Accounts",
+    subItems: [
+      { label: "Company", link: "/admin/Company" },
+      { label: "Buyer", link: "/admin/Buyer" },
+    ],
   },
   {
     label: "Subscription",
@@ -31,13 +35,9 @@ const navItems = [
     ],
   },
   {
-    label: "Companies",
+    label: "Product",
     icon: <RiMedicineBottleFill />,
-    link: "/admin/#",
-    subItems: [
-      { label: "Self Selling", link: "/admin/#" },
-      { label: "Admin Selling", link: "/admin/#" },
-    ],
+    link: "/admin/Product",
   },
   { label: "Groups", icon: <MdGroups />, link: "/admin/Groups" },
   { label: "Offers", icon: <BiSolidOffer />, link: "/admin/Offers" },
@@ -133,7 +133,6 @@ export const Sidebar = ({ changeLogin }) => {
                 {item.subItems && (
                   <div className="group-hover:flex group-hover:flex-col w-full ms-8 bg-cyan-800 rounded hidden">
                     {item.subItems.map((sub) => {
-                      console.log(sub);
                       return (
                         <NavLink
                           key={sub.label}

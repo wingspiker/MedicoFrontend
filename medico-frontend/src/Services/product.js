@@ -76,3 +76,52 @@ export const getProductById = async (pid) => {
         });
     
 }
+
+export const getAdminSellingCompanies = async () => {
+    const t = localStorage.getItem('token');
+    const config = {        
+        headers: {
+            'Content-Type': 'application/json', 
+            'Accept': 'application/json', 
+            'Authorization': `Bearer ${t}`
+        }
+      };
+      console.log(config);
+    //   const p = email.replace('@','%40')
+    
+    return axios.get(url+ `/api/product/admin-selling`, config)
+        .then(response => {
+            // Handle successful response
+            return response.data; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });    
+}
+
+export const getCompanyProducts = async (email) => {
+    const t = localStorage.getItem('token');
+    const config = {        
+        headers: {
+            'Content-Type': 'application/json', 
+            'Accept': 'application/json', 
+            'Authorization': `Bearer ${t}`
+        }
+      };
+      console.log(config);
+    //   const p = email.replace('@','%40')
+    
+    return axios.get(url+ `/api/product/products-by-company?companyEmail=${email}`, config)
+        .then(response => {
+            // Handle successful response
+            return response.data; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });    
+}
+

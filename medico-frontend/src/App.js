@@ -43,6 +43,8 @@ import AdminOffers from "./Components/Admin/AdminOffers";
 import AdminAddGroup from "./Components/Admin/AdminAddGroups";
 import AdminAddOffers from "./Components/Admin/AdminOfferComponents/AddOffer";
 import AdminAddSalesman from "./Components/Admin/AdminAddSalesman";
+import AdminProduct from "./Components/Admin/AdminProduct";
+import AdminSellingProducts from "./Components/Admin/AdminProductComponents/AdminSellingProducts";
 
 function App() {
   const loginStatus = token() !== null;
@@ -289,6 +291,30 @@ function App() {
             element={
               isAdminLoggedIn ? (
                 <AdminLanding />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/admin/Product"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <AdminProduct />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/admin/Product/:id"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <AdminSellingProducts />
               ) : (
                 <Navigate to="/admin" replace />
               )

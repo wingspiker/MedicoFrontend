@@ -23,7 +23,7 @@ export default function AdminGroups(props) {
         <Sidebar changeLogin={logout} />
         <div className="flex-1 ms-14">
           <div>
-            <div className=" p-2 flex justify-end gap-4">
+            <div className=" p-5 flex justify-end gap-4">
               <button
                 onClick={onAddGroup}
                 className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
@@ -36,6 +36,7 @@ export default function AdminGroups(props) {
           <div className=" p-8">Hello Groups</div>
         </div>
       </div>
+      <p></p>
     </>
   );
 }
