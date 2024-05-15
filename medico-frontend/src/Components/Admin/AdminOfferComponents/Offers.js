@@ -20,12 +20,13 @@ export default function Offer(props) {
   };
 
   useEffect(() => {
+    console.log("Helllllll");
     const user = decodeToken();
     const keys = Object.keys(user);
     const email = user[keys.find((k) => k.endsWith("emailaddress"))];
     getOffers(email)
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         setOffers(res);
       })
       .catch((err) => console.log(err));
@@ -47,7 +48,7 @@ export default function Offer(props) {
           <hr />
           <div className=" p-4">
             <p className=" mb-4 text-3xl text-white">Offers</p>
-
+            {console.log(offers)}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 h-[90vh] overflow-y-auto no-scrollbar">
               {offers.map((offer) => (
                 <Card key={offer.id} className=" min-h-40">

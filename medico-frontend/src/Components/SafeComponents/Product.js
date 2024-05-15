@@ -135,7 +135,7 @@ export default function Product(props) {
         <p className=" text-4xl text-white px-8 py-2">
             Products
           </p>
-        <div className=" h-[90vh] overflow-y-auto">
+        <div className=" h-[90vh] overflow-y-auto no-scrollbar">
         <div className=" p-8 grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* <DataGrid
             rows={products}

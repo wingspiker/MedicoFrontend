@@ -262,7 +262,7 @@ function AddOffer(props) {
                 setOfferId(res.id);
                 setLoading(false);
                 setTimeout(() => {
-                  navigate("/admin/Offer");
+                  navigate("/admin/Offers");
                   setCurrentStep(1);
                 }, 2000);
               })
