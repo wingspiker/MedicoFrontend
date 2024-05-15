@@ -67,7 +67,7 @@ const AddArticleModal = ({ isOpen, onClose, setArticles, changeEffect }) => {
     console.log("article", data);
     let articleData = data;
     articleData.articlePhoto = articleImg;
-    articleData.companyEmail = email;
+    articleData.email = email;
     addArticle(articleData)
       .then((resp) => {
         console.log(resp);

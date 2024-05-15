@@ -130,7 +130,7 @@ function AdminAddGroup(props) {
         console.log(res);
         // showToast("Buyers added successfully", false);
         setLoading(false);
-        navigate("/Group");
+        navigate("/admin/Groups");
       })
       .catch((err) => {
         console.log(err);
