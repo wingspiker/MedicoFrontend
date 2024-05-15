@@ -53,12 +53,12 @@ const AddSalesmanModal = ({
       district: districts.find((d) => d.id == district).name,
       taluka: talukas.find((t) => t.id == taluka).name,
     };
-    data.address = add;
+    data.addressRequest = add;
 
     const {
       firstName,
       lastName,
-      address,
+      addressRequest,
       mobileNumber,
       email,
       areaAssignedTalukaId,
@@ -69,7 +69,7 @@ const AddSalesmanModal = ({
       lastName,
       mobileNumber,
       email,
-      address,
+      addressRequest,
       areaAssignedTalukaId,
     };
     console.log(salesmanData);
