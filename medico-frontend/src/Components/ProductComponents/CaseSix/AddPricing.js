@@ -130,19 +130,19 @@ function AddPricing({
   cols,
   setData,
   defaultPrice,
-  setErSix
+  setErSix,
 }) {
   const [errors, setErrors] = useState({});
 
-  const isError = () =>{
+  const isError = () => {
     const e = Object.keys(errors);
-    let e1=0;
-    e.forEach(ee=>{
-      if(errors[ee]!=='')e1++;
-    })
+    let e1 = 0;
+    e.forEach((ee) => {
+      if (errors[ee] !== "") e1++;
+    });
 
-    setErSix(e1!==0)
-  }
+    setErSix(e1 !== 0);
+  };
   // useEffect(() => {
   //   const selectedBuyers = buyers.filter((b) =>
   //     rowSelectionModel.includes(b.id)

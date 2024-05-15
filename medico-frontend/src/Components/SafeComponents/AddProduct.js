@@ -570,7 +570,7 @@ function AddProduct() {
                 <button
                   type="submit"
                   disabled={errSix}
-                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
                   {loading ? <Loader /> : "Submit"}
                   {console.log(errSix)}
