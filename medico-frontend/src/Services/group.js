@@ -36,7 +36,7 @@ export const getGroupById = async (id) => {
       Authorization: `Bearer ${t}`,
     },
   };
-  console.log(config);
+  // console.log(config);
 
   return axios
     .get(url + `/api/group/${id}`, config)
@@ -111,7 +111,7 @@ export const addProductToGroup = async (addData) => {
   console.log(config);
 
   return axios
-    .put(url + `/api/group/add-product`,addData, config)
+    .put(url + `/api/group/add-product`, addData, config)
     .then((response) => {
       // Handle successful response
       return response.data; // Return data if needed
