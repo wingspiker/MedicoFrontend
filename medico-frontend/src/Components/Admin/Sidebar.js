@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { HiMenuAlt1 } from "react-icons/hi";
-import { IoCloseSharp, IoLogOut } from "react-icons/io5";
+import { IoCloseSharp, IoLogOut, IoSettings } from "react-icons/io5";
 import {
   MdOutlineManageAccounts,
   MdSubscriptions,
@@ -49,7 +49,7 @@ const navItems = [
     icon: <BsFillSignIntersectionYFill />,
     link: "/admin/Analysis",
   },
-  { label: "Profile", icon: <FaUserCircle />, link: "/admin/Profile" },
+  { label: "Settings", icon: <IoSettings />, link: "/admin/Settings" },
 ];
 
 export const Sidebar = ({ changeLogin }) => {

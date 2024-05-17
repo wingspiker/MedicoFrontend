@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { HiMenuAlt1 } from "react-icons/hi";
-import { IoCloseSharp, IoLogOut } from "react-icons/io5";
+import { IoCloseSharp, IoLogOut, IoSettings } from "react-icons/io5";
 import { MdHome, MdGroups, MdLocalOffer } from "react-icons/md";
 import { SiProducthunt } from "react-icons/si";
 import { BiSolidOffer } from "react-icons/bi";
-import { FaUserCircle, FaGift } from "react-icons/fa";
+import { FaGift } from "react-icons/fa";
 import {
   BsFillCartCheckFill,
   BsFillSignIntersectionYFill,
@@ -21,7 +21,7 @@ const navItems = [
   "Order",
   "Division",
   "Article",
-  "Profile",
+  "Settings",
 ];
 
 const notForAdminSelling = ["Group", "Offer", "Salesman", "Article"];
@@ -34,7 +34,7 @@ const navItemsIcons = [
   <BsFillCartCheckFill />,
   <BsFillSignIntersectionYFill />,
   <FaGift />,
-  <FaUserCircle />,
+  <IoSettings />,
 ];
 
 export const Sidebar = (props) => {

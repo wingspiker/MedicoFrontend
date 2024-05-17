@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
-import { signOut, decodeToken } from "../../Services/auth";
+import { signOut, decodeToken, isCompanySelf } from "../../Services/auth";
 import { getProductById } from "../../Services/product";
 import { CustomInput, CustomTextArea } from "../OfferComponents/Input";
 import IconButton from "@mui/material/IconButton";
@@ -9,11 +9,14 @@ import Typography from "@mui/material/Typography";
 import { useForm } from "react-hook-form";
 import Loader from "../../Loader";
 import { productTypeEnum } from "../../Models/enums.model";
-import { addBatch } from "../../Services/batch";
+import { addBatch, editBatch } from "../../Services/batch";
 import { Toaster, toast } from "sonner";
 import { CompactTable } from "@table-library/react-table-library/compact";
 import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/compact";
+import Checkbox from "@mui/material/Checkbox";
+import TextField from "@mui/material/TextField";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const AddProductDetailModal = ({
   isOpen,
@@ -41,18 +44,6 @@ const AddProductDetailModal = ({
   const [inputValue, setInputValue] = useState(product.sellingPrice);
 
   const [loading, setLoading] = useState(false);
-
-  // const [url, setUrl] = useState(null);
-
-  // const handleOnFileChange = (e) => {
-  //   console.log(e);
-  //   handleImageUpload(e)
-  //     .then((res) => {
-  //       console.log(res);
-  //       setValue("articleImg", res.data);
-  //     })
-  //     .catch((err) => console.log("Error: ", err));
-  // };
 
   const onsubmit = (data) => {
     data.productId = product.id;
@@ -187,20 +178,6 @@ const RemoveProductDetailModal = ({
 
   const onsubmit = (e) => {
     console.log(e);
-    // e.preventDefault();
-    // setLoading(true);
-    // deleteDivision(currArt)
-    //   .then((resp) => {
-    //     console.log(resp);
-    //     setLoading(false);
-    //     changeEffect((e) => !e);
-    //     onClose();
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     setLoading(false);
-    //     onClose();
-    //   });
   };
 
   return (
@@ -274,13 +251,15 @@ export default function ProductDetails(props) {
   useEffect(() => {
     getProductById(history.state)
       .then((res) => {
-        console.log("prodd");
-        console.log(res);
-        let batches = res.productBatches;
-        let b = batches.map((p, i) => {
-          return { ...p, index: i + 1 };
-        });
-        setNodes(b);
+        // console.log(res);
+
+        if (isCompanySelf()) {
+          let batches = res.productBatches;
+          let b = batches.map((p, i) => {
+            return { ...p, index: i + 1, isEditable: false };
+          });
+          setNodes(b);
+        }
         setProduct(res);
       })
       .catch((err) => {
@@ -304,6 +283,53 @@ export default function ProductDetails(props) {
     setIsModalOpen2(false);
   };
 
+  const handlePriceChange = (e, item) => {
+    const newPrice = e.target.value;
+    const updatedItems = nodes.map((i) => {
+      if (i.id === item.id) {
+        return { ...i, price: newPrice };
+      }
+      return i;
+    });
+    setNodes(updatedItems);
+  };
+
+  const handleIsVisibleChange = (e, item) => {
+    const newIsVisible = e.target.checked;
+    const updatedItems = nodes.map((i) => {
+      if (i.id === item.id) {
+        return { ...i, isVisible: newIsVisible };
+      }
+      return i;
+    });
+    setNodes(updatedItems);
+  };
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const saveBatchChanges = (item) => {
+    // console.log(item);
+    setIsLoading(true)
+
+    const {manufacturingDate, id, expiryDate, isVisible, isSold, price, quantity} = item;
+    const updatedBatch = {id, manufacturingDate, expiryDate, quantity, price, isSold, isVisible}
+
+    
+
+    editBatch(updatedBatch)
+    .then(r=>{
+      console.log(r);
+      setFl(f=>!f)
+      setIsLoading(false)
+    })
+    .catch(err=>{
+      console.log(err);
+      setIsLoading(false)
+    })
+    // Call the API to save changes
+    // After saving, set isEditable to false for the item
+  };
+
   const COLUMNS = [
     { label: "ID", renderCell: (item) => item.index },
     {
@@ -325,60 +351,94 @@ export default function ProductDetails(props) {
         }),
     },
     { label: "Quantity", renderCell: (item) => item.quantity },
-    { label: "Price", renderCell: (item) => '₹ ' + Number(item.price).toPrecision(String(item.price).length+2) },
-    // {
-    //   label: 'Is Sold',
-    //   renderCell: (item) => item.isSold.toString(),
-    // },
-    // {
-    //   label: 'Is Visible',
-    //   renderCell: (item) => item.isVisible.toString(),
-    // },
+    {
+      label: "Price",
+      renderCell: (item) => {
+        if (item.isEditable) {
+          return (
+            <TextField
+              type="text"
+              value={item.price}
+              onChange={(e) => handlePriceChange(e, item)}
+              label="Price"
+              variant="filled"
+            />
+          );
+        }
+        return (
+          "₹ " + Number(item.price).toPrecision(String(item.price).length + 2)
+        );
+      },
+    },
+    {
+      label: "Is Sold",
+      renderCell: (item) =>
+        item.isSold ? (
+          <p className=" text-green-500 font-semibold">Yes</p>
+        ) : (
+          <p className=" text-red-500 font-semibold">No</p>
+        ),
+    },
+    {
+      label: "Is Visible",
+      renderCell: (item) =>
+        item.isEditable ? (
+          <Checkbox
+            checked={item.isVisible}
+            onChange={(e) => handleIsVisibleChange(e, item)}
+          />
+        ) : item.isVisible ? (
+          <p className=" text-green-500 font-semibold">Yes</p>
+        ) : (
+          <p className=" text-red-500 font-semibold">No</p>
+        ),
+    },
+    {
+      label: "Action",
+      renderCell: (item) =>
+        item.isEditable ? (
+          <button
+            onClick={() => saveBatchChanges(item)}
+            className=" cursor-pointer bg-green-500 hover:bg-green-600 text-white font-bold rounded p-1 flex items-center gap-2"
+          >
+            {isLoading?<CircularProgress />:'Save'}
+            {/* Save */}
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              item.isEditable = true;
+              setNodes([...nodes]);
+            }}
+            className=" cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold p-1 rounded flex items-center gap-2"
+          >
+            Edit
+          </button>
+        ),
+    },
   ];
 
   const [nodes, setNodes] = useState([]);
-
-  // const nodes = [
-  //   // {
-  //   //     id: "75320e44-165f-43b7-8497-e4521c16eb15",
-  //   //     manufacturingDate: "2024-05-01",
-  //   //     expiryDate: "2024-05-31",
-  //   //     quantity: 12,
-  //   //     price: 1259,
-  //   //     isSold: false,
-  //   //     isVisible: true
-  //   // },
-  //   // {
-  //   //     id: "fb068a95-89da-4019-99fa-e5ee6226cee8",
-  //   //     manufacturingDate: "2024-05-08",
-  //   //     expiryDate: "2024-05-11",
-  //   //     quantity: 34,
-  //   //     price: 1259,
-  //   //     isSold: false,
-  //   //     isVisible: true
-  //   // }
-  // ];
 
   const data = { nodes };
 
   const theme = useTheme({
     HeaderRow: `
-        .th {
-          border-bottom: 1px solid #a0a8ae;
-          background-color:#aff886;
-        }
-      `,
+      .th {
+        border-bottom: 1px solid #a0a8ae;
+        background-color:#aff886;
+      }
+    `,
     BaseCell: `
-        &:not(:last-of-type) {
-          border-right: 1px solid #a0a8ae;
-        }
+      &:not(:last-of-type) {
+        border-right: 1px solid #a0a8ae;
+      }
 
-        padding: 8px 16px;
+      padding: 8px 16px;
 
-        background-color:#fffff2;
-      `,
+      background-color:#fffff2;
+    `,
   });
-  
 
   return (
     <div className="flex h-screen bg-cyan-900 text-white fixed w-full">
@@ -388,17 +448,18 @@ export default function ProductDetails(props) {
           style: { color: `${isRed ? "red" : "green"}` },
         }}
       />
-      {/* <Sidebar /> Add the Sidebar component */}
       <Sidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
-          <div className=" p-2 flex justify-end gap-4">
-            <button
-              onClick={openModal}
-              className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
-            >
-              Add Batch
-            </button>
+          <div className=" p-2 flex justify-end gap-4 h-14">
+            {isCompanySelf() && (
+              <button
+                onClick={openModal}
+                className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+              >
+                Add Batch
+              </button>
+            )}
           </div>
           <hr></hr>
         </div>
@@ -427,11 +488,11 @@ export default function ProductDetails(props) {
                     <strong>Manufacturer:</strong> {product.manufacturerName}
                   </p>
                   <div>
-                    {product.letterPadDocument && 
-                    <button className="inline-flex items-center gap-2 px-4 py-2 mt-3 text-white bg-orange-600 hover:bg-orange-700 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
-                      Show Letterpad
-                    </button>
-                    }
+                    {product.letterPadDocument && (
+                      <button className="inline-flex items-center gap-2 px-4 py-2 mt-3 text-white bg-orange-600 hover:bg-orange-700 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+                        Show Letterpad
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="flex-1 p-4 rounded-lg border border-gray-300 bg-white shadow-sm">
@@ -484,7 +545,6 @@ export default function ProductDetails(props) {
                   <p className="text-lg">
                     <strong>Value:</strong> {product.value}
                   </p>
-                  {/* <p className="text-lg"><strong>Product Batches</strong></p> */}
                 </div>
               </div>
             </div>
@@ -505,14 +565,18 @@ export default function ProductDetails(props) {
             changeEffect={setEffect}
             product={product}
           />
-          <div className="mx-8 bg-gray-100 shadow-lg rounded-lg overflow-hidden mb-16">
-            <p className="text-xl font-semibold p-4 bg-blue-800 text-white">
-              Batches
-            </p>
-            <div className="p-4 bg-white text-black">
-              <CompactTable columns={COLUMNS} data={data} theme={theme} />
+          {isCompanySelf() && (
+            <div className="mx-8 bg-gray-100 shadow-lg rounded-lg overflow-hidden mb-16">
+              <p className="text-xl font-semibold p-4 bg-blue-800 text-white">
+                Batches
+              </p>
+
+              <div className="p-4 bg-white text-black">
+                <CompactTable columns={COLUMNS} data={data} theme={theme} />
+              </div>
+              {/* {console.log(data)} */}
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

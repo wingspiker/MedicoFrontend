@@ -45,6 +45,8 @@ import AdminAddOffers from "./Components/Admin/AdminOfferComponents/AddOffer";
 import AdminAddSalesman from "./Components/Admin/AdminAddSalesman";
 import AdminProduct from "./Components/Admin/AdminProduct";
 import AdminSellingProducts from "./Components/Admin/AdminProductComponents/AdminSellingProducts";
+import Settings from "./Components/SafeComponents/Settings";
+import AdminSettings from "./Components/Admin/AdminSettings";
 
 function App() {
   const loginStatus = token() !== null;
@@ -280,6 +282,19 @@ function App() {
               )
             }
           />
+
+          <Route
+            path="/Settings"
+            exact
+            element={
+              isLoggedIn ? (
+                <Settings changeLogin={setIsLoggedIn} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+
           <Route
             path="/admin"
             exact
@@ -326,7 +341,7 @@ function App() {
             exact
             element={
               isAdminLoggedIn ? (
-                <AddProduct changeLogin={setIsAdminLoggedIn}/>
+                <AddProduct changeLogin={setIsAdminLoggedIn} />
               ) : (
                 <Navigate to="/admin" replace />
               )
@@ -401,7 +416,19 @@ function App() {
               isAdminLoggedIn ? (
                 <AdminAddSalesman changeLogin={setIsLoggedIn} />
               ) : (
-                <Navigate to="/login" replace />
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/admin/Settings"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <AdminSettings changeLogin={setIsLoggedIn} />
+              ) : (
+                <Navigate to="/admin" replace />
               )
             }
           />
