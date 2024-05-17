@@ -255,7 +255,7 @@ const AddSalesmanModal = ({
               label="Choose an Option"
               options={[{ value: "", label: "Select..." }, ...talukaOptions]}
               inputProps={{
-                ...register("taluka", {
+                ...register("taluka", { 
                   required: "Taluka is required",
                   validate: (value) => value !== "" || "Taluka is required",
                 }),

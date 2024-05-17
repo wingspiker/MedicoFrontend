@@ -1,5 +1,6 @@
 import React from "react";
 
+
 export const CustomInput = ({ label, placeholder, inputProps, error }) => {
   return (
     <div className="flex flex-col">

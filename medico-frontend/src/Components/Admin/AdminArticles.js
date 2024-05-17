@@ -11,24 +11,14 @@ import {
 import Loader from "../../Loader";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
-import { addArticle, getArticles } from "../../Services/article";
+import { addArticle, getArticles, deleteArticle } from "../../Services/article";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Collapse from "@mui/material/Collapse";
-import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { handleImageUpload } from "../../Services/upload";
-
 import { useNavigate } from "react-router-dom";
 
 const AddArticleModal = ({ isOpen, onClose, setArticles, changeEffect }) => {
@@ -47,13 +37,9 @@ const AddArticleModal = ({ isOpen, onClose, setArticles, changeEffect }) => {
 
   const [loading, setLoading] = useState(false);
 
-  // const [url, setUrl] = useState(null);
-
   const handleOnFileChange = (e) => {
-    console.log(e);
     handleImageUpload(e)
       .then((res) => {
-        console.log(res);
         setValue("articleImg", res.data);
       })
       .catch((err) => console.log("Error: ", err));
@@ -64,13 +50,11 @@ const AddArticleModal = ({ isOpen, onClose, setArticles, changeEffect }) => {
     const user = decodeToken();
     const keys = Object.keys(user);
     const email = user[keys.find((k) => k.endsWith("emailaddress"))];
-    console.log("article", data);
     let articleData = data;
     articleData.articlePhoto = articleImg;
     articleData.email = email;
     addArticle(articleData)
       .then((resp) => {
-        console.log(resp);
         setLoading(false);
         changeEffect((e) => !e);
         onClose();
@@ -157,9 +141,8 @@ const RemoveArticleModal = ({ isOpen, onClose, currArt, changeEffect }) => {
   const onsubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    deleteDivision(currArt)
+    deleteArticle(currArt)
       .then((resp) => {
-        console.log(resp);
         setLoading(false);
         changeEffect((e) => !e);
         onClose();
@@ -179,9 +162,9 @@ const RemoveArticleModal = ({ isOpen, onClose, currArt, changeEffect }) => {
     >
       <div className="bg-white text-black p-4 rounded-md mx-4 md:w-4/12">
         <form onSubmit={onsubmit}>
-          <p className="text-2xl text-cyan-900">Delete Division</p>
+          <p className="text-2xl text-cyan-900">Delete Article</p>
           <p className="text-lg text-black">
-            Are you sure you want to delete division?
+            Are you sure you want to delete this article?
           </p>
 
           <div className="mt-4 flex justify-end gap-4">
@@ -205,24 +188,13 @@ const RemoveArticleModal = ({ isOpen, onClose, currArt, changeEffect }) => {
   );
 };
 
-const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
-
 export default function AdminArticles(props) {
   const { changeLogin } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
 
   const [articles, setArticles] = useState([]);
-  const [currArt, setcurrArt] = useState(null);
+  const [currArt, setCurrArt] = useState(null);
 
   const [effect, setEffect] = useState(false);
 
@@ -262,51 +234,6 @@ export default function AdminArticles(props) {
     setIsModalOpen2(false);
   };
 
-  const columns = [
-    {
-      field: "articleName",
-      headerName: "Article Name",
-      flex: 1,
-      headerClassName: "table-header",
-      cellClassName: "table-cell",
-    },
-    {
-      field: "articlePhoto",
-      headerName: "articlePhoto",
-      flex: 1,
-      headerClassName: "table-header",
-      cellClassName: "table-cell",
-    },
-
-    {
-      field: "Action",
-      headerName: "Action",
-      flex: 1,
-      headerClassName: "table-header",
-      cellClassName: "table-cell",
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <Button
-            variant="contained"
-            onClick={() => {
-              setcurrArt(params.id);
-              openModal2();
-            }}
-            style={{ backgroundColor: "#f44336", color: "#ffffff" }}
-          >
-            Delete
-          </Button>
-        );
-      },
-    },
-  ];
-
-  const onlogout = () => {
-    signOut();
-    navigate("/admin");
-  };
-
   return (
     <>
       <div className="flex h-screen bg-cyan-900 text-white">
@@ -324,50 +251,41 @@ export default function AdminArticles(props) {
             <hr></hr>
           </div>
           <div className=" p-8 flex gap-6">
-            {articles.map((a) => {
-              return (
-                <Card className=" flex-1" sx={{ maxWidth: 345 }} key={a.id}>
-                  <CardHeader
-                    // avatar={
-                    //   <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                    //     R
-                    //   </Avatar>
-                    // }
-                    title={a.articleName}
-                    // subheader="September 14, 2016"
-                  />
-                  <CardMedia
-                    component="img"
-                    image={a.articlePhoto}
-                    alt={a.articleName}
-                    style={{ height: "350px" }}
-                  />
-                  <CardContent>
-                    <Typography variant="body2" color="text.secondary">
-                      {a.articleDescription}
-                    </Typography>
-                  </CardContent>
-                  {/* <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-
-      </CardActions> */}
-                </Card>
-              );
-            })}
+            {articles.map((a) => (
+              <Card className=" flex-1" sx={{ maxWidth: 345 }} key={a.id}>
+                <CardHeader
+                  title={a.articleName}
+                />
+                <CardMedia
+                  component="img"
+                  image={a.articlePhoto}
+                  alt={a.articleName}
+                  style={{ height: "350px" }}
+                />
+                <CardContent>
+                  <Typography variant="body2" color="text.secondary">
+                    {a.articleDescription}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      setCurrArt(a.id);
+                      openModal2();
+                    }}
+                    style={{ backgroundColor: "#f44336", color: "#ffffff", marginTop: '1rem' }}
+                  >
+                    Delete
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
-        {/* Modal for adding division */}
         <AddArticleModal
           isOpen={isModalOpen}
           onClose={closeModal}
           setArticles={setArticles}
           changeEffect={setEffect}
-          l
         />
         <RemoveArticleModal
           isOpen={isModalOpen2}
