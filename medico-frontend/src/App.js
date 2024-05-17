@@ -47,6 +47,7 @@ import AdminProduct from "./Components/Admin/AdminProduct";
 import AdminSellingProducts from "./Components/Admin/AdminProductComponents/AdminSellingProducts";
 import Settings from "./Components/SafeComponents/Settings";
 import AdminSettings from "./Components/Admin/AdminSettings";
+import OfferDetails from "./Components/OfferComponents/OfferDetails";
 
 function App() {
   const loginStatus = token() !== null;
@@ -215,6 +216,20 @@ function App() {
                 <>
                   <Sidebar changeLogin={logout} />
                   <AddOffer changeLogin={setIsLoggedIn} />
+                </>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/Offer/:id"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <Sidebar changeLogin={logout} />
+                  <OfferDetails changeLogin={setIsLoggedIn} />
                 </>
               ) : (
                 <Navigate to="/login" replace />
