@@ -322,6 +322,18 @@ function App() {
           />
 
           <Route
+            path="/admin/Product/:id/AddGroups"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <AddProduct changeLogin={setIsAdminLoggedIn}/>
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+
+          <Route
             path="/admin/Groups"
             exact
             element={

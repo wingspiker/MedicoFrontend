@@ -111,7 +111,7 @@ export const getCompanyProducts = async (email) => {
       Authorization: `Bearer ${t}`,
     },
   };
-  console.log(config);
+  // console.log(config);
   //   const p = email.replace('@','%40')
 
   return axios

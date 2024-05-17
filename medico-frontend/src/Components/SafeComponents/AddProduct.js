@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ProductInformation from "../ProductComponents/CaseOne/ProductInfo";
 import ManufacturerInformation from "../ProductComponents/CaseOne/ManufacturerInfo";
@@ -9,13 +9,15 @@ import Occupation from "../ProductComponents/CaseFour/Occupation";
 import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
 import { decodeToken, isCompanySelf } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
-import { addGroup, getGroupById, getGroups } from "../../Services/group";
+import { addGroup, addProductToGroup, getGroupById, getGroups } from "../../Services/group";
 import { addBuyerGroup, addBuyers, filterBuyrs } from "../../Services/buyer";
 import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
 import ShowBuyer from "../ProductComponents/CaseFive/ShowBuyer";
 import AddPricing from "../ProductComponents/CaseSix/AddPricing";
 import { getDivisions } from "../../Services/division";
+import { Sidebar } from "../Admin/Sidebar";
+import { signOut } from "../../Services/auth";
 
 function AddProduct() {
   const [currentStep, setCurrentStep] = React.useState(1);
@@ -25,8 +27,21 @@ function AddProduct() {
   const [divisions, setDivisions] = React.useState([]);
 
   const [isRed, setIsRed] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const navigate = useNavigate();
+
+  const location = useLocation()
+
+  useEffect(() => {
+    if(location.state){
+      setCurrentProdId(location.state.pid);
+      setCurrentStep(location.state.step);
+      setSp(location.state.sp)
+      setIsAdmin(true)
+    }
+  
+  }, [])
 
   const showToast = (message, isRed) => {
     setIsRed(isRed);
@@ -119,6 +134,20 @@ function AddProduct() {
           console.log(data.existingGroupNo);
           getGroupById(data.existingGroupNo)
             .then((g) => {
+
+              const addData = {
+                groupId:g.id,
+                productIds:[currentProdId]
+              }
+
+              addProductToGroup(addData)
+              .then(r=>{
+                console.log('group added to this product');
+                console.log(r);
+              })
+              .catch(err=>{
+                console.log(err);
+              })
               // console.log("ss");
               // console.log(g);
               // setBuyers(g.buyers);
@@ -244,7 +273,11 @@ function AddProduct() {
         console.log(response);
         setCurrentProdId(response.id);
         showToast("Product Added  Successfully", false);
-        if (!isCompanySelf()) {
+        if(isAdmin){
+          navigate("/admin/Product");
+          
+        }
+        else if (!isCompanySelf()) {
           navigate("/Product");
         }
         setCurrentStep(currentStep + 1);
@@ -344,7 +377,12 @@ function AddProduct() {
         setIsRed(false);
         toast.success("Added Successfully!");
         setTimeout(() => {
-          navigate("/Product");
+          if(isAdmin){
+            navigate("/admin/Product");
+          }else{
+            navigate("/Product");
+
+          }
           setIsRed(true);
         }, 3000);
       })
@@ -584,6 +622,11 @@ function AddProduct() {
     }
   };
 
+  const onlogout = () => {
+    signOut();
+    navigate("/admin");
+  };
+
   return (
     <>
       <div className=" w-full">
@@ -594,7 +637,9 @@ function AddProduct() {
             // style: { color: `red` },
           }}
         />
+        <Sidebar changeLogin={onlogout} />
         {renderStep()}
+        {/* {console.log(currentProdId)} */}
       </div>
     </>
   );

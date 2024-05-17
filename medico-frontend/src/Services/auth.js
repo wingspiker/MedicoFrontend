@@ -127,7 +127,6 @@ export const isAdmin = () => {
 
 export const isCompanySelf = () => {
     const user = decodeToken();
-    console.log(user);
     if(user){
         const key = Object.keys(user).find((key)=> key.endsWith('role'))
         if(user[key]==='Company'){

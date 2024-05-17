@@ -38,7 +38,7 @@ export default function AdminProduct() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {adminSellingCompanies.map((company, index) => (
             <div
-              key={company.id}
+              key={index} 
               className=" bg-teal-300 rounded-lg shadow-lg overflow-hidden"
             >
               <div className="relative">
