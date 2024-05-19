@@ -19,7 +19,7 @@ const Welcome = (props) => {
 
   useEffect(() => {
     const user = decodeToken()
-    console.log(user);
+    // console.log(user);
     if(!user){
       return;
     }

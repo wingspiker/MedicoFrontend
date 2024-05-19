@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Sidebar } from "./Sidebar";
+import { AdminSidebar } from "./AdminSidebar";
 import { signOut } from "../../Services/auth";
 import { useNavigate } from "react-router-dom";
 import { getAdminSellingCompanies } from "../../Services/product";
@@ -23,7 +23,8 @@ export default function AdminProduct() {
   const viewCompany = (index) => {
     const company = adminSellingCompanies[index]
     const email = company.companyEmail
-    navigate(`/admin/Product/${index}`,{state:{email:email}})
+    // console.log(company);
+    navigate(`/admin/Product/${index}`,{state:{email:email, companyName:company.companyName}})
   }
 
   return (
@@ -67,7 +68,7 @@ export default function AdminProduct() {
           ))}
         </div>
       </div>
-      <Sidebar changeLogin={onlogout} />
+      <AdminSidebar changeLogin={onlogout} />
     </>
   );
 }

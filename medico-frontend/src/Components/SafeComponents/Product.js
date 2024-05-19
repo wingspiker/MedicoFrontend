@@ -148,7 +148,7 @@ export default function Product(props) {
 
 
           {products.map((p, i) => {
-            return <Link to={`/Product/${i}`} state={p.id} key={p.id}>
+            return <Link to={`/Product/${i}`} state={{pid:p.id}} key={p.id}>
             <Card sx={{ maxWidth: 345, padding:'8px' }} >
                 <CardHeader
                   // avatar={

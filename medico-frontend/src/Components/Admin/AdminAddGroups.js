@@ -6,7 +6,7 @@ import CaseThree from "./AdminGroupComponents/CaseThree";
 import { addGroup } from "../../Services/group";
 import { addBuyers, filterBuyrs } from "../../Services/buyer";
 import { useNavigate } from "react-router-dom";
-import { Sidebar } from "./Sidebar";
+import { AdminSidebar } from "./AdminSidebar";
 import { decodeToken, signOut } from "../../Services/auth";
 
 function AdminAddGroup(props) {
@@ -221,7 +221,7 @@ function AdminAddGroup(props) {
 
   return (
     <>
-      <Sidebar changeLogin={logout} />
+      <AdminSidebar changeLogin={logout} />
       <div className=" w-full">{renderStep()}</div>
     </>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
-import { Sidebar } from "./Sidebar";
+import {AdminSidebar } from "./AdminSidebar";
 import { signOut, decodeToken } from "../../Services/auth";
 import {
   CustomInput,
@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form";
 import Loader from "../../Loader";
 import { getDistricts, getStates, getTalukas } from "../../Services/location";
 import { registerSalesman } from "../../Services/user";
+import { getAdminByEmail, getCompanyByEmail } from "../../Services/company";
+import { useNavigate } from "react-router-dom";
 
 const AddSalesmanModal = ({
   isOpen,
@@ -37,23 +39,25 @@ const AddSalesmanModal = ({
   const mobileNumber = watch("mobileNumber");
   const state = watch("state");
   const district = watch("district");
-  const taluka = watch("taluka");
+  const talukasSelected = watch("talukas") || [];
 
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [talukas, setTalukas] = useState([]);
-  const [talukaId, setTalukaId] = useState(-1);
-
   const [loading, setLoading] = useState(false);
 
   const onsubmit = (data) => {
-    data.areaAssignedTalukaId = talukaId;
+    data.areaAssignedTalukaIds = talukasSelected.map(Number);
     const add = {
       state: states.find((s) => s.id == state).name,
       district: districts.find((d) => d.id == district).name,
-      taluka: talukas.find((t) => t.id == taluka).name,
+      taluka: talukasSelected.map((t) => talukas.find((tk) => tk.id == t).name)[0],
     };
     data.addressRequest = add;
+
+    const user = decodeToken();
+    const keys = Object.keys(user);
+    const ownerEmail = user[keys.find((k) => k.endsWith("emailaddress"))];
 
     const {
       firstName,
@@ -61,7 +65,7 @@ const AddSalesmanModal = ({
       addressRequest,
       mobileNumber,
       email,
-      areaAssignedTalukaId,
+      areaAssignedTalukaIds,
     } = data;
 
     const salesmanData = {
@@ -70,11 +74,12 @@ const AddSalesmanModal = ({
       mobileNumber,
       email,
       addressRequest,
-      areaAssignedTalukaId,
+      areaAssignedTalukaIds,
+      ownerEmail
     };
     console.log(salesmanData);
 
-    addSalesman(data);
+    addSalesman(salesmanData);
   };
 
   const addSalesman = (salesman) => {
@@ -88,7 +93,7 @@ const AddSalesmanModal = ({
         onClose();
       })
       .catch((err) => {
-        showErr("Error adding batch", err);
+        showErr("Error adding Salesman", err);
         setLoading(false);
         console.log(err);
       });
@@ -118,22 +123,27 @@ const AddSalesmanModal = ({
     if (district) {
       getTalukas(district)
         .then((res) => {
-          // console.log(res);
           setTalukas(res);
         })
-        .catch((err) => console.log("Error fetching districts: ", err));
+        .catch((err) => console.log("Error fetching talukas: ", err));
     } else {
-      setTalukas([]); // Clear districts if no state is selected
+      setTalukas([]); // Clear talukas if no district is selected
     }
   }, [district]);
 
-  useEffect(() => {
-    if (taluka) {
-      setTalukaId(Number(taluka));
+  const handleTalukaChange = (e) => {
+    const value = e.target.value;
+    const checked = e.target.checked;
+
+    if (checked) {
+      setValue("talukas", [...talukasSelected, value]);
     } else {
-      setTalukaId(-1); // Clear districts if no state is selected
+      setValue(
+        "talukas",
+        talukasSelected.filter((t) => t !== value)
+      );
     }
-  }, [taluka]);
+  };
 
   const stateOptions = states.map((s) => {
     return { value: s.id, label: s.name };
@@ -205,8 +215,21 @@ const AddSalesmanModal = ({
                 inputProps={{
                   ...register("mobileNumber", {
                     required: "Mobile number is required",
+                    minLength: {
+                      value: 10,
+                      message:
+                        "Mobile number must be exactly 10 characters long",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message:
+                        "Mobile number must be exactly 10 characters long",
+                    },
+                    pattern: {
+                      value: /^[0-9]*$/,
+                      message: "Mobile number must contain only digits",
+                    },
                   }),
-
                   type: "text",
                 }}
                 error={errors?.mobileNumber}
@@ -251,18 +274,31 @@ const AddSalesmanModal = ({
             </div>
           </div>
           <div className="w-full px-2 md:mb-4">
-            <CustomSelect
-              label="Choose an Option"
-              options={[{ value: "", label: "Select..." }, ...talukaOptions]}
-              inputProps={{
-                ...register("taluka", { 
-                  required: "Taluka is required",
-                  validate: (value) => value !== "" || "Taluka is required",
-                }),
-                defaultValue: "",
-              }}
-              error={errors?.taluka}
-            />
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Talukas
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {talukaOptions.map((option) => (
+                <label key={option.value} className="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    value={option.value}
+                    {...register("talukas", {
+                      validate: (value) =>
+                        value.length > 0 || "At least one Taluka must be selected",
+                    })}
+                    onChange={handleTalukaChange}
+                    className="form-checkbox"
+                  />
+                  <span className="ml-2">{option.label}</span>
+                </label>
+              ))}
+            </div>
+            {errors?.talukas && (
+              <p className="text-red-500 text-xs italic">
+                {errors.talukas.message}
+              </p>
+            )}
           </div>
 
           <div className="mt-4 flex justify-end gap-4">
@@ -289,15 +325,17 @@ const AddSalesmanModal = ({
 const RemoveSalesmanModal = ({
   isOpen,
   onClose,
-  currArt,
+  currSalesman,
   changeEffect,
-  product,
 }) => {
   const [loading, setLoading] = useState(false);
 
+  // console.log(currSalesman.email);
+
   const onsubmit = (e) => {
+    e.preventDefault();
     console.log(e);
-    // e.preventDefault();
+    console.log(currSalesman);
     // setLoading(true);
     // deleteDivision(currArt)
     //   .then((resp) => {
@@ -321,9 +359,9 @@ const RemoveSalesmanModal = ({
     >
       <div className="bg-white text-black p-4 rounded-md mx-4 md:w-4/12">
         <form onSubmit={onsubmit}>
-          <p className="text-2xl text-cyan-900">Delete Division</p>
+          <p className="text-2xl text-cyan-900">Delete Salesman</p>
           <p className="text-lg text-black">
-            Are you sure you want to delete division?
+            Are you sure you want to delete salesman?
           </p>
 
           <div className="mt-4 flex justify-end gap-4">
@@ -361,6 +399,8 @@ export default function AdminAddSalesman(props) {
   const [isRed, setIsRed] = useState(false);
   const [fl, setFl] = useState(false);
 
+  const navigate = useNavigate();
+
   const showErr = (msg) => {
     setIsRed(true);
     toast.error(msg);
@@ -392,8 +432,76 @@ export default function AdminAddSalesman(props) {
     setIsModalOpen2(false);
   };
 
+  const [allsalesman, setAllsalesman] = useState([])
+  useEffect(() => {
+    const user = decodeToken();
+    const keys = Object.keys(user);
+    const ownerEmail = user[keys.find((k) => k.endsWith("emailaddress"))];
+    // console.log(ownerEmail);
+    getAdminByEmail(ownerEmail)
+    .then(resp=>{
+      // console.log(resp);
+      setAllsalesman(resp.assignedSalesmen??[])
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  }, [])
+
+  const SalesmanCard = ({ salesman, onView, onDelete, index }) => (
+    <div className="bg-white text-black rounded-lg shadow-lg p-4 m-2 w-full sm:w-1/2 lg:w-1/4">
+      <div className="flex items-center">
+        <img
+          src="/salesman.jpg"
+          alt="avatar"
+          className="rounded-full h-24 w-24"
+        />
+        <div className="ml-4 flex-grow">
+          <h2 className="text-xl font-semibold">{salesman.firstName} {salesman.lastName}</h2>
+          <p>{salesman.email}</p>
+          <p>{salesman.mobileNumber}</p>
+          <p>ID: {salesman.salesmanId}</p>
+        </div>
+      </div>
+      <div className="mt-4 flex justify-between">
+        <button
+          onClick={() => onView(salesman, index)}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+        >
+          View
+        </button>
+        <button
+          onClick={() => onDelete(salesman)}
+          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+  
+  
+  const SalesmanList = ({ salesmen }) => (
+    <div className="flex flex-wrap">
+      {salesmen.map((salesman, index) => (
+        <SalesmanCard key={salesman.id} salesman={salesman} onView={handleSalesmanView} onDelete={handleSalesmanDelete} index={index} />
+      ))}
+    </div>
+  );
+
+  const handleSalesmanView = (salesman, index) => {
+    console.log(salesman);
+    navigate(`/admin/Salesman/${index}`,{state:{sid:salesman.id, salesmanEmail:salesman.email}})    
+  }
+
+  const handleSalesmanDelete = (salesman) => {
+    console.log(salesman);
+    setcurrSalesman(salesman)
+    openModal2();
+  }
+
   return (
-    <div className="flex h-screen bg-cyan-900 text-white">
+    <div className=" h-screen bg-cyan-900 text-white">
       <Toaster
         position="top-center"
         toastOptions={{
@@ -401,10 +509,10 @@ export default function AdminAddSalesman(props) {
         }}
       />
       {/* <Sidebar /> Add the Sidebar component */}
-      <Sidebar changeLogin={logout} />
+      <AdminSidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
-          <div className=" p-2 flex justify-end gap-4">
+          <div className=" p-5 flex justify-end gap-4">
             <button
               onClick={openModal}
               className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
@@ -416,6 +524,13 @@ export default function AdminAddSalesman(props) {
         </div>
         <p className=" text-4xl text-white px-8 py-2">Salesman</p>
       </div>
+
+      <div className=" ms-14 p-8">
+        <SalesmanList salesmen={allsalesman} />
+      </div>
+
+
+
 
       <AddSalesmanModal
         isOpen={isModalOpen}

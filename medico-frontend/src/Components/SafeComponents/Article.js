@@ -135,8 +135,10 @@ const RemoveArticleModal = ({ isOpen, onClose, currArt, changeEffect }) => {
   const onsubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    console.log(currArt);
     deleteArticle(currArt)
       .then((resp) => {
+        console.log(resp);
         setLoading(false);
         changeEffect((e) => !e);
         onClose();

@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form";
 import Loader from "../../Loader";
 import { getDistricts, getStates, getTalukas } from "../../Services/location";
 import { registerSalesman } from "../../Services/user";
+import { getCompanyByEmail } from "../../Services/company";
+import { useNavigate } from "react-router-dom";
 
 const AddSalesmanModal = ({
   isOpen,
@@ -37,23 +39,25 @@ const AddSalesmanModal = ({
   const mobileNumber = watch("mobileNumber");
   const state = watch("state");
   const district = watch("district");
-  const taluka = watch("taluka");
+  const talukasSelected = watch("talukas") || [];
 
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [talukas, setTalukas] = useState([]);
-  const [talukaId, setTalukaId] = useState(-1);
-
   const [loading, setLoading] = useState(false);
 
   const onsubmit = (data) => {
-    data.areaAssignedTalukaId = talukaId;
+    data.areaAssignedTalukaIds = talukasSelected.map(Number);
     const add = {
       state: states.find((s) => s.id == state).name,
       district: districts.find((d) => d.id == district).name,
-      taluka: talukas.find((t) => t.id == taluka).name,
+      taluka: talukasSelected.map((t) => talukas.find((tk) => tk.id == t).name)[0],
     };
     data.addressRequest = add;
+
+    const user = decodeToken();
+    const keys = Object.keys(user);
+    const ownerEmail = user[keys.find((k) => k.endsWith("emailaddress"))];
 
     const {
       firstName,
@@ -61,7 +65,7 @@ const AddSalesmanModal = ({
       addressRequest,
       mobileNumber,
       email,
-      areaAssignedTalukaId,
+      areaAssignedTalukaIds,
     } = data;
 
     const salesmanData = {
@@ -70,7 +74,8 @@ const AddSalesmanModal = ({
       mobileNumber,
       email,
       addressRequest,
-      areaAssignedTalukaId,
+      areaAssignedTalukaIds,
+      ownerEmail
     };
     console.log(salesmanData);
 
@@ -118,22 +123,27 @@ const AddSalesmanModal = ({
     if (district) {
       getTalukas(district)
         .then((res) => {
-          // console.log(res);
           setTalukas(res);
         })
-        .catch((err) => console.log("Error fetching districts: ", err));
+        .catch((err) => console.log("Error fetching talukas: ", err));
     } else {
-      setTalukas([]); // Clear districts if no state is selected
+      setTalukas([]); // Clear talukas if no district is selected
     }
   }, [district]);
 
-  useEffect(() => {
-    if (taluka) {
-      setTalukaId(Number(taluka));
+  const handleTalukaChange = (e) => {
+    const value = e.target.value;
+    const checked = e.target.checked;
+
+    if (checked) {
+      setValue("talukas", [...talukasSelected, value]);
     } else {
-      setTalukaId(-1); // Clear districts if no state is selected
+      setValue(
+        "talukas",
+        talukasSelected.filter((t) => t !== value)
+      );
     }
-  }, [taluka]);
+  };
 
   const stateOptions = states.map((s) => {
     return { value: s.id, label: s.name };
@@ -264,18 +274,31 @@ const AddSalesmanModal = ({
             </div>
           </div>
           <div className="w-full px-2 md:mb-4">
-            <CustomSelect
-              label="Choose an Option"
-              options={[{ value: "", label: "Select..." }, ...talukaOptions]}
-              inputProps={{
-                ...register("taluka", {
-                  required: "Taluka is required",
-                  validate: (value) => value !== "" || "Taluka is required",
-                }),
-                defaultValue: "",
-              }}
-              error={errors?.taluka}
-            />
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Talukas
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {talukaOptions.map((option) => (
+                <label key={option.value} className="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    value={option.value}
+                    {...register("talukas", {
+                      validate: (value) =>
+                        value.length > 0 || "At least one Taluka must be selected",
+                    })}
+                    onChange={handleTalukaChange}
+                    className="form-checkbox"
+                  />
+                  <span className="ml-2">{option.label}</span>
+                </label>
+              ))}
+            </div>
+            {errors?.talukas && (
+              <p className="text-red-500 text-xs italic">
+                {errors.talukas.message}
+              </p>
+            )}
           </div>
 
           <div className="mt-4 flex justify-end gap-4">
@@ -298,6 +321,8 @@ const AddSalesmanModal = ({
     </div>
   );
 };
+
+
 
 const RemoveSalesmanModal = ({
   isOpen,
@@ -366,8 +391,25 @@ export default function Salesman(props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
 
+  const navigate = useNavigate();
+
   const [salesman, setSalesman] = useState([]);
   const [currSalesman, setcurrSalesman] = useState(null);
+
+  const [allsalesman, setAllsalesman] = useState([])
+  useEffect(() => {
+    const user = decodeToken();
+    const keys = Object.keys(user);
+    const ownerEmail = user[keys.find((k) => k.endsWith("emailaddress"))];
+    getCompanyByEmail(ownerEmail)
+    .then(resp=>{
+      // console.log(resp);
+      setAllsalesman(resp.assignedSalesmen)
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  }, [])
 
   const [effect, setEffect] = useState(false);
 
@@ -405,8 +447,61 @@ export default function Salesman(props) {
     setIsModalOpen2(false);
   };
 
+  const SalesmanCard = ({ salesman, onView, onDelete, index }) => (
+    <div className="bg-white text-black rounded-lg shadow-lg p-4 m-2 w-full sm:w-1/2 lg:w-1/4">
+      <div className="flex items-center">
+        <img
+          src="/salesman.jpg"
+          alt="avatar"
+          className="rounded-full h-24 w-24"
+        />
+        <div className="ml-4 flex-grow">
+          <h2 className="text-xl font-semibold">{salesman.firstName} {salesman.lastName}</h2>
+          <p>{salesman.email}</p>
+          <p>{salesman.mobileNumber}</p>
+          <p>ID: {salesman.salesmanId}</p>
+        </div>
+      </div>
+      <div className="mt-4 flex justify-between">
+        <button
+          onClick={() => onView(salesman, index)}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+        >
+          View
+        </button>
+        <button
+          onClick={() => onDelete(salesman)}
+          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+  
+  
+  const SalesmanList = ({ salesmen }) => (
+    <div className="flex flex-wrap">
+      {salesmen.map((salesman, index) => (
+        <SalesmanCard key={salesman.id} salesman={salesman} onView={handleSalesmanView} onDelete={handleSalesmanDelete} index={index} />
+      ))}
+    </div>
+  );
+
+  const handleSalesmanView = (salesman, index) => {
+    // console.log(salesman);
+    // console.log('trtr');
+    navigate(`/Salesman/${index}`,{state:{sid:salesman.id, salesmanEmail:salesman.email}})    
+  }
+
+  const handleSalesmanDelete = (salesman) => {
+    console.log(salesman);
+    setcurrSalesman(salesman)
+    openModal2();
+  }
+
   return (
-    <div className="flex h-screen bg-cyan-900 text-white">
+    <div className=" h-screen bg-cyan-900 text-white">
       <Toaster
         position="top-center"
         toastOptions={{
@@ -429,6 +524,13 @@ export default function Salesman(props) {
         </div>
         <p className=" text-4xl text-white px-8 py-2">Salesman</p>
       </div>
+
+      <div className=" ms-14 p-8">
+        <SalesmanList salesmen={allsalesman} />
+      </div>
+
+
+
 
       <AddSalesmanModal
         isOpen={isModalOpen}

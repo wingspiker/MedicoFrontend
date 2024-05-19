@@ -34,7 +34,7 @@ import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import { getArticles } from "../../../Services/article";
 import Loader from "../../../Loader";
 import { useNavigate } from "react-router-dom";
-import { Sidebar } from "../Sidebar";
+import { AdminSidebar } from "../AdminSidebar";
 const BenefitType = {
   DISCOUNT: "Discount Offer",
   FREE_GOODS: "Free Goods Offer",
@@ -1220,7 +1220,7 @@ function AddOffer(props) {
 
   return (
     <div className="w-full bg-cyan-900 text-white h-screen overflow-y-auto">
-      <Sidebar changeLogin={logout} />
+      <AdminSidebar changeLogin={logout} />
       <div className="pt-10 flex justify-center w-full">
         <Toaster position="top-center" />
         <Stepper activeStep={currentStep - 1} alternativeLabel>

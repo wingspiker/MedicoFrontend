@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { decodeToken, signOut } from "../../Services/auth";
 import { Sidebar } from "./Sidebar";
 import { useNavigate } from "react-router-dom";
-import { getGroups, getGroupById, deleteGroup } from "../../Services/group";
+import {
+  getGroups,
+  getGroupById,
+  deleteGroup,
+  deleteGroupById,
+} from "../../Services/group";
 import {
   Button,
   Dialog,
@@ -12,6 +17,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { prescriptionEnum } from "../../Models/enums.model";
 
 export default function Group(props) {
   const { changeLogin } = props;
@@ -20,6 +26,8 @@ export default function Group(props) {
   const [open, setOpen] = useState(false);
   const [groupToDelete, setGroupToDelete] = useState(null);
   const navigate = useNavigate();
+  const [eff, setEff] = useState(false);
+  const [delLoad, setDelLoad] = useState(false);
 
   const logout = () => {
     signOut();
@@ -37,11 +45,12 @@ export default function Group(props) {
     getGroups(email)
       .then((g) => {
         setGroups(g);
+        setSelectedGroup(g[0])
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [eff]);
 
   const handleGroup = (g) => {
     getGroupById(g.id)
@@ -58,14 +67,18 @@ export default function Group(props) {
     setOpen(true);
   };
 
-  // const handleDeleteConfirm = () => {
-  //   deleteGroup(groupToDelete)
-  //     .then(() => {
-  //       setGroups(groups.filter((group) => group.id !== groupToDelete));
-  //       setOpen(false);
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
+  const handleDeleteConfirm = () => {
+    setDelLoad(true);
+    deleteGroupById(groupToDelete)
+      .then(() => {
+        setEff((e) => !e);
+        setDelLoad(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setDelLoad(false);
+      });
+  };
 
   return (
     <div className="flex h-screen bg-cyan-900 text-white">
@@ -83,11 +96,15 @@ export default function Group(props) {
           <hr />
         </div>
         <div className="flex-1 ms-14 flex">
-          <div className="w-2/3 p-8 grid grid-cols-1 gap-6">
+          <div className="w-2/3 p-8 grid grid-cols-1 gap-6 h-[92vh] no-scrollbar overflow-auto">
             {groups.map((group) => (
               <div
                 key={group.id}
-                className="bg-white text-black rounded-lg shadow-md p-6 cursor-pointer flex justify-between items-center"
+                className={`text-black rounded-lg shadow-md p-6 cursor-pointer flex justify-between items-center ${
+                  selectedGroup && group.id === selectedGroup.id
+                    ? "bg-cyan-500"
+                    : "bg-white"
+                }`} // This line applies conditional styling
                 onClick={() => handleGroup(group)}
               >
                 <div>
@@ -106,34 +123,79 @@ export default function Group(props) {
               </div>
             ))}
           </div>
+
           <div className="mt-8 w-full">
             {selectedGroup && (
-              <div className="w-2/3 p-8 bg-white text-black rounded-lg shadow-md">
+              <div className="w-[96%] h-[88vh] overflow-auto no-scrollbar p-8 bg-white text-black rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold mb-4">
                   {selectedGroup.name}
                 </h2>
                 <p className="mb-4">{selectedGroup.description}</p>
                 <h3 className="text-xl font-bold">Buyers:</h3>
-                <ul className="mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
                   {selectedGroup.buyers &&
                     selectedGroup.buyers.map((buyer) => (
-                      <li key={buyer.id}>
-                        {buyer.firstName} {buyer.lastName} - {buyer.occupation}{" "}
-                        {buyer.degree ? "(" + buyer.degree + ")" : ""} - Taluka:{" "}
-                        {buyer.taluka.name}
-                      </li>
+                      <div
+                        key={buyer.id}
+                        className="bg-white rounded-lg shadow-xl p-4 flex flex-col"
+                      >
+                        <img
+                          src="buyer.png"
+                          alt={buyer.firstName}
+                          height="32px"
+                          className="w-full object-cover mb-4 rounded"
+                        />
+                        <h2 className="text-lg font-semibold">
+                          {buyer.firstName} {buyer.lastName}
+                        </h2>
+                        <p className="text-gray-600">{buyer.occupation}</p>
+                        <p className="text-gray-800">
+                          Degree: {buyer.degree ? buyer.degree : "N/A"}
+                        </p>
+                        <p className="text-gray-800">
+                          Taluka: {buyer.taluka.name}
+                        </p>
+                      </div>
                     ))}
-                </ul>
+                </div>
+
                 <h3 className="text-xl font-bold">Products:</h3>
-                <ul>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {selectedGroup.products &&
                     selectedGroup.products.map((product) => (
-                      <li key={product.id}>
-                        {product.brandName} ({product.drugName}) - $
-                        {product.mrp}
-                      </li>
+                      <div
+                        key={product.id}
+                        className="bg-white rounded-lg shadow-xl p-4 flex flex-col"
+                      >
+                        {console.log(product)}
+                        <img
+                          src={product.photoUrl}
+                          alt={product.brandName}
+                          className="w-full h-32 object-cover mb-4 rounded"
+                        />
+                        <h2 className="text-lg font-semibold">
+                          {product.brandName}
+                        </h2>
+                        <p className="text-gray-600">{product.drugName}</p>
+                        <p className="text-gray-800 font-bold">
+                          MRP: ₹ {product.mrp}
+                        </p>
+                        <p className="text-gray-800">
+                          Selling Price: ₹ {product.sellingPrice}
+                        </p>
+                        <p className="text-gray-600">
+                          Prescription:{" "}
+                          {
+                            prescriptionEnum[
+                              Object.keys(prescriptionEnum)[
+                                product.prescription
+                              ]
+                            ]
+                          }
+                        </p>
+                      </div>
                     ))}
-                </ul>
+                </div>
               </div>
             )}
           </div>
@@ -150,7 +212,7 @@ export default function Group(props) {
           <Button onClick={() => setOpen(false)} color="primary">
             Cancel
           </Button>
-          <Button onClick={() => {}} color="error">
+          <Button onClick={handleDeleteConfirm} color="error">
             Confirm
           </Button>
         </DialogActions>

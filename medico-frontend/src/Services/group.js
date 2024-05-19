@@ -60,7 +60,7 @@ export const getGroups = async (companyEmail) => {
       Authorization: `Bearer ${t}`,
     },
   };
-  console.log(config);
+  // console.log(config);
 
   return axios
     .get(url + `/api/group?email=${companyEmail}`, config)
@@ -115,6 +115,31 @@ export const addProductToGroup = async (addData) => {
     .then((response) => {
       // Handle successful response
       return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
+
+export const deleteGroupById = async (id) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+  // console.log(config);
+
+  return axios
+    .delete(url + `/api/group/${id}`, config)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+      
     })
     .catch((error) => {
       // Handle error

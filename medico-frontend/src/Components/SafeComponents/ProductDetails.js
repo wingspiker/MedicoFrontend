@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
-import { signOut, decodeToken, isCompanySelf } from "../../Services/auth";
+import { signOut, decodeToken, isCompanySelf, isAdmin } from "../../Services/auth";
 import { getProductById } from "../../Services/product";
 import { CustomInput, CustomTextArea } from "../OfferComponents/Input";
 import IconButton from "@mui/material/IconButton";
@@ -17,6 +17,7 @@ import { getTheme } from "@table-library/react-table-library/compact";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import CircularProgress from '@mui/material/CircularProgress';
+import { AdminSidebar } from "../Admin/AdminSidebar";
 
 const AddProductDetailModal = ({
   isOpen,
@@ -249,11 +250,12 @@ export default function ProductDetails(props) {
   const [fl, setFl] = useState(false);
 
   useEffect(() => {
-    getProductById(history.state)
+    getProductById(history.state.pid)
       .then((res) => {
         // console.log(res);
 
-        if (isCompanySelf()) {
+        if (isCompanySelf() || isAdmin()) {
+          // console.log('yes');
           let batches = res.productBatches;
           let b = batches.map((p, i) => {
             return { ...p, index: i + 1, isEditable: false };
@@ -448,11 +450,12 @@ export default function ProductDetails(props) {
           style: { color: `${isRed ? "red" : "green"}` },
         }}
       />
-      <Sidebar changeLogin={logout} />
+      {
+        isAdmin()?<AdminSidebar changeLogin={logout}/>:<Sidebar changeLogin={logout}/>}
       <div className="flex-1 ms-14">
         <div>
-          <div className=" p-2 flex justify-end gap-4 h-14">
-            {isCompanySelf() && (
+          <div className={" p-2 flex justify-end gap-4 h-14"}>
+            {(isCompanySelf() || isAdmin()) && (
               <button
                 onClick={openModal}
                 className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
@@ -565,7 +568,7 @@ export default function ProductDetails(props) {
             changeEffect={setEffect}
             product={product}
           />
-          {isCompanySelf() && (
+          {(isCompanySelf() || isAdmin()) && (
             <div className="mx-8 bg-gray-100 shadow-lg rounded-lg overflow-hidden mb-16">
               <p className="text-xl font-semibold p-4 bg-blue-800 text-white">
                 Batches

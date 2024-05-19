@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Sidebar } from "./Sidebar";
+import { AdminSidebar } from "./AdminSidebar";
 import {
   signOut,
 } from "../../Services/auth";
@@ -26,7 +26,7 @@ export default function AdminLanding() {
           </button>
         </div>
         <hr />
-        <Sidebar changeLogin={onlogout} />
+        <AdminSidebar changeLogin={onlogout} />
       </>
     );
 }

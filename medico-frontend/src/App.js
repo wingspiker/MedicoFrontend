@@ -48,6 +48,9 @@ import AdminSellingProducts from "./Components/Admin/AdminProductComponents/Admi
 import Settings from "./Components/SafeComponents/Settings";
 import AdminSettings from "./Components/Admin/AdminSettings";
 import OfferDetails from "./Components/OfferComponents/OfferDetails";
+import { AdminSidebar } from "./Components/Admin/AdminSidebar";
+import SalesmanDetail from "./Components/SalesmanComponents/SalesmanDetail";
+import PageNotFound from "./Components/PageNotFound";
 
 function App() {
   const loginStatus = token() !== null;
@@ -299,6 +302,18 @@ function App() {
           />
 
           <Route
+            path="/Salesman/:id"
+            exact
+            element={
+              isLoggedIn ? (
+                <SalesmanDetail changeLogin={setIsLoggedIn} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+
+          <Route
             path="/Settings"
             exact
             element={
@@ -364,6 +379,18 @@ function App() {
           />
 
           <Route
+            path="/admin/Product/:id/View"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <ProductDetails changeLogin={setIsAdminLoggedIn} />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+
+          <Route
             path="/admin/Groups"
             exact
             element={
@@ -381,7 +408,7 @@ function App() {
             element={
               isLoggedIn ? (
                 <>
-                  <AdminAddGroup changeLogin={setIsLoggedIn} />
+                  <AdminAddGroup changeLogin={setIsAdminLoggedIn} />
                 </>
               ) : (
                 <Navigate to="/login" replace />
@@ -425,11 +452,38 @@ function App() {
           />
 
           <Route
+            path="admin/Offers/:id"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <>
+                  <AdminSidebar changeLogin={logout} />
+                  <OfferDetails changeLogin={setIsAdminLoggedIn} />
+                </>
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+
+          <Route
             path="/admin/Salesman"
             exact
             element={
               isAdminLoggedIn ? (
-                <AdminAddSalesman changeLogin={setIsLoggedIn} />
+                <AdminAddSalesman changeLogin={setIsAdminLoggedIn} />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/admin/Salesman/:id"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <SalesmanDetail changeLogin={setIsAdminLoggedIn} />
               ) : (
                 <Navigate to="/admin" replace />
               )
@@ -441,11 +495,17 @@ function App() {
             exact
             element={
               isAdminLoggedIn ? (
-                <AdminSettings changeLogin={setIsLoggedIn} />
+                <AdminSettings changeLogin={setIsAdminLoggedIn} />
               ) : (
                 <Navigate to="/admin" replace />
               )
             }
+          />
+
+          <Route
+            path="*"
+            exact
+            element={<PageNotFound/>}
           />
         </Routes>
       </div>

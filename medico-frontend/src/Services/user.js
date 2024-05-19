@@ -15,7 +15,7 @@ export const registerBuyer = async (buyerDetails) => {
             'Authorization': `Bearer ${t}`
         }
       };
-      console.log(config);
+      //console.log(config);
     
     return axios.post(url+ '/api/user/buyer', buyerDetails, config)
         .then(response => {
@@ -63,9 +63,34 @@ export const registerSalesman = async (salesmanDetails) => {
             'Authorization': `Bearer ${t}`
         }
       };
-      console.log(config);
+      //console.log(config);
     
     return axios.post(url+ '/api/user/salesman', salesmanDetails, config)
+        .then(response => {
+            // Handle successful response
+            return response.data; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });
+    
+}
+
+export const getUserByEmail = async (email) => {
+    const t = localStorage.getItem('token');
+    const config = {
+        
+        headers: {
+            'Content-Type': 'application/json', 
+            'Accept': 'application/json', 
+            'Authorization': `Bearer ${t}`
+        }
+      };
+      //console.log(config);
+    
+    return axios.get(url+ `/api/user/by-email?email=${email}`, config)
         .then(response => {
             // Handle successful response
             return response.data; // Return data if needed

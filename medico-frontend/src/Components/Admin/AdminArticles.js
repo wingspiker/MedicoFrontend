@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Sidebar } from "./Sidebar";
+import { AdminSidebar } from "./AdminSidebar";
 import { decodeToken, signOut } from "../../Services/auth";
 import { CustomInput, CustomTextArea } from "../OfferComponents/Input";
 import { useForm } from "react-hook-form";
@@ -141,8 +141,10 @@ const RemoveArticleModal = ({ isOpen, onClose, currArt, changeEffect }) => {
   const onsubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    // console.log(currArt);
     deleteArticle(currArt)
       .then((resp) => {
+        // console.log(resp);
         setLoading(false);
         changeEffect((e) => !e);
         onClose();
@@ -215,7 +217,7 @@ export default function AdminArticles(props) {
 
   const logout = () => {
     signOut();
-    changeLogin(false);
+    navigate("/admin");
   };
 
   const openModal = () => {
@@ -237,7 +239,7 @@ export default function AdminArticles(props) {
   return (
     <>
       <div className="flex h-screen bg-cyan-900 text-white">
-        <Sidebar changeLogin={logout} />
+        <AdminSidebar changeLogin={logout} />
         <div className="flex-1 ms-14">
           <div>
             <div className=" p-2 flex justify-end gap-4">

@@ -16,7 +16,7 @@ import Loader from "../../Loader";
 import ShowBuyer from "../ProductComponents/CaseFive/ShowBuyer";
 import AddPricing from "../ProductComponents/CaseSix/AddPricing";
 import { getDivisions } from "../../Services/division";
-import { Sidebar } from "../Admin/Sidebar";
+import { AdminSidebar } from "../Admin/AdminSidebar";
 import { signOut } from "../../Services/auth";
 
 function AddProduct() {
@@ -637,7 +637,7 @@ function AddProduct() {
             // style: { color: `red` },
           }}
         />
-        <Sidebar changeLogin={onlogout} />
+        <AdminSidebar changeLogin={onlogout} />
         {renderStep()}
         {/* {console.log(currentProdId)} */}
       </div>

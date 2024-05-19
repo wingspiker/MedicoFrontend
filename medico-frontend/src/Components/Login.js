@@ -82,7 +82,7 @@ const Login = (props) => {
           localStorage.setItem("token", response.accessToken);
           setMessage(true);
           const user = decodeToken();
-          console.log(user);
+          // console.log(user);
           const keys = Object.keys(user);
           const role = keys.find(claim => claim.endsWith('role'));
           if(user[role] === 'Admin'){

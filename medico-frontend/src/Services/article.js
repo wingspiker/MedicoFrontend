@@ -49,7 +49,7 @@ export const getArticles = async (email) => {
     });
 };
 
-export const deleteArticle = async (email) => {
+export const deleteArticle = async (articleId) => {
   const t = localStorage.getItem("token");
   const config = {
     headers: {
@@ -60,7 +60,7 @@ export const deleteArticle = async (email) => {
   };
 
   return axios
-    .get(url + `/api/article/user/${email}`, config)
+    .delete(url + `/api/article/${articleId}`, config)
     .then((response) => {
       // Handle successful response
       return response.data; // Return data if needed

@@ -52,7 +52,7 @@ const navItems = [
   { label: "Settings", icon: <IoSettings />, link: "/admin/Settings" },
 ];
 
-export const Sidebar = ({ changeLogin }) => {
+export const AdminSidebar = ({ changeLogin }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
 

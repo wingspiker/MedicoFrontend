@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { decodeToken, signOut } from "../../Services/auth";
 import { Sidebar } from "../SafeComponents/Sidebar";
-import { getOffers, deleteOffer } from "../../Services/offer";
+import { getOffers, deleteOfferbyId } from "../../Services/offer";
 import { Card, CardContent, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 
 export default function Offer(props) {
@@ -22,18 +22,19 @@ export default function Offer(props) {
   };
 
   const handleDeleteClick = (offerId) => {
+    // console.log(offerId);
     setSelectedOffer(offerId);
     setOpen(true);
   };
 
-  // const handleDeleteConfirm = () => {
-  //   deleteOffer(selectedOffer)
-  //     .then(() => {
-  //       setOffers(offers.filter((offer) => offer.id !== selectedOffer));
-  //       setOpen(false);
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
+  const handleDeleteConfirm = () => {
+    deleteOfferbyId(selectedOffer)
+      .then(() => {
+        setOffers(offers.filter((offer) => offer.id !== selectedOffer));
+        setOpen(false);
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     const user = decodeToken();
@@ -139,10 +140,10 @@ export default function Offer(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color="primary">
+          <Button onClick={() => {setOpen(false); setSelectedOffer(null);}} color="primary">
             Cancel
           </Button>
-          <Button onClick={()=>{}} color="error">
+          <Button onClick={handleDeleteConfirm} color="error">
             Confirm
           </Button>
         </DialogActions>
