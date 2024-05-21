@@ -139,7 +139,6 @@ function AddGroup() {
     switch (currentStep) {
       case 1:
         return (
-          <>
             <div className="flex justify-center items-top min-h-screen  bg-cyan-900">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <h1 className="text-4xl text-white mt-2">Select Location</h1>
@@ -159,11 +158,10 @@ function AddGroup() {
                 </button>
               </form>
             </div>
-          </>
+
         );
       case 2:
         return (
-          <>
             <div className="flex justify-start items-top min-h-screen  bg-cyan-900 ps-44">
               <form onSubmit={handleSubmit(onSubmit)} className="w-full">
                 <h1 className="text-4xl text-white mt-2">Occupation</h1>
@@ -185,11 +183,10 @@ function AddGroup() {
                 </div>
               </form>
             </div>
-          </>
+
         );
       case 3:
-        return (
-          <>
+        return (        
             <div className="p-10 ms-8  bg-cyan-900">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <CaseThree
@@ -208,7 +205,7 @@ function AddGroup() {
                 </div>
               </form>
             </div>
-          </>
+          
         );
       default:
         return null;
@@ -216,9 +213,8 @@ function AddGroup() {
   };
 
   return (
-    <>
       <div className=" w-full">{renderStep()}</div>
-    </>
+
   );
 }
 

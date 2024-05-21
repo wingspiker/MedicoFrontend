@@ -7,7 +7,7 @@ import PricingInformation from "../ProductComponents/CaseOne/PricingInfo";
 import SelectExistingGroup from "../ProductComponents/CaseTwo/SelectGroup";
 import Occupation from "../ProductComponents/CaseFour/Occupation";
 import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
-import { decodeToken, isCompanySelf } from "../../Services/auth";
+import { decodeToken, isAdmin, isCompanySelf } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
 import { addGroup, addProductToGroup, getGroupById, getGroups } from "../../Services/group";
 import { addBuyerGroup, addBuyers, filterBuyrs } from "../../Services/buyer";
@@ -27,7 +27,7 @@ function AddProduct() {
   const [divisions, setDivisions] = React.useState([]);
 
   const [isRed, setIsRed] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdminLocal, setIsAdminLocal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -38,7 +38,7 @@ function AddProduct() {
       setCurrentProdId(location.state.pid);
       setCurrentStep(location.state.step);
       setSp(location.state.sp)
-      setIsAdmin(true)
+      setIsAdminLocal(true)
     }
   
   }, [])
@@ -273,7 +273,7 @@ function AddProduct() {
         console.log(response);
         setCurrentProdId(response.id);
         showToast("Product Added  Successfully", false);
-        if(isAdmin){
+        if(isAdminLocal){
           navigate("/admin/Product");
           
         }
@@ -377,7 +377,7 @@ function AddProduct() {
         setIsRed(false);
         toast.success("Added Successfully!");
         setTimeout(() => {
-          if(isAdmin){
+          if(isAdminLocal){
             navigate("/admin/Product");
           }else{
             navigate("/Product");
@@ -611,7 +611,6 @@ function AddProduct() {
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
                   {loading ? <Loader /> : "Submit"}
-                  {console.log(errSix)}
                 </button>
               </div>
             </form>
@@ -637,7 +636,10 @@ function AddProduct() {
             // style: { color: `red` },
           }}
         />
-        <AdminSidebar changeLogin={onlogout} />
+        {
+         isAdmin() && <AdminSidebar changeLogin={onlogout} />
+        }
+        
         {renderStep()}
         {/* {console.log(currentProdId)} */}
       </div>

@@ -29,3 +29,13 @@ export const subscriptionTypeEnum = {
     PERSIXMONTH_15000 : 'Monthly Plan',
     PERYEAR_25000 : 'Annual Plan'
 }
+
+export const EffectivePriceCalculationTypeEnum = {
+    DiscountOnMRP : 'Discount on MRP',
+    MarginOnSellingPrice : 'Margin on selling price',
+}
+
+export const priceCentricOfferSubTypeEnum = {
+    OrderAmount:'Based on Order Amount',
+    OrderHistory:'Based on Order History',
+}

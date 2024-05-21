@@ -73,10 +73,14 @@ export default function Group(props) {
       .then(() => {
         setEff((e) => !e);
         setDelLoad(false);
+        setOpen(false);
+        
       })
       .catch((err) => {
         console.log(err);
         setDelLoad(false);
+        setOpen(false);
+        
       });
   };
 

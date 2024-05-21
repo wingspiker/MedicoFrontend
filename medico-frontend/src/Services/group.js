@@ -118,7 +118,7 @@ export const addProductToGroup = async (addData) => {
     })
     .catch((error) => {
       // Handle error
-      console.error("Error occurred during login:", error);
+      console.error("Error occurred during Adding Group:", error);
       throw error; // Throw error for further handling if needed
     });
 };

@@ -5,14 +5,112 @@ import {
   Card,
   CardContent,
   CardMedia,
+  CardHeader,
   Typography,
   Divider,
   Chip,
   Grid,
-  Box
+  Box,
 } from "@mui/material";
-import { AccessTime, Person  } from "@mui/icons-material";
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import { AccessTime, Person } from "@mui/icons-material";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import { priceCentricOfferSubTypeEnum } from "../../Models/enums.model";
+
+const ProductCard = (props) => {
+  const { p, qty } = props;
+  return (
+    <Card sx={{ maxWidth: 345, padding: "8px" }}>
+      <CardHeader title={p.drugName} subheader={p.brandName} />
+      {/* {console.log(p.photoUrl)} */}
+      <CardMedia
+        component="img"
+        image={p.photoUrl}
+        alt={p.drugName}
+        style={{ height: "100px" }}
+      />
+      <CardContent>
+        <Typography variant="body2" color="text.secondary">
+          {p.manufacturerName}
+        </Typography>
+        <Typography variant="body2" color="text.primary">
+          MRP : <span className=" text-green-500 font-bold">₹ {p.mrp}</span>
+        </Typography>
+        <Typography variant="body2" color="text.primary">
+          Dimension :
+          <span className=" ms-2">
+            X : <span className=" font-bold">{p.packSize.x}</span>{" "}
+          </span>
+          <span className="ms-2">
+            Y : <span className=" font-bold">{p.packSize.y}</span>{" "}
+          </span>
+        </Typography>
+        {qty && <Typography variant="body2" color="text.primary">
+          Required Quantity :
+          <span className=" ms-2">
+            {qty}
+          </span>
+        </Typography>}
+      </CardContent>
+      {/* <CardActions disableSpacing>
+        <IconButton aria-label="add to favorites">
+          <FavoriteIcon />
+        </IconButton>
+        <IconButton aria-label="share">
+          <ShareIcon />
+        </IconButton>
+
+      </CardActions> */}
+    </Card>
+  );
+};
+
+const ArticleCard = (props) => {
+  const { p, qty } = props;
+  return (
+    <Card sx={{ maxWidth: 345, padding: "8px" }}>
+      <CardHeader title={p.drugName} subheader={p.brandName} />
+      {/* {console.log(p.photoUrl)} */}
+      <CardMedia
+        component="img"
+        image={p.photoUrl}
+        alt={p.drugName}
+        style={{ height: "100px" }}
+      />
+      <CardContent>
+        <Typography variant="body2" color="text.secondary">
+          {p.manufacturerName}
+        </Typography>
+        <Typography variant="body2" color="text.primary">
+          MRP : <span className=" text-green-500 font-bold">₹ {p.mrp}</span>
+        </Typography>
+        <Typography variant="body2" color="text.primary">
+          Dimension :
+          <span className=" ms-2">
+            X : <span className=" font-bold">{p.packSize.x}</span>{" "}
+          </span>
+          <span className="ms-2">
+            Y : <span className=" font-bold">{p.packSize.y}</span>{" "}
+          </span>
+        </Typography>
+        <Typography variant="body2" color="text.primary">
+          Required Quantity :
+          <span className=" ms-2">
+            {qty}
+          </span>
+        </Typography>
+      </CardContent>
+      {/* <CardActions disableSpacing>
+        <IconButton aria-label="add to favorites">
+          <FavoriteIcon />
+        </IconButton>
+        <IconButton aria-label="share">
+          <ShareIcon />
+        </IconButton>
+
+      </CardActions> */}
+    </Card>
+  );
+};
 
 export default function OfferDetails(props) {
   const { changeLogin } = props;
@@ -32,7 +130,8 @@ export default function OfferDetails(props) {
 
   const renderOfferDetails = (offer) => {
     return (
-      <div>
+      <div className=" h-[93vh] overflow-hidden no-scrollbar">
+        {/* {console.log(offer)} */}
         <Card>
           <CardContent>
             <Grid container spacing={2}>
@@ -50,8 +149,15 @@ export default function OfferDetails(props) {
                   {offer.offerDescription}
                 </Typography>
                 <Divider sx={{ my: 2 }} />
-                
-                <Box  sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: 'fit-content'  }}>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                    width: "fit-content",
+                  }}
+                >
                   <Chip
                     icon={<AccessTime />}
                     label={`Expiry: ${new Date(
@@ -68,61 +174,67 @@ export default function OfferDetails(props) {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={8} className="h-[92vh] overflow-auto no-scrollbar">
                 {offer.priceCentricOffer && (
-                  <div>
-                    <Typography variant="h6">Price Centric Offer</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      SubType: {offer.priceCentricOffer.priceCentricOfferSubType}
+                  <div className=" ms-8">
+                    <Typography variant="h4">Price Centric Offer</Typography>
+                    <hr className=" my-2"/>
+                    <Typography variant="h6" color="text.secondary">
+                      SubType:{" "}
+                      {priceCentricOfferSubTypeEnum[Object.keys(priceCentricOfferSubTypeEnum)[offer.priceCentricOffer.priceCentricOfferSubType]]}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="h6" color="text.secondary">
                       Amount: {offer.priceCentricOffer.amount}
                     </Typography>
                     {offer.priceCentricOffer.orderHistory && (
-                      <div>
-                        <Typography variant="h6">Order History</Typography>
-                        <Typography variant="body2" color="text.secondary">
+                      <div className=" mt-4">
+                        <Typography variant="h5">Order History</Typography>
+                        <Typography variant="h6" color="text.secondary">
                           Starting Date:{" "}
                           {new Date(
                             offer.priceCentricOffer.orderHistory.startingDate
                           ).toLocaleDateString()}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="h6" color="text.secondary">
                           Last Date:{" "}
                           {new Date(
                             offer.priceCentricOffer.orderHistory.lastDate
                           ).toLocaleDateString()}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="h6" color="text.secondary">
                           History Amount:{" "}
                           {offer.priceCentricOffer.orderHistory.historyAmount}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Amount: {offer.priceCentricOffer.orderHistory.amount}
+                        <Typography variant="h6" color="text.secondary">
+                          Amount: ₹ {Number(offer.priceCentricOffer.orderHistory.amount).toFixed(2)}
                         </Typography>
                       </div>
                     )}
                   </div>
                 )}
                 {offer.productCentricOffer && (
-                  <div>
-                    <Typography variant="h6">Product Centric Offer</Typography>
+                  <div className=" ms-8">
+                    <Typography variant="h4">Product Centric Offer</Typography>
+                    <hr className=" my-2"></hr>
                     {offer.productCentricOffer.conditions.map(
                       (condition, index) => (
-                        <div key={condition.id}>
-                          <Typography variant="h6">
+                        <div key={condition.id} className=" mt-6 mb-4">
+                          <Typography variant="h5">
                             Condition {index + 1}
                           </Typography>
-                          {condition.productOffers.map((productOffer) => (
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              key={productOffer.id}
-                            >
-                              Product ID: {productOffer.productId} - Required
-                              Quantity: {productOffer.requiredQuantity}
-                            </Typography>
-                          ))}
+                          <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                            {condition.productOffers.map((productOffer) => (
+                              // <Typography
+                              //   variant="body2"
+                              //   color="text.secondary"
+                              //   key={productOffer.id}
+                              // >
+                              //   Product ID: {productOffer.productId} - Required
+                              //   Quantity: {productOffer.requiredQuantity}
+                              // </Typography>
+                              <ProductCard p={productOffer.productDetails} qty={productOffer.requiredQuantity} />
+                            ))}
+                          </div>
                         </div>
                       )
                     )}
@@ -130,72 +242,88 @@ export default function OfferDetails(props) {
                 )}
                 {offer.boxBaseOffer && (
                   <div>
-                    <Typography variant="h6">Box Base Offer</Typography>
+                    <Typography variant="h4">Box Base Offer</Typography>
+                    <hr className=" my-2"/>
+                    <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                     {offer.boxBaseOffer.boxBaseOfferProducts.map((product) => (
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        key={product.id}
-                      >
-                        Product ID: {product.productId} - Unit Box Quantity:{" "}
-                        {product.unitBoxQuantity}
-                      </Typography>
+                      // <Typography
+                      //   variant="body2"
+                      //   color="text.secondary"
+                      //   key={product.id}
+                      // >
+                      //   Product ID: {product.productId} - Unit Box Quantity:{" "}
+                      //   {product.unitBoxQuantity}
+                      // </Typography>
+                      <ProductCard p={product.productDetails} qty={product.unitBoxQuantity} />
                     ))}
+                    </div>
                   </div>
                 )}
                 {offer.discountOffer && (
-                  <div>
-                    <Typography variant="h6">Discount Offer</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Discount Percentage: {offer.discountOffer.discountPercentage}%
+                  <div className=" ms-6 mt-6">
+                    <Typography variant="h4">Discount Offer</Typography>
+                    <hr className=" my-2"/>
+                    <Typography variant="h6" color="text.secondary">
+                      Discount Percentage:{" "}
+                      {offer.discountOffer.discountPercentage}%
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="h6" color="text.secondary">
                       Maximum Discount: {offer.discountOffer.maximumDiscount}
                     </Typography>
                   </div>
                 )}
                 {offer.freeGoodsOffer && (
-                  <div>
-                    <Typography variant="h6">Free Goods Offer</Typography>
-                    {offer.freeGoodsOffer.articleOptions.map((option, index) => (
-                      <div key={option.id}>
-                        <Typography variant="h6">
-                          Option {index + 1}
-                        </Typography>
-                        {option.articleWithQuantities.map((article) => (
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            key={article.id}
-                          >
-                            Article ID: {article.articleId} - Quantity:{" "}
-                            {article.quantity}
+                  <div className=" mt-6">
+                    <Typography variant="h4">Free Goods Offer</Typography>
+                    <hr className=" mt-2"></hr>
+                    {offer.freeGoodsOffer.articleOptions.map(
+                      (option, index) => (
+                        <div key={option.id}>
+                          
+                          <Typography variant="h6">
+                            Option {index + 1}
                           </Typography>
-                        ))}
-                      </div>
-                    ))}
+                          {option.articleWithQuantities.map((article) => (
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              key={article.id}
+                            >
+                              Article ID: {article.articleId} - Quantity:{" "}
+                              {article.quantity}
+                            </Typography>
+                          ))}
+                        </div>
+                      )
+                    )}
                   </div>
                 )}
                 {offer.freeProductsOffer && (
-                  <div>
-                    <Typography variant="h6">Free Products Offer</Typography>
-                    {offer.freeProductsOffer.productOptions.map((option, index) => (
-                      <div key={option.id}>
-                        <Typography variant="h6">
-                          Option {index + 1}
-                        </Typography>
-                        {option.productWithQuantities.map((product) => (
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            key={product.id}
-                          >
-                            Product ID: {product.productId} - Quantity:{" "}
-                            {product.quantity}
+                  <div className=" ms-6 mt-8">
+                    <Typography variant="h4">Free Products Offer</Typography>
+                    <hr className=" mt-2"></hr>
+                    {offer.freeProductsOffer.productOptions.map(
+                      (option, index) => (
+                        <div key={option.id} className=" mt-6 mb-4">
+                          <Typography variant="h6">
+                            Option {index + 1}
                           </Typography>
-                        ))}
-                      </div>
-                    ))}
+                          <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                          {option.productWithQuantities.map((product) => (
+                            // <Typography
+                            //   variant="body2"
+                            //   color="text.secondary"
+                            //   key={product.id}
+                            // >
+                            //   Product ID: {product.productId} - Quantity:{" "}
+                            //   {product.quantity}
+                            // </Typography>
+
+                            <ProductCard p={product.productDetails} qty={product.quantity}/>
+                          ))}</div>
+                        </div>
+                      )
+                    )}
                   </div>
                 )}
               </Grid>

@@ -1,22 +1,114 @@
 import React, { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
-import { isAdmin, isCompanySelf, signOut } from "../../Services/auth";
+import {
+  decodeToken,
+  isAdmin,
+  isCompanySelf,
+  signOut,
+} from "../../Services/auth";
 import { AdminSidebar } from "../Admin/AdminSidebar";
 import { Sidebar } from "../SafeComponents/Sidebar";
 import { useLocation } from "react-router-dom";
-import { getSalesmanById } from "../../Services/salesman";
+import { assignProduct, getSalesmanById } from "../../Services/salesman";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  CardActions,
+  CardHeader,
+  Typography,
+  Divider,
+  Chip,
+  Grid,
+  Box,
+  Button,
+} from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+import { getAdminProducts, getCompanyProducts } from "../../Services/product";
 
+export const ProductCard = (props) => {
+  const { p, assignable, onAssign } = props;
+  return (
+    <Card sx={{ maxWidth: 345, padding: "8px" }}>
+      <CardHeader title={p.drugName} subheader={p.brandName} />
+      {/* {console.log(p.photoUrl)} */}
+      <CardMedia
+        component="img"
+        image={p.photoUrl}
+        alt={p.drugName}
+        style={{ height: "100px" }}
+      />
+      <CardContent>
+        <Typography variant="body2" color="text.secondary">
+          {p.manufacturerName}
+        </Typography>
+        <Typography variant="body2" color="text.primary">
+          MRP : <span className=" text-green-500 font-bold">₹ {p.mrp}</span>
+        </Typography>
+        {p.packSize && (
+          <Typography variant="body2" color="text.primary">
+            Dimension :
+            <span className=" ms-2">
+              X : <span className=" font-bold">{p.packSize.x}</span>{" "}
+            </span>
+            <span className="ms-2">
+              Y : <span className=" font-bold">{p.packSize.y}</span>{" "}
+            </span>
+          </Typography>
+        )}
+      </CardContent>
+      <CardActions disableSpacing>
+        <Button size="small" color="primary" onClick={() => onAssign(p)}>
+          Assign
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};
 export default function SalesmanDetail(props) {
   const { changeLogin } = props;
   const [isRed, setIsRed] = useState(false);
   const [fl, setFl] = useState(false);
   const [currSalesman, setCurrSalesman] = useState(null);
 
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const handleOpenDialog = (product) => {
+    setSelectedProduct(product);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleAssignProduct = () => {
+    // console.log("Assigning", selectedProduct.id, "to salesman", currSalesman.id);
+    // Assign product to salesman logic here
+
+    assignProduct(currSalesman.id, selectedProduct.id)
+    .then(resp=>{
+      console.log(resp);
+      handleCloseDialog();
+      setFl(f=>!f)
+    })
+    .catch(err=>{
+      console.log(err);
+      handleCloseDialog();
+    })
+  };
+
   const location = useLocation();
 
   const sid = location.state?.sid || 0;
   const salesmanEmail = location.state?.salesmanEmail || "";
-  console.log(sid);
+  // console.log(sid);
 
   useEffect(() => {
     getSalesmanById(salesmanEmail)
@@ -27,6 +119,39 @@ export default function SalesmanDetail(props) {
         console.log(err);
       });
   }, [fl]);
+
+  const [companyProds, setCompanyProds] = useState([]);
+  const [adminProds, setAdminProds] = useState([]);
+
+  useEffect(() => {
+    if (isCompanySelf()) {
+      const user = decodeToken();
+      const keys = Object.keys(user);
+      const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+
+      getCompanyProducts(email)
+        .then((resp) => {
+          setCompanyProds(resp);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+    if (isAdmin()) {
+      const user = decodeToken();
+      const keys = Object.keys(user);
+      const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+
+      getAdminProducts()
+        .then((resp) => {
+          setAdminProds(resp);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, []);
 
   const showErr = (msg) => {
     setIsRed(true);
@@ -53,24 +178,44 @@ export default function SalesmanDetail(props) {
           style: { color: `${isRed ? "red" : "green"}` },
         }}
       />
+
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Assign Product</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to assign {selectedProduct?.drugName} to Mr.
+            {currSalesman?.firstName} {currSalesman?.lastName}?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleAssignProduct} color="primary">
+            Assign
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {isAdmin() ? (
         <AdminSidebar changeLogin={logout} />
       ) : (
         <Sidebar changeLogin={logout} />
       )}
       <div className="flex-1 ms-14">
+        {/* {console.log(currSalesman)} */}
         <div>
-          <div className="p-5 flex justify-between gap-4">
+          {isCompanySelf() && <div className="p-2 pt-3 flex justify-between gap-4">
             <h1 className="text-3xl font-semibold text-white">
               Salesman Detail
             </h1>
-            <button className="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2">
-              Tempp
-            </button>
-          </div>
+          </div>}
+          {isAdmin() && <div className="p-4 pt-3 flex justify-between gap-4">
+            <h1 className="text-3xl font-semibold text-white mt-4">
+              Salesman Detail
+            </h1>
+          </div>}
           <hr />
-          <div className="p-8">
-            <div className="mt-4 p-5 bg-cyan-800 rounded shadow-lg">
+          <div className="p-2">
+            <div className="p-5 h-[88vh] overflow-auto no-scrollbar rounded shadow-lg">
               <h2 className="text-2xl font-semibold text-orange-500 mb-4">
                 Personal Information
               </h2>
@@ -135,7 +280,9 @@ export default function SalesmanDetail(props) {
                 </div>
               </div>
 
-              <h2 className="text-2xl font-semibold mt-4 mb-3">Assigned Talukas</h2>
+              <h2 className="text-2xl font-semibold mt-4 mb-3">
+                Assigned Talukas
+              </h2>
               <ul className="mt-2 space-y-2">
                 {currSalesman?.areasAssigned.map((area) => (
                   <li
@@ -161,6 +308,96 @@ export default function SalesmanDetail(props) {
                   </li>
                 ))}
               </ul>
+
+              <h2 className="text-2xl font-semibold mt-4 mb-3">
+                Assigned Products
+              </h2>
+              {currSalesman?.assignedProducts.length === 0 && (
+                <p className="text-white text-lg font-thin p-4">
+                  No products assigned to this salesman
+                </p>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {currSalesman?.assignedProducts.map((p) => (
+                  <ProductCard p={p} assignable={false} />
+                ))}
+              </div>
+
+              {isCompanySelf() && (
+                <>
+                  <h2 className="text-2xl font-semibold mt-4 mb-3">
+                    Available Products to assign
+                  </h2>
+                  {companyProds.length === 0 && (
+                    <p className="text-white text-sm font-thin p-4">
+                      No products available to assign.
+                    </p>
+                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {companyProds.map((p) => (
+                      <ProductCard
+                        key={p.id}
+                        p={p}
+                        assignable={false}
+                        onAssign={handleOpenDialog}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {isAdmin() && (
+                <>
+                  <h2 className="text-2xl font-semibold mt-4 mb-3">
+                    Available Products to assign
+                  </h2>
+
+                  {/* {console.log(adminProds)} */}
+
+                  {adminProds.map((company) => {
+                    return (
+                      <div key={company.id} className=" p-2">
+                        <h2 className="text-xl font-semibold mt-4 mb-3">
+                          {company.companyName}
+                        </h2>
+                        <hr className=" my-2"/>
+
+                        {company.products.length === 0 && (
+                          <p className="text-white text-sm font-thin p-4">
+                            No products available to assign.
+                          </p>
+                        )}
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                          {company.products.map((p) => (
+                            <ProductCard
+                            key={p.id}
+                              p={p}
+                              assignable={false}
+                              onAssign={handleOpenDialog}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {/* {companyProds.length === 0 && (
+                    <p className="text-white text-sm font-thin p-4">
+                      No products available to assign.
+                    </p>
+                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {companyProds.map((p) => (
+                      <ProductCard
+                        p={p}
+                        assignable={false}
+                        onAssign={handleOpenDialog}
+                      />
+                    ))}
+                  </div> */}
+                </>
+              )}
             </div>
           </div>
         </div>

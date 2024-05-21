@@ -335,7 +335,8 @@ const RemoveSalesmanModal = ({
 
   const onsubmit = (e) => {
     console.log(e);
-    // e.preventDefault();
+    e.preventDefault();
+    console.log('deletion simulated');
     // setLoading(true);
     // deleteDivision(currArt)
     //   .then((resp) => {

@@ -35,12 +35,12 @@ export default function Settings(props) {
       <div className="flex-1 ms-14">
         <div>
           <div className="p-2 flex justify-between gap-4">
-            <h1 className="text-3xl font-semibold text-white">Settings</h1>
-            <button
+            <h1 className="text-3xl font-semibold text-white mb-1">Settings</h1>
+            {/* <button
               className="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2"
             >
               Tempp
-            </button>
+            </button> */}
           </div>
           <hr />
           <div className="p-8">

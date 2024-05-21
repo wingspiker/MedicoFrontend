@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
-import { signOut, decodeToken, isCompanySelf, isAdmin } from "../../Services/auth";
+import {
+  signOut,
+  decodeToken,
+  isCompanySelf,
+  isAdmin,
+} from "../../Services/auth";
 import { getProductById } from "../../Services/product";
 import { CustomInput, CustomTextArea } from "../OfferComponents/Input";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { useForm } from "react-hook-form";
 import Loader from "../../Loader";
-import { productTypeEnum } from "../../Models/enums.model";
+import { EffectivePriceCalculationType, EffectivePriceCalculationTypeEnum, productTypeEnum } from "../../Models/enums.model";
 import { addBatch, editBatch } from "../../Services/batch";
 import { Toaster, toast } from "sonner";
 import { CompactTable } from "@table-library/react-table-library/compact";
@@ -16,7 +21,7 @@ import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/compact";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 import { AdminSidebar } from "../Admin/AdminSidebar";
 
 const AddProductDetailModal = ({
@@ -307,27 +312,41 @@ export default function ProductDetails(props) {
     setNodes(updatedItems);
   };
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const saveBatchChanges = (item) => {
     // console.log(item);
-    setIsLoading(true)
+    setIsLoading(true);
 
-    const {manufacturingDate, id, expiryDate, isVisible, isSold, price, quantity} = item;
-    const updatedBatch = {id, manufacturingDate, expiryDate, quantity, price, isSold, isVisible}
-
-    
+    const {
+      manufacturingDate,
+      id,
+      expiryDate,
+      isVisible,
+      isSold,
+      price,
+      quantity,
+    } = item;
+    const updatedBatch = {
+      id,
+      manufacturingDate,
+      expiryDate,
+      quantity,
+      price,
+      isSold,
+      isVisible,
+    };
 
     editBatch(updatedBatch)
-    .then(r=>{
-      console.log(r);
-      setFl(f=>!f)
-      setIsLoading(false)
-    })
-    .catch(err=>{
-      console.log(err);
-      setIsLoading(false)
-    })
+      .then((r) => {
+        console.log(r);
+        setFl((f) => !f);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
     // Call the API to save changes
     // After saving, set isEditable to false for the item
   };
@@ -403,7 +422,7 @@ export default function ProductDetails(props) {
             onClick={() => saveBatchChanges(item)}
             className=" cursor-pointer bg-green-500 hover:bg-green-600 text-white font-bold rounded p-1 flex items-center gap-2"
           >
-            {isLoading?<CircularProgress />:'Save'}
+            {isLoading ? <CircularProgress /> : "Save"}
             {/* Save */}
           </button>
         ) : (
@@ -428,7 +447,8 @@ export default function ProductDetails(props) {
     HeaderRow: `
       .th {
         border-bottom: 1px solid #a0a8ae;
-        background-color:#aff886;
+        background-color:#06B6D4;
+        color:white;
       }
     `,
     BaseCell: `
@@ -450,8 +470,11 @@ export default function ProductDetails(props) {
           style: { color: `${isRed ? "red" : "green"}` },
         }}
       />
-      {
-        isAdmin()?<AdminSidebar changeLogin={logout}/>:<Sidebar changeLogin={logout}/>}
+      {isAdmin() ? (
+        <AdminSidebar changeLogin={logout} />
+      ) : (
+        <Sidebar changeLogin={logout} />
+      )}
       <div className="flex-1 ms-14">
         <div>
           <div className={" p-2 flex justify-end gap-4 h-14"}>
@@ -470,84 +493,138 @@ export default function ProductDetails(props) {
         <div className="h-[90vh] overflow-y-auto no-scrollbar">
           {Object.keys(product).length !== 0 && (
             <div className="text-gray-800 mb-8">
-              <div className="bg-blue-900 p-6 rounded-lg shadow-lg flex justify-between space-x-4">
-                <div className="flex-1 p-4 rounded-lg border border-gray-300 bg-white shadow-sm">
-                  <img
-                    src={product.photoUrl}
-                    alt={product.brandName}
-                    className="w-60 h-60 mx-auto rounded-lg object-cover my-4"
-                  />
-                  <h2 className="text-3xl font-semibold text-center text-blue-700 mb-4">
-                    {product.drugName}
-                  </h2>
-                  <p className="text-lg">
-                    <strong>Brand:</strong> {product.brandName}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Manufacturing Name:</strong>{" "}
-                    {product.manufacturingName}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Manufacturer:</strong> {product.manufacturerName}
-                  </p>
+              <div className=" p-6 rounded-lg flex justify-between space-x-4">
+                <div className="p-4 rounded-lg border border-gray-300 bg-white shadow-sm">
                   <div>
-                    {product.letterPadDocument && (
-                      <button className="inline-flex items-center gap-2 px-4 py-2 mt-3 text-white bg-orange-600 hover:bg-orange-700 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
-                        Show Letterpad
-                      </button>
-                    )}
+                    <img
+                      src={product.photoUrl}
+                      alt={product.brandName}
+                      className="w-60 h-60 rounded-lg object-cover my-4"
+                    />
+                    <h2 className="text-3xl font-semibold text-blue-700 mb-4">
+                      {product.drugName}
+                    </h2>
+                    <p className="text-lg">
+                      <strong>Brand:</strong> {product.brandName}
+                    </p>                    
+                    <div>
+                      {product.letterPadDocument && (
+                        <button className="inline-flex items-center gap-2 px-4 py-2 mt-3 text-white bg-orange-600 hover:bg-orange-700 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+                          Show Letterpad
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-lg">
+                      <strong>Contents:</strong> {product.contents}
+                    </p>                    
+                    <p className="text-lg">
+                      <strong>Type:</strong>{" "}
+                      {
+                        productTypeEnum[
+                          Object.keys(productTypeEnum)[product.type]
+                        ]
+                      }
+                    </p>
+                    <p className="text-lg">
+                      <strong>Prescription Required:</strong>{" "}
+                      {product.prescription ? "Yes" : "No"}
+                    </p>                    
+                    <p className="text-lg">
+                      <strong>Value:</strong> {product.value}
+                    </p>
                   </div>
                 </div>
                 <div className="flex-1 p-4 rounded-lg border border-gray-300 bg-white shadow-sm">
-                  <p className="text-lg">
-                    <strong>Contents:</strong> {product.contents}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Division:</strong> {product.division}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Type:</strong>{" "}
-                    {
-                      productTypeEnum[
-                        Object.keys(productTypeEnum)[product.type]
-                      ]
-                    }
-                  </p>
-                  <p className="text-lg">
-                    <strong>Prescription Required:</strong>{" "}
-                    {product.prescription ? "Yes" : "No"}
-                  </p>
-                  <p className="text-lg">
-                    <strong>MRP:</strong> {product.mrp}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Retail Price:</strong> {product.retailPrice}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Selling Price:</strong> {product.sellingPrice}
-                  </p>
-                  <p className="text-lg">
-                    <strong>License Number:</strong> {product.licenseNo}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Return Policy:</strong>{" "}
-                    {product.returnPolicy.allowReturn
-                      ? "Allowed"
-                      : "Not Allowed"}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Exchange Policy:</strong>{" "}
-                    {product.returnPolicy.allowExchange
-                      ? "Allowed"
-                      : "Not Allowed"}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Effective Price Calculation Type:</strong>{" "}
-                    {product.effectivePriceCalculationType}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Value:</strong> {product.value}
-                  </p>
+                  <p className=" text-2xl py-2 mb-2">Pricing Info :</p>
+                  <div className="flex-1 p-4 rounded-lg border border-gray-300 bg-white shadow-sm mb-6">
+                    <table className="min-w-full divide-y divide-gray-200 border">
+                      <thead>
+                        <tr>
+                          <th className="px-6 py-3 bg-cyan-500 text-left text-md font-medium text-white uppercase tracking-wider">
+                            MRP
+                          </th>
+                          <th className="px-6 py-3 bg-cyan-500 text-left text-md font-medium text-white uppercase tracking-wider">
+                            Retail Price
+                          </th>
+                          <th className="px-6 py-3 bg-cyan-500 text-left text-md font-medium text-white uppercase tracking-wider">
+                            Selling Price
+                          </th>
+                          <th className="px-6 py-3 bg-cyan-500 text-left text-md font-medium text-white uppercase tracking-wider">
+                            Effective Price Calculation Type:
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {/* <!-- Add table rows and data here --> */}
+                        <tr>
+                          <td className="px-6 py-3 bg-gray-50 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                            ₹ {Number(product.mrp).toFixed(2)}
+                          </td>
+                          <td className="px-6 py-3 bg-gray-50 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                            ₹ {Number(product.retailPrice).toFixed(2)}
+                          </td>
+                          <td className="px-6 py-3 bg-gray-50 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                            ₹ {Number(product.sellingPrice).toFixed(2)}
+                          </td>
+                          <td className="px-6 py-3 bg-gray-50 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                            {EffectivePriceCalculationTypeEnum[Object.keys(EffectivePriceCalculationTypeEnum)[product.effectivePriceCalculationType]]}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+{/* {console.log(product)} */}
+                  <p className=" text-2xl py-2 mb-2">Manufacturer Info:</p>
+                  <div className="flex-1 p-4 rounded-lg border border-gray-300 bg-white shadow-sm">
+                    <table className="min-w-full divide-y divide-gray-200 border">
+                      <thead>
+                        <tr>
+                          <th className="px-6 py-3 bg-cyan-500 text-left text-md font-medium text-white uppercase tracking-wider">
+                            Manufacturer Name
+                          </th>
+                          <th className="px-6 py-3 bg-cyan-500 text-left text-md font-medium text-white uppercase tracking-wider">
+                            Division
+                          </th>
+                          <th className="px-6 py-3 bg-cyan-500 text-left text-md font-medium text-white uppercase tracking-wider">
+                            License No
+                          </th>                          
+                          <th className="px-6 py-3 bg-cyan-500 text-left text-md font-medium text-white uppercase tracking-wider">
+                            Return Policy
+                          </th>
+                          <th className="px-6 py-3 bg-cyan-500 text-left text-md font-medium text-white uppercase tracking-wider">
+                            Exchange Policy
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {/* <!-- Add table rows and data here --> */}
+                        <tr>
+                          <td className="px-6 py-3 bg-gray-50 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                            {product.manufacturerName}
+                          </td>
+                          <td className="px-6 py-3 bg-gray-50 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                          {product.division}
+                          </td>
+                          <td className="px-6 py-3 bg-gray-50 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                          {product.licenseNo}
+                          </td>                          
+                          <td className="px-6 py-3 bg-gray-50 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                            {product.returnPolicy.allowReturn
+                              ? <span className="text-green-500">Allowed</span>
+                              : <span className="text-red-500">Not Allowed</span>}
+                              {product.returnPolicy.allowReturn && <span className="text-green-500">&nbsp;({product.returnPolicy.returnDays} days)</span>}
+                          </td>
+                          <td className="px-6 py-3 bg-gray-50 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                            {product.returnPolicy.allowExchange
+                              ? <span className="text-green-500">Allowed</span>
+                              : <span className="text-red-500">Not Allowed</span>}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -568,18 +645,22 @@ export default function ProductDetails(props) {
             changeEffect={setEffect}
             product={product}
           />
+          {data.nodes.length>0 && 
+          <>
           {(isCompanySelf() || isAdmin()) && (
-            <div className="mx-8 bg-gray-100 shadow-lg rounded-lg overflow-hidden mb-16">
-              <p className="text-xl font-semibold p-4 bg-blue-800 text-white">
+            <div className="mx-8 bg-white shadow-lg rounded-lg overflow-hidden mb-16">
+              <p className="text-xl font-semibold p-4 text-cyan-500 ">
                 Batches
               </p>
 
               <div className="p-4 bg-white text-black">
                 <CompactTable columns={COLUMNS} data={data} theme={theme} />
               </div>
-              {/* {console.log(data)} */}
             </div>
           )}
+          </>
+          }
+          
         </div>
       </div>
     </div>
