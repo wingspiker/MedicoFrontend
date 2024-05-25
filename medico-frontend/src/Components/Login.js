@@ -82,6 +82,12 @@ const Login = (props) => {
           localStorage.setItem("token", response.accessToken);
           setMessage(true);
           const user = decodeToken();
+          console.log(user);
+          if(user?.userType==='Salesman'){
+            changeLogin(true);
+            navigate('/sales')
+            return
+          }
           // console.log(user);
           const keys = Object.keys(user);
           const role = keys.find(claim => claim.endsWith('role'));
@@ -110,6 +116,14 @@ const Login = (props) => {
             signOut();
           } 
           else{
+
+            // if(user[role]==="Buyer"){
+            //   signOut()
+            //   navigate('/');
+            //   setFormData({...formdata, email:''})
+            //   setCurrStep(1)
+            //   return
+            // }
             
             if(user[role]==="Buyer"){
               signOut()
@@ -120,7 +134,7 @@ const Login = (props) => {
             }
             changeLogin(true);
             setShowSidebar(true);
-            navigate("/Home");
+            navigate("/company/Home");
           }
         })
         .catch((error) => {

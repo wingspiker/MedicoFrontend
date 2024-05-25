@@ -51,6 +51,13 @@ import OfferDetails from "./Components/OfferComponents/OfferDetails";
 import { AdminSidebar } from "./Components/Admin/AdminSidebar";
 import SalesmanDetail from "./Components/SalesmanComponents/SalesmanDetail";
 import PageNotFound from "./Components/PageNotFound";
+import AdminCompanyVerify from "./Components/Admin/AdminAccountsComponents/AdminCompanyVerify";
+import CompanyDetails from "./Components/Admin/AdminAccountsComponents/CompanyDetails";
+import SalesmanLanding from "./Components/Salesman/SalesmanLanding";
+import { SalesmanSidebar } from "./Components/Salesman/SalesmanSidebar";
+import SalesmanProducts from "./Components/Salesman/SalesmanProducts";
+import SalesmanCompany from "./Components/Salesman/SalesmanCompany";
+import SalesmanSettings from "./Components/Salesman/SalesmanSettings";
 
 function App() {
   const loginStatus = token() !== null;
@@ -86,9 +93,12 @@ function App() {
         <Routes>
           {isLoggedIn && user?.isComplete === "True" && (
             <>
-              <Route path="/" element={<Navigate to="/Home" />} />
-              <Route path="/login" element={<Navigate to="/Home" />} />
-              <Route path="/register" element={<Navigate to="/Home" />} />
+              <Route path="/" element={<Navigate to="/company/Home" />} />
+              <Route path="/login" element={<Navigate to="/company/Home" />} />
+              <Route
+                path="/register"
+                element={<Navigate to="/company/Home" />}
+              />
             </>
           )}
           <Route path="/" element={<Home />} />
@@ -123,7 +133,6 @@ function App() {
               }
             />
           )}
-
           <Route
             path="/login"
             element={
@@ -134,9 +143,8 @@ function App() {
             }
           />
           {/* Protected Route: Only logged-in users can access the Welcome page */}
-
           <Route
-            path="/Home"
+            path="/company/Home"
             element={
               isLoggedIn ? (
                 <Welcome
@@ -162,7 +170,7 @@ function App() {
             }
           />
           <Route
-            path="/Product"
+            path="/company/Product"
             exact
             element={
               isLoggedIn ? (
@@ -173,7 +181,7 @@ function App() {
             }
           />
           <Route
-            path="/Product/:id"
+            path="/company/Product/:id"
             exact
             element={
               isLoggedIn ? (
@@ -184,7 +192,7 @@ function App() {
             }
           />
           <Route
-            path="/Product/add"
+            path="/company/Product/add"
             exact
             element={
               isLoggedIn ? (
@@ -198,7 +206,7 @@ function App() {
             }
           />
           <Route
-            path="/Offer"
+            path="/company/Offer"
             exact
             element={
               isLoggedIn ? (
@@ -212,7 +220,7 @@ function App() {
             }
           />
           <Route
-            path="/Offer/add"
+            path="/company/Offer/add"
             exact
             element={
               isLoggedIn ? (
@@ -226,7 +234,7 @@ function App() {
             }
           />
           <Route
-            path="/Offer/:id"
+            path="/company/Offer/:id"
             exact
             element={
               isLoggedIn ? (
@@ -240,7 +248,7 @@ function App() {
             }
           />
           <Route
-            path="/Division"
+            path="/company/Division"
             exact
             element={
               isLoggedIn ? (
@@ -251,7 +259,7 @@ function App() {
             }
           />
           <Route
-            path="/Group"
+            path="/company/Group"
             exact
             element={
               isLoggedIn ? (
@@ -265,7 +273,7 @@ function App() {
             }
           />
           <Route
-            path="/Group/add"
+            path="/company/Group/add"
             exact
             element={
               isLoggedIn ? (
@@ -279,7 +287,7 @@ function App() {
             }
           />
           <Route
-            path="/Article"
+            path="/company/Article"
             exact
             element={
               isLoggedIn ? (
@@ -290,7 +298,7 @@ function App() {
             }
           />
           <Route
-            path="/Salesman"
+            path="/company/Salesman"
             exact
             element={
               isLoggedIn ? (
@@ -300,9 +308,8 @@ function App() {
               )
             }
           />
-
           <Route
-            path="/Salesman/:id"
+            path="/company/Salesman/:id"
             exact
             element={
               isLoggedIn ? (
@@ -312,9 +319,8 @@ function App() {
               )
             }
           />
-
           <Route
-            path="/Settings"
+            path="/company/Settings"
             exact
             element={
               isLoggedIn ? (
@@ -324,7 +330,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/admin"
             exact
@@ -341,7 +346,39 @@ function App() {
               )
             }
           />
-
+          <Route
+            path="/admin/Company"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <AdminCompanyVerify />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+          <Route
+            path="/admin/Company/:id"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <CompanyDetails />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+          <Route
+            path="/admin/Buyer"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <AdminLanding />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
           <Route
             path="/admin/Product"
             exact
@@ -353,7 +390,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/admin/Product/:id"
             exact
@@ -365,7 +401,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/admin/Product/:id/AddGroups"
             exact
@@ -377,7 +412,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/admin/Product/:id/View"
             exact
@@ -389,7 +423,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/admin/Groups"
             exact
@@ -401,7 +434,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="admin/Groups/add"
             exact
@@ -415,7 +447,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/admin/Article"
             exact
@@ -427,7 +458,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/admin/Offers"
             exact
@@ -450,7 +480,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="admin/Offers/:id"
             exact
@@ -465,7 +494,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/admin/Salesman"
             exact
@@ -477,7 +505,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/admin/Salesman/:id"
             exact
@@ -489,7 +516,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/admin/Settings"
             exact
@@ -501,12 +527,80 @@ function App() {
               )
             }
           />
+          <Route
+            path="/sales"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <SalesmanLanding />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/sales/Product"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <SalesmanProducts />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/sales/Product/:id"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <ProductDetails changeLogin={setIsLoggedIn} />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
 
           <Route
-            path="*"
+            path="/sales/Company"
             exact
-            element={<PageNotFound/>}
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <SalesmanCompany />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
           />
+
+          <Route
+            path="/sales/Settings"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <SalesmanSettings />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route path="*" exact element={<PageNotFound />} />
         </Routes>
       </div>
     </Router>

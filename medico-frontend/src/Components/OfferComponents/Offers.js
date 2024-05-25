@@ -13,7 +13,7 @@ export default function Offer(props) {
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   const onAddOffer = () => {
-    navigate("/Offer/add");
+    navigate("/company/Offer/add");
   };
 
   const logout = () => {
@@ -48,7 +48,7 @@ export default function Offer(props) {
   }, []);
 
   const handleView = (id, index) => {
-    navigate(`/Offer/${index}`, { state: { id } });
+    navigate(`/company/Offer/${index}`, { state: { id } });
   };
 
   return (

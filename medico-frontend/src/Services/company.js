@@ -49,3 +49,33 @@ export const getAdminByEmail = async (email) => {
         });
     
 }
+
+
+export const verifyCompanyApi = async (email, percentage) => {
+    const t = localStorage.getItem('token');
+    const config = {        
+        headers: {
+            'Content-Type': 'application/json', 
+            'Accept': 'application/json', 
+            'Authorization': `Bearer ${t}`
+        }
+      };
+
+    let str = '';
+    if(percentage){
+        str = `?percentageValue=${percentage}`
+    }
+    
+    return axios.get(url+ `/api/company/verify/${email}${str}`, config)
+
+        .then(response => {
+            // Handle successful response
+            return response.data; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });
+    
+}

@@ -74,6 +74,7 @@ export default function AdminGroups(props) {
       <AdminSidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
+          
           <div className="p-5 flex justify-end gap-4">
             <button
               onClick={onAddGroup}

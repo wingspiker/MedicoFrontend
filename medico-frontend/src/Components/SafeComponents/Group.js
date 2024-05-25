@@ -35,7 +35,7 @@ export default function Group(props) {
   };
 
   const onAddGroup = () => {
-    navigate("/Group/add");
+    navigate("/company/Group/add");
   };
 
   useEffect(() => {
@@ -144,7 +144,7 @@ export default function Group(props) {
                         className="bg-white rounded-lg shadow-xl p-4 flex flex-col"
                       >
                         <img
-                          src="buyer.png"
+                          src="/buyer.png"
                           alt={buyer.firstName}
                           height="32px"
                           className="w-full object-cover mb-4 rounded"

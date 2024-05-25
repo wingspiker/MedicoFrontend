@@ -278,7 +278,7 @@ function AddProduct() {
           
         }
         else if (!isCompanySelf()) {
-          navigate("/Product");
+          navigate("/company/Product");
         }
         setCurrentStep(currentStep + 1);
         setLoading(false);
@@ -380,7 +380,7 @@ function AddProduct() {
           if(isAdminLocal){
             navigate("/admin/Product");
           }else{
-            navigate("/Product");
+            navigate("/company/Product");
 
           }
           setIsRed(true);
@@ -392,7 +392,7 @@ function AddProduct() {
         setIsRed(true);
         toast.success("Something Went Wrong");
         setTimeout(() => {
-          navigate("/Product");
+          navigate("/company/Product");
           setIsRed(true);
         }, 3000);
       });

@@ -136,6 +136,15 @@ export const isCompanySelf = () => {
     return false
 }
 
+export const isSalesman = () => {
+    const user = decodeToken();
+    // console.log(user);
+    if(user){
+        return user['userType']==='Salesman'
+    }
+    return false
+}
+
 export let currStep = 1;
 
 export const  setCurrStep = (stepNum) =>{
@@ -286,8 +295,7 @@ export const getAllUnverifiedCompanies = async () => {
     return axios.get(url+ '/api/user/all-unverified-companies')
         .then(response => {
             // Handle successful response
-            console.log(response);
-            return response; // Return data if needed
+            return response.data; // Return data if needed
         })
         .catch(error => {
             // Handle error
@@ -305,8 +313,7 @@ export const getAllVerifiedCompanies = async () => {
     return axios.get(url+ '/api/user/all-verified-companies')
         .then(response => {
             // Handle successful response
-            console.log(response);
-            return response; // Return data if needed
+            return response.data; // Return data if needed
         })
         .catch(error => {
             // Handle error

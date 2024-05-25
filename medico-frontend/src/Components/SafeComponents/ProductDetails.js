@@ -6,6 +6,7 @@ import {
   decodeToken,
   isCompanySelf,
   isAdmin,
+  isSalesman,
 } from "../../Services/auth";
 import { getProductById } from "../../Services/product";
 import { CustomInput, CustomTextArea } from "../OfferComponents/Input";
@@ -253,18 +254,20 @@ export default function ProductDetails(props) {
   const [product, setProduct] = useState({});
 
   const [fl, setFl] = useState(false);
+  
 
   useEffect(() => {
     getProductById(history.state.pid)
       .then((res) => {
         // console.log(res);
 
-        if (isCompanySelf() || isAdmin()) {
+        if (isCompanySelf() || isAdmin() || isSalesman()) {
           // console.log('yes');
           let batches = res.productBatches;
           let b = batches.map((p, i) => {
             return { ...p, index: i + 1, isEditable: false };
           });
+          // console.log(b);
           setNodes(b);
         }
         setProduct(res);
@@ -339,7 +342,7 @@ export default function ProductDetails(props) {
 
     editBatch(updatedBatch)
       .then((r) => {
-        console.log(r);
+        // console.log(r);
         setFl((f) => !f);
         setIsLoading(false);
       })
@@ -351,7 +354,7 @@ export default function ProductDetails(props) {
     // After saving, set isEditable to false for the item
   };
 
-  const COLUMNS = [
+  let COLUMNS = [
     { label: "ID", renderCell: (item) => item.index },
     {
       label: "Manufacturing Date",
@@ -399,47 +402,53 @@ export default function ProductDetails(props) {
         ) : (
           <p className=" text-red-500 font-semibold">No</p>
         ),
-    },
-    {
-      label: "Is Visible",
-      renderCell: (item) =>
-        item.isEditable ? (
-          <Checkbox
-            checked={item.isVisible}
-            onChange={(e) => handleIsVisibleChange(e, item)}
-          />
-        ) : item.isVisible ? (
-          <p className=" text-green-500 font-semibold">Yes</p>
-        ) : (
-          <p className=" text-red-500 font-semibold">No</p>
-        ),
-    },
-    {
-      label: "Action",
-      renderCell: (item) =>
-        item.isEditable ? (
-          <button
-            onClick={() => saveBatchChanges(item)}
-            className=" cursor-pointer bg-green-500 hover:bg-green-600 text-white font-bold rounded p-1 flex items-center gap-2"
-          >
-            {isLoading ? <CircularProgress /> : "Save"}
-            {/* Save */}
-          </button>
-        ) : (
-          <button
-            onClick={() => {
-              item.isEditable = true;
-              setNodes([...nodes]);
-            }}
-            className=" cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold p-1 rounded flex items-center gap-2"
-          >
-            Edit
-          </button>
-        ),
-    },
+    }
   ];
 
+  if(!isSalesman()){
+    COLUMNS = [...COLUMNS,
+      {
+        label: "Is Visible",
+        renderCell: (item) =>
+          item.isEditable ? (
+            <Checkbox
+              checked={item.isVisible}
+              onChange={(e) => handleIsVisibleChange(e, item)}
+            />
+          ) : item.isVisible ? (
+            <p className=" text-green-500 font-semibold">Yes</p>
+          ) : (
+            <p className=" text-red-500 font-semibold">No</p>
+          ),
+      },
+      {
+        label: "Action",
+        renderCell: (item) =>
+          item.isEditable ? (
+            <button
+              onClick={() => saveBatchChanges(item)}
+              className=" cursor-pointer bg-green-500 hover:bg-green-600 text-white font-bold rounded p-1 flex items-center gap-2"
+            >
+              {isLoading ? <CircularProgress /> : "Save"}
+              {/* Save */}
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                item.isEditable = true;
+                setNodes([...nodes]);
+              }}
+              className=" cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold p-1 rounded flex items-center gap-2"
+            >
+              Edit
+            </button>
+          ),
+      },
+    ]
+  }
+
   const [nodes, setNodes] = useState([]);
+  
 
   const data = { nodes };
 
@@ -473,7 +482,7 @@ export default function ProductDetails(props) {
       {isAdmin() ? (
         <AdminSidebar changeLogin={logout} />
       ) : (
-        <Sidebar changeLogin={logout} />
+        <>{!isSalesman() && <Sidebar changeLogin={logout} />} </>
       )}
       <div className="flex-1 ms-14">
         <div>
@@ -496,6 +505,7 @@ export default function ProductDetails(props) {
               <div className=" p-6 rounded-lg flex justify-between space-x-4">
                 <div className="p-4 rounded-lg border border-gray-300 bg-white shadow-sm">
                   <div>
+                    {/* {console.log(product.photoUrl)} */}
                     <img
                       src={product.photoUrl}
                       alt={product.brandName}
@@ -637,17 +647,23 @@ export default function ProductDetails(props) {
             product={product}
             showErr={showErr}
             showSucc={showSucc}
-          />
+            />
           <RemoveProductDetailModal
             isOpen={isModalOpen2}
             onClose={closeModal2}
             currArt={currArt}
             changeEffect={setEffect}
             product={product}
-          />
+            />
+          {/* {console.log(data.nodes)} */}
           {data.nodes.length>0 && 
           <>
-          {(isCompanySelf() || isAdmin()) && (
+          {/* {console.log('ffff')}
+          {console.log(isSalesman())} */}
+          
+          
+          {(isCompanySelf() || isAdmin() || isSalesman()) && (
+            
             <div className="mx-8 bg-white shadow-lg rounded-lg overflow-hidden mb-16">
               <p className="text-xl font-semibold p-4 text-cyan-500 ">
                 Batches

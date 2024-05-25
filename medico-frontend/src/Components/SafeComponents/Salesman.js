@@ -90,11 +90,13 @@ const AddSalesmanModal = ({
         showSucc("Salesman Added Successfully");
         reset();
         setLoading(false);
+        changeEffect(f=>!f)
         onClose();
       })
       .catch((err) => {
         showErr("Error adding Salesman", err);
         setLoading(false);
+        changeEffect(f=>!f)
         console.log(err);
       });
   };
@@ -392,10 +394,13 @@ export default function Salesman(props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
 
+  const [effect, setEffect] = useState(false);
+
   const navigate = useNavigate();
 
   const [salesman, setSalesman] = useState([]);
   const [currSalesman, setcurrSalesman] = useState(null);
+  // const [flag, setflag] = useState(false);
 
   const [allsalesman, setAllsalesman] = useState([])
   useEffect(() => {
@@ -410,9 +415,9 @@ export default function Salesman(props) {
     .catch(err=>{
       console.log(err);
     })
-  }, [])
+  }, [effect])
 
-  const [effect, setEffect] = useState(false);
+
 
   const [isRed, setIsRed] = useState(false);
   const [fl, setFl] = useState(false);
@@ -483,7 +488,7 @@ export default function Salesman(props) {
   
   const SalesmanList = ({ salesmen }) => (
     <div className="flex flex-wrap">
-      {salesmen.map((salesman, index) => (
+      {salesmen && salesmen.map((salesman, index) => (
         <SalesmanCard key={salesman.id} salesman={salesman} onView={handleSalesmanView} onDelete={handleSalesmanDelete} index={index} />
       ))}
     </div>
@@ -492,7 +497,7 @@ export default function Salesman(props) {
   const handleSalesmanView = (salesman, index) => {
     // console.log(salesman);
     // console.log('trtr');
-    navigate(`/Salesman/${index}`,{state:{sid:salesman.id, salesmanEmail:salesman.email}})    
+    navigate(`/company/Salesman/${index}`,{state:{sid:salesman.id, salesmanEmail:salesman.email}})    
   }
 
   const handleSalesmanDelete = (salesman) => {

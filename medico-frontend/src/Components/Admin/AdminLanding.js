@@ -16,14 +16,9 @@ export default function AdminLanding() {
   
     return (
       <>
-        <div className=" p-4 flex justify-between ms-12">
-        <h1 className="text-3xl font-bold text-white">Medico <p className=" text-red-500 text-sm text-right -me-6 -mt-2">Admin</p> </h1>
-          <button
-            onClick={onlogout}
-            className=" bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-indigo-600"
-          >
-            Logout
-          </button>
+        <div className=" p-4 py-3 flex justify-between ms-12">
+        <h1 className="text-3xl font-bold text-white">Medico <p className=" text-red-500 text-xs text-right -me-6 -mt-2">Admin</p> </h1>
+          
         </div>
         <hr />
         <AdminSidebar changeLogin={onlogout} />

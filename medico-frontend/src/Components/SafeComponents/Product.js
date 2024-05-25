@@ -109,7 +109,7 @@ export default function Product(props) {
   }, [eff]);
 
   const onAddProduct = () => {
-    navigate("/Product/add");
+    navigate("/company/Product/add");
   };
 
   const logout = () => {
@@ -186,7 +186,7 @@ export default function Product(props) {
                     subheader={p.brandName}
                     action={
                       <>
-                        <Link to={`/Product/${i}`} state={{ pid: p.id }}>
+                        <Link to={`/company/Product/${i}`} state={{ pid: p.id }}>
                           <IconButton aria-label="view">
                             <VisibilityIcon sx={{ color: "blue" }} />
                           </IconButton>

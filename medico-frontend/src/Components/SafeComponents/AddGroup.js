@@ -126,7 +126,7 @@ function AddGroup() {
         console.log(res);
         // showToast("Buyers added successfully", false);
         setLoading(false);
-        navigate("/Group");
+        navigate("/company/Group");
       })
       .catch((err) => {
         console.log(err);

@@ -9,7 +9,7 @@ import {
   BsFillCartCheckFill,
   BsFillSignIntersectionYFill,
 } from "react-icons/bs";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { isCompanySelf } from "../../Services/auth";
 
 const navItems = [
@@ -44,6 +44,8 @@ export const Sidebar = (props) => {
 
   const sidebarWidth = isOpen ? "w-64" : "w-14";
   const buttonText = isOpen ? <IoCloseSharp /> : <HiMenuAlt1 />;
+  const location = useLocation();
+  const path = location.pathname
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -90,11 +92,11 @@ export const Sidebar = (props) => {
         >
           {isOpen ? (
             <div className=" flex items-center gap-3">
-              <img
+              {/* <img
                 src="medico-logo.png"
                 alt="Medico Logo"
                 className="w-10 h-10"
-              />
+              /> */}
               <h1 className="text-3xl font-bold">Medico</h1>
             </div>
           ) : (
@@ -113,10 +115,11 @@ export const Sidebar = (props) => {
             if(isCompanySelf()){
               return (              
                 <NavLink
-                  to={`/${item}`}
+                  to={`/company/${item}`}
                   key={item}
-                  className="px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4"
+                  className={`px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4 ${path==='/company/'+item?'bg-white text-cyan-800 hover:bg-slate-300':''}`}
                 >
+                  {/* {console.log(path, item)} */}
                   {navItemsIcons[index]} {isOpen ? item : ""}
                 </NavLink>
               );

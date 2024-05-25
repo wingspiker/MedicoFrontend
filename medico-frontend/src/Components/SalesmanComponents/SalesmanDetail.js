@@ -22,6 +22,14 @@ import {
   Grid,
   Box,
   Button,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  FormLabel,
 } from "@mui/material";
 import {
   Dialog,
@@ -36,7 +44,6 @@ export const ProductCard = (props) => {
   return (
     <Card sx={{ maxWidth: 345, padding: "8px" }}>
       <CardHeader title={p.drugName} subheader={p.brandName} />
-      {/* {console.log(p.photoUrl)} */}
       <CardMedia
         component="img"
         image={p.photoUrl}
@@ -70,6 +77,7 @@ export const ProductCard = (props) => {
     </Card>
   );
 };
+
 export default function SalesmanDetail(props) {
   const { changeLogin } = props;
   const [isRed, setIsRed] = useState(false);
@@ -78,8 +86,10 @@ export default function SalesmanDetail(props) {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedCompany, setSelectedCompany] = useState("");
 
   const handleOpenDialog = (product) => {
+    setSelectedTalukas([]);
     setSelectedProduct(product);
     setOpenDialog(true);
   };
@@ -89,26 +99,27 @@ export default function SalesmanDetail(props) {
   };
 
   const handleAssignProduct = () => {
-    // console.log("Assigning", selectedProduct.id, "to salesman", currSalesman.id);
-    // Assign product to salesman logic here
+    const assignProd = {
+      salesmanEmail: currSalesman.email,
+      productId: selectedProduct.id,
+      talukaIds: selectedTalukas,
+    };
 
-    assignProduct(currSalesman.id, selectedProduct.id)
-    .then(resp=>{
-      console.log(resp);
-      handleCloseDialog();
-      setFl(f=>!f)
-    })
-    .catch(err=>{
-      console.log(err);
-      handleCloseDialog();
-    })
+    assignProduct(assignProd)
+      .then((resp) => {
+        console.log(resp);
+        handleCloseDialog();
+        setFl((f) => !f);
+      })
+      .catch((err) => {
+        console.log(err);
+        handleCloseDialog();
+      });
   };
 
   const location = useLocation();
-
   const sid = location.state?.sid || 0;
   const salesmanEmail = location.state?.salesmanEmail || "";
-  // console.log(sid);
 
   useEffect(() => {
     getSalesmanById(salesmanEmail)
@@ -139,10 +150,6 @@ export default function SalesmanDetail(props) {
     }
 
     if (isAdmin()) {
-      const user = decodeToken();
-      const keys = Object.keys(user);
-      const email = user[keys.find((k) => k.endsWith("emailaddress"))];
-
       getAdminProducts()
         .then((resp) => {
           setAdminProds(resp);
@@ -163,11 +170,23 @@ export default function SalesmanDetail(props) {
     setFl((f) => !f);
   };
 
-  const history = useLocation();
-
   const logout = () => {
     signOut();
     changeLogin(false);
+  };
+
+  const [selectedTalukas, setSelectedTalukas] = useState([]);
+
+  const handleCheckboxChange = (id) => {
+    setSelectedTalukas((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((talukaId) => talukaId !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleCompanyChange = (event) => {
+    setSelectedCompany(event.target.value);
   };
 
   return (
@@ -182,10 +201,29 @@ export default function SalesmanDetail(props) {
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Assign Product</DialogTitle>
         <DialogContent>
-          <Typography>
+          <Typography variant="body">
             Are you sure you want to assign {selectedProduct?.drugName} to Mr.
             {currSalesman?.firstName} {currSalesman?.lastName}?
           </Typography>
+          <Typography variant="body2" sx={{ marginTop: 2 }}>
+            Select Talukas to assign:
+          </Typography>
+          <FormGroup>
+            
+            {currSalesman &&
+              currSalesman.areasAssigned.map((area) => (
+                <FormControlLabel
+                  key={area.id}
+                  control={
+                    <Checkbox
+                      checked={selectedTalukas.includes(area.id)}
+                      onChange={() => handleCheckboxChange(area.id)}
+                    />
+                  }
+                  label={area.name}
+                />
+              ))}
+          </FormGroup>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
@@ -201,18 +239,21 @@ export default function SalesmanDetail(props) {
         <Sidebar changeLogin={logout} />
       )}
       <div className="flex-1 ms-14">
-        {/* {console.log(currSalesman)} */}
         <div>
-          {isCompanySelf() && <div className="p-2 pt-3 flex justify-between gap-4">
-            <h1 className="text-3xl font-semibold text-white">
-              Salesman Detail
-            </h1>
-          </div>}
-          {isAdmin() && <div className="p-4 pt-3 flex justify-between gap-4">
-            <h1 className="text-3xl font-semibold text-white mt-4">
-              Salesman Detail
-            </h1>
-          </div>}
+          {isCompanySelf() && (
+            <div className="p-2 pt-3 flex justify-between gap-4">
+              <h1 className="text-3xl font-semibold text-white">
+                Salesman Detail
+              </h1>
+            </div>
+          )}
+          {isAdmin() && (
+            <div className="p-4 pt-3 flex justify-between gap-4">
+              <h1 className="text-3xl font-semibold text-white mt-4">
+                Salesman Detail
+              </h1>
+            </div>
+          )}
           <hr />
           <div className="p-2">
             <div className="p-5 h-[88vh] overflow-auto no-scrollbar rounded shadow-lg">
@@ -284,43 +325,45 @@ export default function SalesmanDetail(props) {
                 Assigned Talukas
               </h2>
               <ul className="mt-2 space-y-2">
-                {currSalesman?.areasAssigned.map((area) => (
-                  <li
-                    key={area.id}
-                    className="flex items-center bg-gray-800 p-2 rounded-lg shadow w-fit"
-                  >
-                    <svg
-                      className="h-4 w-4 text-orange-500 mr-2"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                {currSalesman &&
+                  currSalesman?.areasAssigned.map((area) => (
+                    <li
+                      key={area.id}
+                      className="flex items-center bg-gray-800 p-2 rounded-lg shadow w-fit"
                     >
-                      <path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V7.618a1 1 0 0 1 .553-.894L9 4"></path>
-                      <path d="M15 4l5.447 2.724A1 1 0 0 1 21 7.618v8.764a1 1 0 0 1-.553.894L15 20"></path>
-                      <path d="M9 4v16l6-3.382V7.618L9 4z"></path>
-                    </svg>
-                    <span className="text-white text-sm font-medium">
-                      {area.name}
-                    </span>
-                  </li>
-                ))}
+                      <svg
+                        className="h-4 w-4 text-orange-500 mr-2"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V7.618a1 1 0 0 1 .553-.894L9 4"></path>
+                        <path d="M15 4l5.447 2.724A1 1 0 0 1 21 7.618v8.764a1 1 0 0 1-.553.894L15 20"></path>
+                        <path d="M9 4v16l6-3.382V7.618L9 4z"></path>
+                      </svg>
+                      <span className="text-white text-sm font-medium">
+                        {area.name}
+                      </span>
+                    </li>
+                  ))}
               </ul>
 
               <h2 className="text-2xl font-semibold mt-4 mb-3">
                 Assigned Products
               </h2>
-              {currSalesman?.assignedProducts.length === 0 && (
+              {currSalesman && currSalesman?.assignedProducts.length === 0 && (
                 <p className="text-white text-lg font-thin p-4">
                   No products assigned to this salesman
                 </p>
               )}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {currSalesman?.assignedProducts.map((p) => (
-                  <ProductCard p={p} assignable={false} />
-                ))}
+                {currSalesman &&
+                  currSalesman?.assignedProducts.map((p) => (
+                    <ProductCard key={p.id} p={p} assignable={false} />
+                  ))}
               </div>
 
               {isCompanySelf() && (
@@ -349,53 +392,71 @@ export default function SalesmanDetail(props) {
               {isAdmin() && (
                 <>
                   <h2 className="text-2xl font-semibold mt-4 mb-3">
-                    Available Products to assign
+                    Select Company
                   </h2>
+                  <FormControl
+                    sx={{
+                      // backgroundColor: "white",
+                      
+                      width: "300px",
+                      borderRadius: "4px",
+                      marginBottom:2,
+                      
+                    }}
+                  >
+                    
+                    <Select
+                      labelId="company-select-label"
+                      value={selectedCompany===''?'-1':selectedCompany}
 
-                  {/* {console.log(adminProds)} */}
-
-                  {adminProds.map((company) => {
-                    return (
-                      <div key={company.id} className=" p-2">
-                        <h2 className="text-xl font-semibold mt-4 mb-3">
+                      onChange={handleCompanyChange}
+                      label="Company"
+                      sx={{
+                        backgroundColor: "white",
+                        // color:'red'
+                        // width: "300px",
+                        // borderRadius: "4px",
+                      }}
+                    >
+                      <MenuItem key={'-1'} value={'-1'} disabled sx={{color:''}}>
+                          Select Company
+                        </MenuItem>
+                      {adminProds.map((company) => (
+                        <MenuItem key={company.companyEmail} value={company.companyEmail}>
                           {company.companyName}
-                        </h2>
-                        <hr className=" my-2"/>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
 
-                        {company.products.length === 0 && (
-                          <p className="text-white text-sm font-thin p-4">
-                            No products available to assign.
-                          </p>
-                        )}
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                          {company.products.map((p) => (
-                            <ProductCard
-                            key={p.id}
-                              p={p}
-                              assignable={false}
-                              onAssign={handleOpenDialog}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-
-                  {/* {companyProds.length === 0 && (
-                    <p className="text-white text-sm font-thin p-4">
-                      No products available to assign.
-                    </p>
+                  {selectedCompany && (
+                    <>
+                      <h2 className="text-2xl font-semibold mt-4 mb-3">
+                        Available Products to assign
+                      </h2>
+                      {adminProds
+                        .filter((company) => company.companyEmail === selectedCompany)
+                        .map((company) => (
+                          <div key={company.id} className="p-2">
+                            {company.products.length === 0 && (
+                              <p className="text-white text-sm font-thin p-4">
+                                No products available to assign.
+                              </p>
+                            )}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                              {company.products.map((p) => (
+                                <ProductCard
+                                  key={p.id}
+                                  p={p}
+                                  assignable={false}
+                                  onAssign={handleOpenDialog}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                    </>
                   )}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {companyProds.map((p) => (
-                      <ProductCard
-                        p={p}
-                        assignable={false}
-                        onAssign={handleOpenDialog}
-                      />
-                    ))}
-                  </div> */}
                 </>
               )}
             </div>

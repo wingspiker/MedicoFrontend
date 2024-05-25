@@ -16,45 +16,26 @@ import { RiMedicineBottleFill } from "react-icons/ri";
 import { NavLink, useLocation } from "react-router-dom";
 import { FaAngleRight } from "react-icons/fa6";
 import { IoSettingsSharp } from "react-icons/io5";
+import { FaUser } from "react-icons/fa";
+import { BiSolidFactory } from "react-icons/bi";
 
-const navItems = [
-  {
-    label: "Accounts",
-    icon: <MdOutlineManageAccounts />,
-    link: "/admin/Accounts",
-    subItems: [
-      { label: "Company", link: "/admin/Company" },
-      { label: "Buyer", link: "/admin/Buyer" },
-    ],
-  },
-  {
-    label: "Subscription",
-    icon: <MdSubscriptions />,
-    link: "/admin/Subscription",
-    subItems: [
-      { label: "Percentage", link: "/admin/SubscriptionPercentage" },
-      { label: "Plan", link: "/admin/SubscriptionPlan" },
-    ],
-  },
+const navItems = [  
+    {
+        label: "My Profile",
+        icon: <FaUser />,
+        link: "/sales/",
+      },
   {
     label: "Product",
     icon: <RiMedicineBottleFill />,
-    link: "/admin/Product",
+    link: "/sales/Product",
   },
-  { label: "Groups", icon: <MdGroups />, link: "/admin/Groups" },
-  { label: "Offers", icon: <BiSolidOffer />, link: "/admin/Offers" },
-  { label: "Article", icon: <FaGift />, link: "/admin/Article" },
-  { label: "Orders", icon: <BsFillCartCheckFill />, link: "/admin/Orders" },
-  { label: "Salesman", icon: <BsFillCartCheckFill />, link: "/admin/Salesman" },
-  {
-    label: "Analysis",
-    icon: <BsFillSignIntersectionYFill />,
-    link: "/admin/Analysis",
-  },
-  { label: "Settings", icon: <IoSettingsSharp />, link: "/admin/Settings" },
+  { label: "Company", icon: <BiSolidFactory />, link: "/sales/Company" },
+  { label: "Offers", icon: <BiSolidOffer />, link: "/sales/Offers" },
+  { label: "Settings", icon: <IoSettingsSharp />, link: "/sales/Settings" },
 ];
 
-export const AdminSidebar = ({ changeLogin }) => {
+export const SalesmanSidebar = ({ changeLogin }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -104,16 +85,15 @@ export const AdminSidebar = ({ changeLogin }) => {
           className={`flex items-center justify-between px-2 py-5 border-b border-gray-200 ${isOpen ? "bg-cyan-800" : "bg-black bg-opacity-20"}`}
         >
           <div className={`flex items-center gap-3 ${logoVisibility}`}>
-            {/* <img
+            <img
               src="/medico-logo.png"
               alt="Medico Logo"
               className="w-12 h-10"
-            /> */}
-            <h1 className="text-3xl font-bold text-white">Medico <p className=" text-red-500 text-xs text-right -me-6 -mt-2">Admin</p> </h1>
+            />
           </div>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="text-3xl h-10"
+            className="text-3xl h-6"
           >
             {isOpen ? <IoCloseSharp /> : <HiMenuAlt1 />}
           </button>
@@ -123,8 +103,9 @@ export const AdminSidebar = ({ changeLogin }) => {
             <React.Fragment key={item.label}>
               <div className="relative group">
                 {!item.subItems ? <NavLink
+                  onClick={()=>setIsOpen(false)}
                   to={item.link}
-                  className={`px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4 ${path===item.link?'bg-white text-cyan-800 hover:bg-slate-300':''}`}
+                  className={`px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4 ${path===item.link?'bg-white text-cyan-800 hover:bg-neutral-300':''}`}
                 >
                   {item.icon} {isOpen ? item.label : ""}
                 </NavLink>:
@@ -140,6 +121,7 @@ export const AdminSidebar = ({ changeLogin }) => {
                     {item.subItems.map((sub) => (
                       <>
                       <NavLink
+                        
                         key={sub.label}
                         to={sub.link}
                         className="px-4 py-2 hover:bg-slate-300 text-cyan-600 text-lg flex justify-between"
