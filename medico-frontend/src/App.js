@@ -60,6 +60,7 @@ import SalesmanProducts from "./Components/Salesman/SalesmanProducts";
 import SalesmanCompany from "./Components/Salesman/SalesmanCompany";
 import SalesmanSettings from "./Components/Salesman/SalesmanSettings";
 import BuyerHome from "./Components/Buyer/BuyerHome";
+import Home from "./Components/Home";
 
 function App() {
   const loginStatus = token() !== null;
@@ -130,7 +131,7 @@ function App() {
               />
             </>
           )}
-          <Route path="/" element={<BuyerHome />} />
+          <Route path="/" element={<Home />} />
           {isLoggedIn ? (
             <>
               {setCurrStep(3)}
@@ -561,13 +562,10 @@ function App() {
             exact
             element={
               isLoggedIn ? (
-                
                 <div className=" flex ">
-
                   <SalesmanSidebar changeLogin={setIsLoggedIn} />
                   <SalesmanLanding />
                 </div>
-                
               ) : (
                 <Navigate to="/login" />
               )
@@ -618,6 +616,21 @@ function App() {
           />
 
           <Route
+            path="/sales/Offers"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <SalesmanCompany />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
             path="/sales/Settings"
             exact
             element={
@@ -636,10 +649,10 @@ function App() {
             path="/Home"
             exact
             element={
-              (()=>isBuyer()) ? (
+              (() => isBuyer()) ? (
                 <>
-                  <BuyerHome /> 
-                  {console.log("ff"+isBuyer())}
+                  <BuyerHome />
+                  {console.log("ff" + isBuyer())}
                 </>
               ) : (
                 <>

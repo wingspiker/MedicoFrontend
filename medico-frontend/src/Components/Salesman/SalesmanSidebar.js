@@ -19,18 +19,19 @@ import { IoSettingsSharp } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { BiSolidFactory } from "react-icons/bi";
 
-const navItems = [  
-    {
-        label: "My Profile",
-        icon: <FaUser />,
-        link: "/sales/",
-      },
+const navItems = [
+  {
+    label: "My Profile",
+    icon: <FaUser />,
+    link: "/sales/",
+  },
+  { label: "Company", icon: <BiSolidFactory />, link: "/sales/Company" },
   {
     label: "Product",
     icon: <RiMedicineBottleFill />,
     link: "/sales/Product",
   },
-  { label: "Company", icon: <BiSolidFactory />, link: "/sales/Company" },
+
   { label: "Offers", icon: <BiSolidOffer />, link: "/sales/Offers" },
   { label: "Settings", icon: <IoSettingsSharp />, link: "/sales/Settings" },
 ];
@@ -47,11 +48,13 @@ export const SalesmanSidebar = ({ changeLogin }) => {
   };
 
   const location = useLocation();
-  const path = location.pathname
+  const path = location.pathname;
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-30 overflow-visible ${isOpen ? " bg-cyan-700" : "bg-black bg-opacity-30"} text-white transition-all duration-300 ease-in-out ${sidebarWidth} rounded-xl rounded-l-none`}
+      className={`fixed inset-y-0 left-0 z-30 overflow-visible ${
+        isOpen ? " bg-cyan-700" : "bg-black bg-opacity-30"
+      } text-white transition-all duration-300 ease-in-out ${sidebarWidth} rounded-xl rounded-l-none`}
     >
       {/* Modal */}
       {showModal && (
@@ -82,7 +85,9 @@ export const SalesmanSidebar = ({ changeLogin }) => {
 
       <div className="flex flex-col h-full">
         <div
-          className={`flex items-center justify-between px-2 py-5 border-b border-gray-200 ${isOpen ? "bg-cyan-800" : "bg-black bg-opacity-20"}`}
+          className={`flex items-center justify-between px-2 py-5 border-b border-gray-200 ${
+            isOpen ? "bg-cyan-800" : "bg-black bg-opacity-20"
+          }`}
         >
           <div className={`flex items-center gap-3 ${logoVisibility}`}>
             <img
@@ -91,10 +96,7 @@ export const SalesmanSidebar = ({ changeLogin }) => {
               className="w-12 h-10"
             />
           </div>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="text-3xl h-6"
-          >
+          <button onClick={() => setIsOpen(!isOpen)} className="text-3xl h-6">
             {isOpen ? <IoCloseSharp /> : <HiMenuAlt1 />}
           </button>
         </div>
@@ -102,35 +104,39 @@ export const SalesmanSidebar = ({ changeLogin }) => {
           {navItems.map((item) => (
             <React.Fragment key={item.label}>
               <div className="relative group">
-                {!item.subItems ? <NavLink
-                  onClick={()=>setIsOpen(false)}
-                  to={item.link}
-                  className={`px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4 ${path===item.link?'bg-white text-cyan-800 hover:bg-neutral-300':''}`}
-                >
-                  {item.icon} {isOpen ? item.label : ""}
-                </NavLink>:
-                <p                
-                className="px-4 py-2 rounded hover:bg-cyan-800  text-xl flex items-center gap-4"
-              >
-                {item.icon} {isOpen ? item.label : ""}
-              </p>
-
-                }
+                {!item.subItems ? (
+                  <NavLink
+                    onClick={() => setIsOpen(false)}
+                    to={item.link}
+                    className={`px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4 ${
+                      path === item.link
+                        ? "bg-white text-cyan-800 hover:bg-neutral-300"
+                        : ""
+                    }`}
+                  >
+                    {item.icon} {isOpen ? item.label : ""}
+                  </NavLink>
+                ) : (
+                  <p className="px-4 py-2 rounded hover:bg-cyan-800  text-xl flex items-center gap-4">
+                    {item.icon} {isOpen ? item.label : ""}
+                  </p>
+                )}
                 {item.subItems && (
                   <div className="absolute left-full top-0 w-48 bg-white text-cyan-800 font-semibold rounded hidden group-hover:flex flex-col">
                     {item.subItems.map((sub) => (
                       <>
-                      <NavLink
-                        
-                        key={sub.label}
-                        to={sub.link}
-                        className="px-4 py-2 hover:bg-slate-300 text-cyan-600 text-lg flex justify-between"
-                      >
-                        <span>{sub.label}</span>
-                        <span className=" flex items-center"> <FaAngleRight /> </span>
-                        
-                      </NavLink>
-                      <hr/>
+                        <NavLink
+                          key={sub.label}
+                          to={sub.link}
+                          className="px-4 py-2 hover:bg-slate-300 text-cyan-600 text-lg flex justify-between"
+                        >
+                          <span>{sub.label}</span>
+                          <span className=" flex items-center">
+                            {" "}
+                            <FaAngleRight />{" "}
+                          </span>
+                        </NavLink>
+                        <hr />
                       </>
                     ))}
                   </div>
