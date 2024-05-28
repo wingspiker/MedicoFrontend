@@ -116,7 +116,7 @@ export default function OfferDetails(props) {
   const { changeLogin } = props;
   const location = useLocation();
   const [currOffer, setCurrOffer] = useState(null);
-  const offerId = location?.state?.id;
+  const offerId = location?.state?.oid;
 
   useEffect(() => {
     getOfferById(offerId)

@@ -61,6 +61,7 @@ import SalesmanCompany from "./Components/Salesman/SalesmanCompany";
 import SalesmanSettings from "./Components/Salesman/SalesmanSettings";
 import BuyerHome from "./Components/Buyer/BuyerHome";
 import Home from "./Components/Home";
+import SalesmanOffers from "./Components/Salesman/SalesmanOffers";
 
 function App() {
   const loginStatus = token() !== null;
@@ -622,7 +623,22 @@ function App() {
               isLoggedIn ? (
                 <>
                   <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <SalesmanCompany />
+                  <SalesmanOffers />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
+            path="/sales/Offers/:id"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <OfferDetails />
                 </>
               ) : (
                 <Navigate to="/login" />
