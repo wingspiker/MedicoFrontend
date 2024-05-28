@@ -136,6 +136,15 @@ export const isCompanySelf = () => {
     return false
 }
 
+export const isBuyer = () => {
+    const user = decodeToken();
+    if(user){
+        const key = Object.keys(user).find((key)=> key.endsWith('role'))
+        return user[key]==='Buyer'
+    }
+    return false
+}
+
 export const isSalesman = () => {
     const user = decodeToken();
     // console.log(user);

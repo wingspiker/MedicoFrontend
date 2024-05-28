@@ -127,6 +127,23 @@ export default function AdminOffers() {
               ))}
             </div>
           </div>
+          
+    <Dialog open={open} onClose={() => setOpen(false)}>
+      <DialogTitle>Delete Offer</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Are you sure you want to delete this offer? This action cannot be undone.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpen(false)} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleDeleteConfirm} color="primary">
+          Confirm
+        </Button>
+      </DialogActions>
+    </Dialog>
     </>
   );
 }

@@ -10,6 +10,7 @@ import {
   formdata,
   initialData,
   setIsBuyer,
+  isBuyer,
 } from "../Services/auth";
 import { Toaster, toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
@@ -75,6 +76,7 @@ const Login = (props) => {
 
       loginService(loginData)
         .then((response) => {
+          // debugger;
           console.log(response);
           setLoading(false); // Set loading to false after API response
           // Handle successful login response
@@ -82,7 +84,6 @@ const Login = (props) => {
           localStorage.setItem("token", response.accessToken);
           setMessage(true);
           const user = decodeToken();
-          console.log(user);
           if(user?.userType==='Salesman'){
             changeLogin(true);
             navigate('/sales')
@@ -126,10 +127,8 @@ const Login = (props) => {
             // }
             
             if(user[role]==="Buyer"){
-              signOut()
-              navigate('/');
-              setFormData({...formdata, email:''})
-              setCurrStep(1)
+// console.log('this is me');
+              navigate('/Home');
               return
             }
             changeLogin(true);

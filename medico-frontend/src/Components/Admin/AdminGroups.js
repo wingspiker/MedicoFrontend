@@ -3,7 +3,12 @@ import { AdminSidebar } from "./AdminSidebar";
 import { signOut } from "../../Services/auth";
 import { decodeToken } from "../../Services/auth";
 import { useNavigate } from "react-router-dom";
-import { getGroups, getGroupById, deleteGroup } from "../../Services/group";
+import {
+  getGroups,
+  getGroupById,
+  deleteGroup,
+  deleteGroupById,
+} from "../../Services/group";
 import {
   Button,
   Dialog,
@@ -19,6 +24,7 @@ export default function AdminGroups(props) {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [open, setOpen] = useState(false);
+  const [fl, setFl] = useState(false);
   const [groupToDelete, setGroupToDelete] = useState(null);
   const navigate = useNavigate();
 
@@ -43,7 +49,7 @@ export default function AdminGroups(props) {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [fl]);
 
   const handleGroup = (g) => {
     getGroupById(g.id)
@@ -60,21 +66,23 @@ export default function AdminGroups(props) {
     setOpen(true);
   };
 
-  // const handleDeleteConfirm = () => {
-  //   deleteGroup(groupToDelete)
-  //     .then(() => {
-  //       setGroups(groups.filter((group) => group.id !== groupToDelete));
-  //       setOpen(false);
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
+  const handleDeleteConfirm = () => {
+    console.log("ttt");
+    deleteGroupById(groupToDelete)
+      .then((resp) => {
+        console.log(resp);
+        setFl(f=>!f)
+        // setGroups(groups.filter((group) => group.id !== groupToDelete));
+        setOpen(false);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="flex h-screen bg-cyan-900 text-white">
       <AdminSidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
-          
           <div className="p-5 flex justify-end gap-4">
             <button
               onClick={onAddGroup}
@@ -103,7 +111,7 @@ export default function AdminGroups(props) {
                 </div>
                 <Button
                   onClick={(e) => {
-                    e.stopPropagation();
+                    // e.stopPropagation();
                     handleDeleteClick(group.id);
                   }}
                   variant="contained"
@@ -137,7 +145,10 @@ export default function AdminGroups(props) {
                         <h2 className="text-lg font-semibold">
                           {buyer.firstName} {buyer.lastName}
                         </h2>
-                        <p className="text-gray-600">{buyer.occupation} {buyer.degree ? '('+ buyer.degree+')' : ""}</p>
+                        <p className="text-gray-600">
+                          {buyer.occupation}{" "}
+                          {buyer.degree ? "(" + buyer.degree + ")" : ""}
+                        </p>
                         {/* <p className="text-gray-800">
                           Degree: {buyer.degree ? buyer.degree : "N/A"}
                         </p> */}
@@ -173,7 +184,13 @@ export default function AdminGroups(props) {
           <Button onClick={() => setOpen(false)} color="primary">
             Cancel
           </Button>
-          <Button onClick={() => {}} color="error">
+          <Button
+            onClick={() => {
+              console.log("ll");
+              handleDeleteConfirm();
+            }}
+            color="error"
+          >
             Confirm
           </Button>
         </DialogActions>

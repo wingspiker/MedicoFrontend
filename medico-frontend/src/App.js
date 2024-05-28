@@ -10,7 +10,6 @@ import {
 import "./App.css";
 
 // Components
-import Home from "./Components/Home";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import Welcome from "./Components/Welcome";
@@ -20,6 +19,8 @@ import {
   decodeToken,
   formdata,
   isAdmin,
+  isBuyer,
+  isSalesman,
   setCurrStep,
   setFormData,
   signOut,
@@ -58,10 +59,12 @@ import { SalesmanSidebar } from "./Components/Salesman/SalesmanSidebar";
 import SalesmanProducts from "./Components/Salesman/SalesmanProducts";
 import SalesmanCompany from "./Components/Salesman/SalesmanCompany";
 import SalesmanSettings from "./Components/Salesman/SalesmanSettings";
+import BuyerHome from "./Components/Buyer/BuyerHome";
 
 function App() {
   const loginStatus = token() !== null;
   const [isLoggedIn, setIsLoggedIn] = useState(loginStatus);
+  // const [isBuyerLoggedIn, setIsBuyerLoggedIn] = useState(loginStatus);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(isAdmin);
   // console.log(isAdminLoggedIn);
   const [isComplete, setIsComplete] = useState(true);
@@ -93,15 +96,41 @@ function App() {
         <Routes>
           {isLoggedIn && user?.isComplete === "True" && (
             <>
-              <Route path="/" element={<Navigate to="/company/Home" />} />
-              <Route path="/login" element={<Navigate to="/company/Home" />} />
+              <Route
+                path="/"
+                element={
+                  isAdmin() ? (
+                    <Navigate to="/admin/Home" />
+                  ) : isSalesman() ? (
+                    <Navigate to="/sales" />
+                  ) : isBuyer() ? (
+                    <Navigate to="/Home" />
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  isAdmin() ? (
+                    <Navigate to="/admin/Home" />
+                  ) : isSalesman() ? (
+                    <Navigate to="/sales" />
+                  ) : isBuyer() ? (
+                    <Navigate to="/Home" />
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
               <Route
                 path="/register"
                 element={<Navigate to="/company/Home" />}
               />
             </>
           )}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<BuyerHome />} />
           {isLoggedIn ? (
             <>
               {setCurrStep(3)}
@@ -532,10 +561,13 @@ function App() {
             exact
             element={
               isLoggedIn ? (
-                <>
+                
+                <div className=" flex ">
+
                   <SalesmanSidebar changeLogin={setIsLoggedIn} />
                   <SalesmanLanding />
-                </>
+                </div>
+                
               ) : (
                 <Navigate to="/login" />
               )
@@ -596,6 +628,24 @@ function App() {
                 </>
               ) : (
                 <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
+            path="/Home"
+            exact
+            element={
+              (()=>isBuyer()) ? (
+                <>
+                  <BuyerHome /> 
+                  {console.log("ff"+isBuyer())}
+                </>
+              ) : (
+                <>
+                  <Navigate to="/login" />
+                  {console.log("tt" + isBuyer())}
+                </>
               )
             }
           />

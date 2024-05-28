@@ -22,7 +22,7 @@ import { toast, Toaster } from "sonner";
 import ArticleCard from "./ArticleCard";
 import ArticlePreviewCard from "./ArticlesPreviewCard";
 import { handleImageUpload } from "../../Services/upload";
-import { decodeToken } from "../../Services/auth";
+import { decodeToken, isAdmin } from "../../Services/auth";
 import { getProducts } from "../../Services/product";
 import {
   addDiscountBenefit,
@@ -260,7 +260,11 @@ function AddOffer() {
                 setOfferId(res.id);
                 setLoading(false);
                 setTimeout(() => {
-                  navigate("/Offer");
+                  if(isAdmin()){  
+                    navigate("/admin/Offer");
+                  }else{
+                    navigate("/company/Offer");
+                  }
                   setCurrentStep(1);
                 }, 2000);
               })
