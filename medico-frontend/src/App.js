@@ -62,6 +62,7 @@ import SalesmanSettings from "./Components/Salesman/SalesmanSettings";
 import BuyerHome from "./Components/Buyer/BuyerHome";
 import Home from "./Components/Home";
 import SalesmanOffers from "./Components/Salesman/SalesmanOffers";
+import BuyerListing from "./Components/Buyer/BuyerListing";
 
 function App() {
   const loginStatus = token() !== null;
@@ -668,12 +669,26 @@ function App() {
               (() => isBuyer()) ? (
                 <>
                   <BuyerHome />
-                  {console.log("ff" + isBuyer())}
                 </>
               ) : (
                 <>
                   <Navigate to="/login" />
-                  {console.log("tt" + isBuyer())}
+                </>
+              )
+            }
+          />
+
+          <Route
+            path="/Home/Products"
+            exact
+            element={
+              (() => isBuyer()) ? (
+                <>
+                  <BuyerListing />
+                </>
+              ) : (
+                <>
+                  <Navigate to="/login" />
                 </>
               )
             }
