@@ -1,67 +1,59 @@
-// import React, { useState } from "react";
-
-// const FilterComponent = ({ setFilters }) => {
-//   const [filter, setFilter] = useState("");
-
-//   const handleFilterChange = (e) => {
-//     setFilter(e.target.value);
-//   };
-
-//   const applyFilter = () => {
-//     setFilters(filter);
-//   };
-
-//   return (
-//     <div className="w-1/4 p-4 bg-gray-100">
-//       <h2 className="text-lg font-bold">Filters</h2>
-//       <input
-//         type="text"
-//         value={filter}
-//         onChange={handleFilterChange}
-//         placeholder="Search..."
-//         className="w-full p-2 border border-gray-300 rounded mt-2"
-//       />
-//       <button
-//         onClick={applyFilter}
-//         className="w-full bg-blue-500 text-white p-2 rounded mt-2"
-//       >
-//         Apply Filter
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default FilterComponent;
-
 import React, { useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { Slider, Typography, Box } from "@mui/material";
 
-const ProductFilter = ({ setFilters }) => {
-  const [filter, setFilter] = useState("");
+const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
+  const [searchItem, setSearchItem] = useState("");
+  const [priceRange, setPriceRangeState] = useState([0, 10000]);
 
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
+  const handleSearchProductName = (e) => {
+    setSearchItem(e.target.value);
   };
 
-  const applyFilter = () => {
-    setFilters(filter);
+  const handleSearch = () => {
+    setSearchProduct(searchItem);
+  };
+
+  const handlePriceRangeChange = (event, newValue) => {
+    setPriceRangeState(newValue);
+    setPriceRange(newValue);
   };
 
   return (
     <div className="w-1/4 p-4 bg-gray-100">
       <h2 className="text-lg font-bold">Filters</h2>
-      <input
-        type="text"
-        value={filter}
-        onChange={handleFilterChange}
-        placeholder="Search..."
-        className="w-full p-2 border border-gray-300 rounded mt-2"
-      />
-      <button
-        onClick={applyFilter}
-        className="w-full bg-blue-500 text-white p-2 rounded mt-2"
-      >
-        Apply Filter
-      </button>
+      <div className="flex items-center mt-2">
+        <input
+          type="text"
+          value={searchItem}
+          onChange={handleSearchProductName}
+          placeholder="Search..."
+          className="flex-grow p-2 border border-gray-300 rounded-l"
+        />
+        <button
+          onClick={handleSearch}
+          className="bg-blue-500 text-white mx-2 p-2 rounded-r"
+        >
+          <FaSearch />
+        </button>
+      </div>
+      <Box sx={{ mt: 4 }}>
+        <Typography id="price-range-slider" gutterBottom>
+          Price Range
+        </Typography>
+        <Slider
+          value={priceRange}
+          onChange={handlePriceRangeChange}
+          valueLabelDisplay="auto"
+          min={0}
+          max={1000}
+          sx={{ color: "primary.main" }}
+        />
+        <Box display="flex" justifyContent="space-between">
+          <Typography variant="body2">${priceRange[0]}</Typography>
+          <Typography variant="body2">${priceRange[1]}</Typography>
+        </Box>
+      </Box>
     </div>
   );
 };
