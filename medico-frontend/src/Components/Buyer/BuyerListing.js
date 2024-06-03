@@ -10,8 +10,8 @@ export default function BuyerListing() {
   const [products, setProducts] = useState([]);
   const [searchProduct, setSearchProduct] = useState("");
   const [priceRange, setPriceRange] = useState([0, 10000]);
-  const location = useLocation();
 
+  const location = useLocation();
   const search = location?.state?.search ?? "";
 
   const user = decodeToken();
