@@ -25,6 +25,8 @@ export default function BuyerListing() {
     });
   }, [search, priceRange, email]);
 
+  console.log(products);
+
   return (
     <div className="h-screen flex flex-col bg-white">
       <Navbar />

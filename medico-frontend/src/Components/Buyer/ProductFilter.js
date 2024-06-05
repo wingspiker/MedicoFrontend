@@ -107,6 +107,10 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
     });
   };
 
+  const handleFilter = () => {
+    console.log("Hello");
+  };
+
   return (
     <div className="w-1/4 p-4 bg-gray-100">
       <h2 className="text-lg font-bold">Filters</h2>
@@ -134,12 +138,12 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
           onChange={handlePriceRangeChange}
           valueLabelDisplay="auto"
           min={0}
-          max={1000}
+          max={10000}
           sx={{ color: "primary.main" }}
         />
         <Box display="flex" justifyContent="space-between">
-          <Typography variant="body2">${priceRange[0]}</Typography>
-          <Typography variant="body2">${priceRange[1]}</Typography>
+          <Typography variant="body2">₹ {priceRange[0]}</Typography>
+          <Typography variant="body2">₹ {priceRange[1]}</Typography>
         </Box>
       </Box>
       <Box sx={{ mt: 4 }}>
@@ -158,6 +162,12 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
           />
         ))}
       </Box>
+      <button
+        onClick={handleFilter}
+        className="bg-blue-500 w-full hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Apply
+      </button>
     </div>
   );
 };
