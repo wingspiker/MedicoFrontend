@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { filterProducts } from "../../Services/buyer";
 import { decodeToken } from "../../Services/auth";
 import Navbar from "./Navbar";
@@ -10,6 +10,8 @@ export default function BuyerListing() {
   const [products, setProducts] = useState([]);
   const [searchProduct, setSearchProduct] = useState("");
   const [priceRange, setPriceRange] = useState([0, 10000]);
+
+  const navigate = useNavigate();
 
   const location = useLocation();
   const search = location?.state?.search ?? "";
@@ -25,7 +27,12 @@ export default function BuyerListing() {
     });
   }, [search, priceRange, email]);
 
-  console.log(products);
+  // console.log(products);
+
+  const handleClick = (index, id) => {
+    // console.log('kkk',id);
+    navigate(`/Home/Products/${index}`, { state: { pid:id } });
+  };
 
   return (
     <div className="h-screen flex flex-col bg-white">
@@ -37,8 +44,16 @@ export default function BuyerListing() {
         />
         <div className="w-3/4 p-4 overflow-y-auto">
           <div className="grid grid-cols-3 gap-4">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {products.map((product, index) => (
+              <div
+                role='button'
+                type="button"
+                key={product.id}
+                onClick={() => handleClick(index, product.id)}
+                className=" cursor-pointer"
+              >
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
         </div>

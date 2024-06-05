@@ -84,8 +84,28 @@ export const filterProducts = async (buyerEmail, searchStr) => {
             'Authorization': `Bearer ${t}`
         }
       };
-      console.log(url+ `/api/product/buyer/${buyerEmail}/search${searchStr}`);
       return axios.post(url+ `/api/product/buyer/${buyerEmail}/search${searchStr}`,undefined, config)
+        .then(response => {
+            // Handle successful response
+            return response.data; // Return data if needed
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error occurred during login:', error);
+            throw error; // Throw error for further handling if needed
+        });
+}
+
+export const getProductDetails = async (buyerEmail, prodId) => {
+    const t = localStorage.getItem('token');
+    const config = {        
+        headers: {
+            'Content-Type': 'application/json', 
+            'Accept': 'application/json', 
+            'Authorization': `Bearer ${t}`
+        }
+      };
+      return axios.get(url+ `/api/buyer/${buyerEmail}/products/${prodId}`, config)
         .then(response => {
             // Handle successful response
             return response.data; // Return data if needed
