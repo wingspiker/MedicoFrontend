@@ -19,6 +19,7 @@ export default function BuyerProductDetails() {
   useEffect(() => {
     getProductDetails(email, pid)
       .then((resp) => {
+        // console.log('kkkkkkkkkkk', resp);
         setProduct(resp.productDetails);
         setOwner(resp.ownerDetails);
       })
@@ -35,7 +36,7 @@ export default function BuyerProductDetails() {
     <div className="h-screen flex flex-col bg-white">
       <Navbar />
 
-      {product & owner && (
+      {(product && owner) && (
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row">
             <div className="lg:w-1/2 flex justify-center items-center">
