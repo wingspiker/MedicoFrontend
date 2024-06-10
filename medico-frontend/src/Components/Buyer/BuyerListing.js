@@ -7,14 +7,14 @@ import ProductFilter from "./ProductFilter";
 import ProductCard from "./ProductCard";
 
 export default function BuyerListing() {
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [searchProduct, setSearchProduct] = useState("");
   const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [search, setSearch] = useState(location?.state?.search ?? "");
 
   const navigate = useNavigate();
 
-  const location = useLocation();
-  const search = location?.state?.search ?? "";
 
   const user = decodeToken();
   const keys = Object.keys(user);
@@ -25,7 +25,7 @@ export default function BuyerListing() {
       console.log(resp);
       setProducts(resp);
     });
-  }, [search, priceRange, email]);
+  }, [search]);
 
   // console.log(products);
 

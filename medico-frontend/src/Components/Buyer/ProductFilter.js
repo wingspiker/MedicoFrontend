@@ -1,72 +1,4 @@
-// import React, { useState } from "react";
-// import { FaSearch } from "react-icons/fa";
-// import {
-//   Slider,
-//   Typography,
-//   Box,
-//   FormControlLabel,
-//   Checkbox,
-// } from "@mui/material";
-// import { prescriptionEnum } from "../../Models/enums.model";
-
-// const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
-//   const [searchItem, setSearchItem] = useState("");
-//   const [priceRange, setPriceRangeState] = useState([0, 10000]);
-
-//   const handleSearchProductName = (e) => {
-//     setSearchItem(e.target.value);
-//   };
-
-//   const handleSearch = () => {
-//     setSearchProduct(searchItem);
-//   };
-
-//   const handlePriceRangeChange = (event, newValue) => {
-//     setPriceRangeState(newValue);
-//     setPriceRange(newValue);
-//   };
-//   return (
-//     <div className="w-1/4 p-4 bg-gray-100">
-//       <h2 className="text-lg font-bold">Filters</h2>
-//       <div className="flex items-center mt-2">
-//         <input
-//           type="text"
-//           value={searchItem}
-//           onChange={handleSearchProductName}
-//           placeholder="Search..."
-//           className="flex-grow p-2 border border-gray-300 rounded-l"
-//         />
-//         <button
-//           onClick={handleSearch}
-//           className="bg-blue-500 text-white mx-2 p-2 rounded-r"
-//         >
-//           <FaSearch />
-//         </button>
-//       </div>
-//       <Box sx={{ mt: 4 }}>
-//         <Typography id="price-range-slider" gutterBottom>
-//           Price Range
-//         </Typography>
-//         <Slider
-//           value={priceRange}
-//           onChange={handlePriceRangeChange}
-//           valueLabelDisplay="auto"
-//           min={0}
-//           max={1000}
-//           sx={{ color: "primary.main" }}
-//         />
-//         <Box display="flex" justifyContent="space-between">
-//           <Typography variant="body2">${priceRange[0]}</Typography>
-//           <Typography variant="body2">${priceRange[1]}</Typography>
-//         </Box>
-//       </Box>
-//     </div>
-//   );
-// };
-
-// export default ProductFilter;
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import {
   Slider,
@@ -76,11 +8,23 @@ import {
   Checkbox,
 } from "@mui/material";
 import { prescriptionEnum } from "../../Models/enums.model";
+import { getAllCompanies } from "../../Services/company";
 
 const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
   const [searchItem, setSearchItem] = useState("");
   const [priceRange, setPriceRangeState] = useState([0, 10000]);
   const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
+  const [companies, setCompanies] = useState([])
+
+  useEffect(() => {
+    getAllCompanies()
+    .then(resp=>{
+      setCompanies(resp)
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  }, [])
 
   console.log(selectedPrescriptions);
 
@@ -162,6 +106,7 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
           />
         ))}
       </Box>
+      {console.log(companies)}
       <button
         onClick={handleFilter}
         className="bg-blue-500 w-full hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

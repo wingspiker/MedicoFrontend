@@ -4,6 +4,7 @@ import { getProductDetails } from "../../Services/buyer";
 import { decodeToken } from "../../Services/auth";
 import Navbar from "./Navbar";
 import { FaShoppingCart } from "react-icons/fa";
+import { EffectivePriceCalculationTypeEnum, prescriptionEnum } from "../../Models/enums.model";
 
 export default function BuyerProductDetails() {
   const location = useLocation();
@@ -33,7 +34,7 @@ export default function BuyerProductDetails() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <div className="h-screen w-screen fixed flex flex-col bg-white">
       <Navbar />
 
       {(product && owner) && (
@@ -46,7 +47,7 @@ export default function BuyerProductDetails() {
                 className="w-full h-auto max-w-sm"
               />
             </div>
-            <div className="lg:w-1/2 mt-6 lg:mt-0 lg:pl-12">
+            <div className="lg:w-1/2 mt-6 lg:mt-0 lg:pl-12 h-[88vh] overflow-auto no-scrollbar">
               <h1 className="text-3xl font-bold">{product.drugName}</h1>
               <p className="text-lg text-gray-700">{product.brandName}</p>
               <p className="text-xl font-semibold text-red-600 mt-4">
@@ -72,7 +73,7 @@ export default function BuyerProductDetails() {
                   </option>
                   {product.productBatches.map((batch) => (
                     <option key={batch.id} value={batch.id}>
-                      {`${batch.manufacturingDate} - ₹${batch.price}`}
+                      {`Expiry Date - ${batch.manufacturingDate} - Price ₹${batch.price}`}
                     </option>
                   ))}
                 </select>
@@ -87,31 +88,34 @@ export default function BuyerProductDetails() {
                   disabled={!selectedBatchId}
                 >
                   <FaShoppingCart className="mr-2" />
-                  Buy Now
+                  Add to cart
                 </button>
               </div>
               <div className="mt-6">
                 <h2 className="text-2xl font-semibold">Product Details</h2>
                 <ul className="list-disc ml-5 mt-2 text-gray-700">
-                  <li>Manufacturer: {product.manufacturerName}</li>
-                  <li>License No: {product.licenseNo}</li>
+                  <span className=" text-cyan-700 font-semibold"></span>
+                  <li>Manufacturer: <span className=" text-cyan-700 font-semibold">{product.manufacturerName}</span> </li>
+                  {/* <li>License No: {product.licenseNo}</li> */}
                   <li>
-                    Prescription:{" "}
-                    {product.prescription ? "Required" : "Not Required"}
+                    Prescription:{" "}<span className=" text-cyan-700 font-semibold">
+                    {prescriptionEnum[Object.keys(prescriptionEnum)[product.prescription]]} </span>
                   </li>
-                  <li>Division: {product.division}</li>
+                  <li>Division:<span className=" text-cyan-700 font-semibold"> {product.division} </span></li>
                   <li>
                     Effective Price Calculation Type:{" "}
-                    {product.effectivePriceCalculationType}
+                    {/* {product.effectivePriceCalculationType} */}<span className=" text-cyan-700 font-semibold">
+                    {EffectivePriceCalculationTypeEnum[Object.keys(EffectivePriceCalculationTypeEnum)[product.effectivePriceCalculationType]]} </span>
                   </li>
                 </ul>
               </div>
+              
               <div className="mt-6">
                 <h2 className="text-2xl font-semibold">Owner Details</h2>
                 <ul className="list-disc ml-5 mt-2 text-gray-700">
-                  <li>Name: {owner.name}</li>
-                  <li>Email: {owner.email}</li>
-                  <li>Type: {owner.ownerType}</li>
+                  <li>Name:<span className=" text-cyan-700 font-semibold"> {owner.name}</span> </li>
+                  <li>Email:<span className=" text-cyan-700 font-semibold"> {owner.email}</span> </li>
+                  <li>Type:<span className=" text-cyan-700 font-semibold"> {owner.ownerType}</span> </li>
                 </ul>
               </div>
             </div>
