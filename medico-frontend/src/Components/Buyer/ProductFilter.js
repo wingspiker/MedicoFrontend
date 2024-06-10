@@ -10,14 +10,14 @@ import {
 import { prescriptionEnum } from "../../Models/enums.model";
 import { getAllCompanies } from "../../Services/company";
 
-const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
+const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCompanyFilter }) => {
   const [searchItem, setSearchItem] = useState("");
   const [priceRange, setPriceRangeState] = useState([0, 10000]);
   const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [companies, setCompanies] = useState([]);
 
-  console.log(selectedCompanies);
+  // console.log(selectedCompanies);
 
   useEffect(() => {
     getAllCompanies()
@@ -66,6 +66,18 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
 
   const handleFilter = () => {
     console.log("Filtering products...");
+    // console.log(selectedPrescriptions);
+    // console.log(selectedCompanies);
+    // console.log(priceRange);
+    let str = ''
+    selectedPrescriptions.forEach(p=>{
+      str += `&prescriptionTypes=${p}`
+    })
+
+    str+=`&minSellingPrice=${priceRange[0]}&maxSellingPrice=${priceRange[1]}`
+
+    setFilterSearch(str);
+    setCompanyFilter(selectedCompanies);
   };
 
   return (
@@ -137,7 +149,7 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
           />
         ))}
       </Box>
-      {console.log(companies)}
+      {/* {console.log(companies)} */}
       <button
         onClick={handleFilter}
         className="bg-blue-500 w-full hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

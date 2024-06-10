@@ -64,6 +64,7 @@ import Home from "./Components/Home";
 import SalesmanOffers from "./Components/Salesman/SalesmanOffers";
 import BuyerListing from "./Components/Buyer/BuyerListing";
 import BuyerProductDetails from "./Components/Buyer/BuyerProductDetails";
+import BuyerCart from "./Components/Buyer/BuyerCart";
 
 function App() {
   const loginStatus = token() !== null;
@@ -702,6 +703,22 @@ function App() {
               (() => isBuyer()) ? (
                 <>
                   <BuyerProductDetails />
+                </>
+              ) : (
+                <>
+                  <Navigate to="/login" />
+                </>
+              )
+            }
+          />
+
+          <Route
+            path="/Home/Cart"
+            exact
+            element={
+              (() => isBuyer()) ? (
+                <>
+                  <BuyerCart />
                 </>
               ) : (
                 <>

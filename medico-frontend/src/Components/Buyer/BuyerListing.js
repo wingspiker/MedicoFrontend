@@ -12,6 +12,9 @@ export default function BuyerListing() {
   const [searchProduct, setSearchProduct] = useState("");
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [search, setSearch] = useState(location?.state?.search ?? "");
+  const [companyFilter, setCompanyFilter] = useState([]);
+
+  const [filterSearch, setFilterSearch] = useState('')
 
   const navigate = useNavigate();
 
@@ -21,11 +24,11 @@ export default function BuyerListing() {
   const email = user[keys.find((k) => k.endsWith("emailaddress"))];
 
   useEffect(() => {
-    filterProducts(email, search, priceRange).then((resp) => {
+    filterProducts(email, search+filterSearch, priceRange).then((resp) => {
       console.log(resp);
       setProducts(resp);
     });
-  }, [search]);
+  }, [search, filterSearch, companyFilter]);
 
   // console.log(products);
 
@@ -41,6 +44,8 @@ export default function BuyerListing() {
         <ProductFilter
           setSearchProduct={setSearchProduct}
           setPriceRange={setPriceRange}
+          setFilterSearch={setFilterSearch}
+          setCompanyFilter={setCompanyFilter}
         />
         <div className="w-3/4 p-4 overflow-y-auto">
           <div className="grid grid-cols-3 gap-4">
