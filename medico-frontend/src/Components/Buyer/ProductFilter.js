@@ -14,19 +14,20 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
   const [searchItem, setSearchItem] = useState("");
   const [priceRange, setPriceRangeState] = useState([0, 10000]);
   const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
-  const [companies, setCompanies] = useState([])
+  const [selectedCompanies, setSelectedCompanies] = useState([]);
+  const [companies, setCompanies] = useState([]);
+
+  console.log(selectedCompanies);
 
   useEffect(() => {
     getAllCompanies()
-    .then(resp=>{
-      setCompanies(resp)
-    })
-    .catch(err=>{
-      console.log(err);
-    })
-  }, [])
-
-  console.log(selectedPrescriptions);
+      .then((resp) => {
+        setCompanies(resp); // assuming resp is an array of company objects
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const handleSearchProductName = (e) => {
     setSearchItem(e.target.value);
@@ -41,6 +42,18 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
     setPriceRange(newValue);
   };
 
+  const handleCompanyCheckboxChange = (companyEmail) => {
+    setSelectedCompanies((prev) => {
+      if (prev.includes(companyEmail)) {
+        // Remove the company from the array if it is already selected
+        return prev.filter((email) => email !== companyEmail);
+      } else {
+        // Add the company to the array if it is not already selected
+        return [...prev, companyEmail];
+      }
+    });
+  };
+
   const handleCheckboxChange = (index) => {
     setSelectedPrescriptions((prevSelected) => {
       if (prevSelected.includes(index)) {
@@ -52,11 +65,11 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
   };
 
   const handleFilter = () => {
-    console.log("Hello");
+    console.log("Filtering products...");
   };
 
   return (
-    <div className="w-1/4 p-4 bg-gray-100">
+    <div className="w-1/4 p-4 bg-gray-100 h-[92vh] overflow-x-auto no-scrollbar">
       <h2 className="text-lg font-bold">Filters</h2>
       <div className="flex items-center mt-2">
         <input
@@ -73,10 +86,10 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
           <FaSearch />
         </button>
       </div>
-      <Box sx={{ mt: 4 }}>
-        <Typography id="price-range-slider" gutterBottom>
-          Price Range
-        </Typography>
+      <Typography sx={{ mt: 4 }} id="price-range-slider" gutterBottom>
+        Price Range
+      </Typography>
+      <Box sx={{ px: 2 }}>
         <Slider
           value={priceRange}
           onChange={handlePriceRangeChange}
@@ -103,6 +116,24 @@ const ProductFilter = ({ setSearchProduct, setPriceRange }) => {
               />
             }
             label={prescriptionEnum[key]}
+          />
+        ))}
+      </Box>
+      <Box sx={{ mt: 4, display: "flex", flexDirection: "column" }}>
+        <Typography gutterBottom>Company Names</Typography>
+        {companies.map((company) => (
+          <FormControlLabel
+            key={company.companyEmail}
+            control={
+              <Checkbox
+                checked={selectedCompanies.includes(company.companyEmail)}
+                onChange={() =>
+                  handleCompanyCheckboxChange(company.companyEmail)
+                }
+                color="primary"
+              />
+            }
+            label={company.name}
           />
         ))}
       </Box>
