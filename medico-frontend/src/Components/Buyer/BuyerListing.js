@@ -25,7 +25,7 @@ export default function BuyerListing() {
 
   useEffect(() => {
     filterProducts(email, search+filterSearch, priceRange).then((resp) => {
-      console.log(resp);
+      // console.log(resp);
       setProducts(resp);
     });
   }, [search, filterSearch, companyFilter]);

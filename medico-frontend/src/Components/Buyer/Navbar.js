@@ -37,7 +37,7 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   return (
     <nav className="bg-white px-4 py-2 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-3xl font-bold text-blue-600" onClick={handleLogoClick}>Medico</div>
+        <div className="text-3xl font-bold text-blue-600 cursor-pointer" onClick={handleLogoClick}>Medico</div>
         {/* <form onSubmit={onSearchSubmit} className="flex items-center space-x-2">
           <input
             type="text"

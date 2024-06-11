@@ -67,6 +67,8 @@ export default function BuyerProductDetails() {
       productName: product.drugName,
       companyName: product.manufacturerName,
       photoUrl: product.photoUrl,
+      ownerEmail:owner.email,
+      ownerName:owner.name,
     };
 
     addProductToCart(cartObj);
