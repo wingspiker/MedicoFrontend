@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
-import { cart, deleteProductFromCart } from "../../Services/cart";  // Ensure you have a removeFromCart method in your cart service
+import { cart, deleteProductFromCart } from "../../Services/cart"; // Ensure you have a removeFromCart method in your cart service
 
 export default function BuyerCart() {
   const [flag, setFlag] = useState(true);
@@ -16,7 +16,23 @@ export default function BuyerCart() {
   // Function to handle item deletion
   const handleDelete = (prodId, batchId) => {
     deleteProductFromCart(prodId, batchId);
-    setFlag(f => !f);
+    setFlag((f) => !f);
+  };
+
+  const validateCompanyNames = () => {
+    const companyName = currCart[0]?.companyName; // Get the companyName of the first item
+    return currCart.every((item) => item.companyName === companyName);
+  };
+
+  const handleCheckout = () => {
+    if (validateCompanyNames()) {
+      // Proceed with checkout logic here
+      console.log("Proceeding to checkout...");
+    } else {
+      alert(
+        "All products must be from the same company to proceed to checkout."
+      );
+    }
   };
 
   return (
@@ -26,16 +42,27 @@ export default function BuyerCart() {
         <div className="flex-1 overflow-y-auto pr-4 bg-white p-8 shadow-md h-[88vh] overflow-auto no-scrollbar">
           <h2 className="text-xl font-semibold mb-4">Shopping Cart</h2>
           {currCart.map((item) => (
-            <div key={item.prodId} className="flex items-center justify-between p-8 border-b border-gray-200 relative">
+            <div
+              key={item.prodId}
+              className="flex items-center justify-between p-8 border-b border-gray-200 relative"
+            >
               <div className="flex items-center">
-                <img src={item.photoUrl} alt={item.productName} className="w-20 h-20 mr-4 object-cover" />
+                <img
+                  src={item.photoUrl}
+                  alt={item.productName}
+                  className="w-20 h-20 mr-4 object-cover"
+                />
                 <div>
                   <h5 className="text-lg font-semibold">{item.productName}</h5>
-                  <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                  <p className="text-sm text-gray-600">
+                    Quantity: {item.quantity}
+                  </p>
                 </div>
               </div>
               <div>
-                <p className="text-lg font-semibold">₹{item.price * item.quantity}</p>
+                <p className="text-lg font-semibold">
+                  ₹{item.price * item.quantity}
+                </p>
                 <button
                   onClick={() => handleDelete(item.prodId, item.batchId)}
                   className="mt-4 py-2 px-4 bg-red-500 hover:bg-red-700 text-white font-bold rounded"
@@ -59,6 +86,7 @@ export default function BuyerCart() {
             {/* Additional price details can be placed here */}
           </div>
           <button
+            onClick={handleCheckout}
             className="mt-4 py-3 bg-green-500 hover:bg-green-700 text-white font-bold rounded w-full"
           >
             Proceed to Checkout
