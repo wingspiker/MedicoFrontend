@@ -3,9 +3,8 @@ import { Toaster } from "sonner";
 import Navbar from "./Navbar";
 import { cart } from "../../Services/cart";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IoMdArrowRoundBack } from "react-icons/io";
+import { IoMdArrowRoundBack, IoMdClose } from "react-icons/io";
 import { getOffersByEmail } from "../../Services/offer";
-import { IoMdClose } from "react-icons/io";
 
 export default function BuyerApplyOffer() {
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -13,6 +12,7 @@ export default function BuyerApplyOffer() {
   const [offers, setOffers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState(null);
+  const [offerCode, setOfferCode] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,6 +41,11 @@ export default function BuyerApplyOffer() {
     setModalOpen(false);
   };
 
+  const applyOffer = () => {
+    console.log("Applying offer code:", offerCode);
+    // Implement offer code application logic here
+  };
+
   return (
     <div className="h-screen w-screen fixed flex flex-col bg-gray-100">
       <Toaster
@@ -61,49 +66,57 @@ export default function BuyerApplyOffer() {
             </button>
             <h2 className="text-xl font-semibold">Available Offers</h2>
           </div>
-          {offers.map((offer) => (
-            <div
-              key={offer.id}
-              className="p-4 bg-white shadow rounded-lg flex justify-between items-center"
-            >
-              <div className="flex gap-4">
-                <img
-                  src={offer.offerPhoto}
-                  alt={offer.offerName}
-                  className="w-20 h-20 object-cover"
-                />
-                <div>
-                  <h5 className="text-lg font-bold text-orange-600">
-                    {offer.offerName}
-                  </h5>
-                  <p>{offer.offerDescription}</p>
-                  <p className="text-sm">
-                    Promo Code:{" "}
-                    <span
-                      style={{ fontWeight: "bold", textTransform: "uppercase" }}
+          <div className="flex flex-col gap-4">
+            {offers.map((offer) => (
+              <div
+                key={offer.id}
+                className="p-4 bg-slate-100 shadow rounded-lg flex justify-between items-center"
+              >
+                <div className="flex gap-4">
+                  <img
+                    src={offer.offerPhoto}
+                    alt={offer.offerName}
+                    className="w-20 h-20 object-cover"
+                  />
+                  <div>
+                    <h5 className="text-lg font-bold text-orange-600">
+                      {offer.offerName}
+                    </h5>
+                    <p>{offer.offerDescription}</p>
+                    <p className="text-sm">
+                      Promo Code:{" "}
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {offer.offerCode}
+                      </span>
+                      {" | "}
+                      Expiry:{" "}
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {new Date(offer.expiryDate).toLocaleDateString()}
+                      </span>
+                    </p>
+                    <button
+                      onClick={() => openModal(offer)}
+                      className="text-blue-500 hover:underline"
                     >
-                      {offer.offerCode}
-                    </span>
-                    {" | "}
-                    Expiry:{" "}
-                    <span
-                      style={{ fontWeight: "bold", textTransform: "uppercase" }}
-                    >
-                      {new Date(offer.expiryDate).toLocaleDateString()}
-                    </span>
-                  </p>
-                  <button
-                    onClick={() => openModal(offer)}
-                    className="text-blue-500 hover:underline"
-                  >
-                    Offer Details
-                  </button>
+                      Offer Details
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-        <div className="w-64 bg-white shadow-md p-4 flex flex-col justify-between">
+        <div className="w-96 bg-white shadow-md p-4 flex flex-col justify-between">
           <div>
             <h3 className="text-lg font-semibold mb-4">Price Details</h3>
             <div className="flex justify-between mb-2">
@@ -111,12 +124,34 @@ export default function BuyerApplyOffer() {
               <p>₹ {Number(total).toFixed(2)}</p>
             </div>
           </div>
-          <button className="mt-4 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded w-full">
-            Add Shipping
-          </button>
+
+          <div>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                placeholder="Enter offer code"
+                value={offerCode}
+                onChange={(e) => setOfferCode(e.target.value)}
+                className="p-2 w-2/3 border rounded"
+              />
+              <button
+                onClick={applyOffer}
+                disabled={offerCode.length < 3} // Disable the button if less than 3 characters are entered
+                className={`py-2 bg-blue-500 w-1/3 text-white font-bold rounded ${
+                  offerCode.length < 3
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-blue-600"
+                }`}
+              >
+                Apply Offer
+              </button>
+            </div>
+            <button className="mt-4 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded w-full">
+              Add Shipping
+            </button>
+          </div>
         </div>
       </div>
-      import {IoMdClose} from 'react-icons/io'; // Import the close icon
       {modalOpen && selectedOffer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-4 rounded-lg shadow-lg w-1/4 relative">
@@ -124,14 +159,14 @@ export default function BuyerApplyOffer() {
               onClick={closeModal}
               className="absolute top-0 right-0 text-2xl text-red-500 p-2"
             >
-              <IoMdClose /> {/* Use the close icon here */}
+              <IoMdClose />
             </button>
             <h3 className="text-lg font-bold">{selectedOffer.offerName}</h3>
             <p>
               <strong>Description:</strong> {selectedOffer.offerDescription}
             </p>
             <p>
-              <strong>Expiry Date:</strong>
+              <strong>Expiry Date:</strong>{" "}
               {new Date(selectedOffer.expiryDate).toLocaleDateString()}
             </p>
             <p>

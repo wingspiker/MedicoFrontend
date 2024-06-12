@@ -26,15 +26,16 @@ export default function BuyerCart() {
   };
 
   const validateCompanyNames = () => {
-    if(cart.length<1) return false;
+    if (cart.length < 1) return false;
     const companyName = currCart[0]?.companyName; // Get the companyName of the first item
     return currCart.every((item) => item.companyName === companyName);
   };
 
   const handleCheckout = () => {
     if (validateCompanyNames()) {
-      
-      navigate("/Home/Applyoffer", {state:{ownerEmail:cart[0].ownerEmail}});
+      navigate("/Home/Applyoffer", {
+        state: { ownerEmail: cart[0].ownerEmail },
+      });
     } else {
       toast.error(
         "All products must be from the same company to proceed to checkout."
@@ -43,7 +44,7 @@ export default function BuyerCart() {
   };
 
   const handleBack = () => {
-    navigate('/Home')
+    navigate("/Home");
   };
 
   return (
@@ -68,42 +69,46 @@ export default function BuyerCart() {
 
             <h2 className="text-xl font-semibold">Shopping Cart</h2>
           </div>
-          {currCart.map((item) => (
-            <div
-              key={item.prodId}
-              className="flex items-center justify-between p-8 border-b border-gray-200 relative"
-            >
-              <div className="flex items-center">
-                <img
-                  src={item.photoUrl}
-                  alt={item.productName}
-                  className="w-20 h-20 mr-4 object-cover"
-                />
-                <div>
-                  <h5 className="text-lg font-semibold">{item.productName}</h5>
-                  <p className="text-sm text-gray-600">
-                    Quantity: {item.quantity}
-                  </p>
+          <div className="flex flex-col gap-4">
+            {currCart.map((item) => (
+              <div
+                key={item.prodId}
+                className="p-4 bg-slate-100  shadow rounded-lg flex justify-between items-center"
+              >
+                <div className="flex items-center">
+                  <img
+                    src={item.photoUrl}
+                    alt={item.productName}
+                    className="w-20 h-20 mr-4 object-cover"
+                  />
+                  <div>
+                    <h5 className="text-lg font-semibold">
+                      {item.productName}
+                    </h5>
+                    <p className="text-sm text-gray-600">
+                      Quantity: {item.quantity}
+                    </p>
+                  </div>
                 </div>
+                <div>
+                  <p className="text-lg font-semibold">
+                    ₹{item.price * item.quantity}
+                  </p>
+                  <button
+                    onClick={() => handleDelete(item.prodId, item.batchId)}
+                    className="mt-4 py-2 px-4 bg-red-500 hover:bg-red-700 text-white font-bold rounded"
+                  >
+                    Delete
+                  </button>
+                </div>
+                <span className="absolute top-0 right-0 bg-blue-500 text-white px-2 py-1 text-xs font-semibold rounded-bl-lg">
+                  {item.companyName}
+                </span>
               </div>
-              <div>
-                <p className="text-lg font-semibold">
-                  ₹{item.price * item.quantity}
-                </p>
-                <button
-                  onClick={() => handleDelete(item.prodId, item.batchId)}
-                  className="mt-4 py-2 px-4 bg-red-500 hover:bg-red-700 text-white font-bold rounded"
-                >
-                  Delete
-                </button>
-              </div>
-              <span className="absolute top-0 right-0 bg-blue-500 text-white px-2 py-1 text-xs font-semibold rounded-bl-lg">
-                {item.companyName}
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-        <div className="w-64 bg-white shadow-md p-4 flex flex-col justify-between">
+        <div className="w-96 bg-white shadow-md p-4 flex flex-col justify-between">
           <div>
             <h3 className="text-lg font-semibold mb-4">Price Details</h3>
             <div className="flex justify-between mb-2">
@@ -114,7 +119,7 @@ export default function BuyerCart() {
           </div>
           <button
             onClick={handleCheckout}
-            className="mt-4 py-3 bg-green-500 hover:bg-green-700 text-white font-bold rounded w-full"
+            className="mt-4 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded w-full"
           >
             Apply Offers
           </button>
