@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import { cart, deleteProductFromCart } from "../../Services/cart"; // Ensure you have a removeFromCart method in your cart service
+import { Toaster, toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 export default function BuyerCart() {
   const [flag, setFlag] = useState(true);
   const [currCart, setCurrCart] = useState([]);
+  const [isRed, setIsRed] = useState(true);
 
   useEffect(() => {
     setCurrCart(cart);
   }, [flag]);
+
+  const navigate = useNavigate();
 
   // Calculate total price
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -20,27 +26,48 @@ export default function BuyerCart() {
   };
 
   const validateCompanyNames = () => {
+    if(cart.length<1) return false;
     const companyName = currCart[0]?.companyName; // Get the companyName of the first item
     return currCart.every((item) => item.companyName === companyName);
   };
 
   const handleCheckout = () => {
     if (validateCompanyNames()) {
-      // Proceed with checkout logic here
-      console.log("Proceeding to checkout...");
+      
+      navigate("/Home/Applyoffer", {state:{ownerEmail:cart[0].ownerEmail}});
     } else {
-      alert(
+      toast.error(
         "All products must be from the same company to proceed to checkout."
       );
     }
   };
 
+  const handleBack = () => {
+    navigate('/Home')
+  };
+
   return (
     <div className="h-screen w-screen fixed flex flex-col bg-gray-100">
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: { color: `${isRed ? "red" : "green"}` },
+        }}
+      />
       <Navbar />
       <div className="flex flex-1 p-6 gap-4">
         <div className="flex-1 overflow-y-auto pr-4 bg-white p-8 shadow-md h-[88vh] overflow-auto no-scrollbar">
-          <h2 className="text-xl font-semibold mb-4">Shopping Cart</h2>
+          <div className="flex items-center mb-4">
+            <button
+              onClick={() => handleBack()}
+              className=" text-2xl me-4 hover:text-blue-500"
+            >
+              {/* Arrow icon as content */}
+              <IoMdArrowRoundBack />
+            </button>
+
+            <h2 className="text-xl font-semibold">Shopping Cart</h2>
+          </div>
           {currCart.map((item) => (
             <div
               key={item.prodId}
@@ -89,7 +116,7 @@ export default function BuyerCart() {
             onClick={handleCheckout}
             className="mt-4 py-3 bg-green-500 hover:bg-green-700 text-white font-bold rounded w-full"
           >
-            Proceed to Checkout
+            Apply Offers
           </button>
         </div>
       </div>
