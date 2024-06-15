@@ -73,7 +73,7 @@ export default function BuyerCart() {
             {currCart.map((item) => (
               <div
                 key={item.prodId}
-                className="p-4 bg-slate-100  shadow rounded-lg flex justify-between items-center"
+                className="p-4 bg-slate-100 relative  shadow rounded-lg flex justify-between items-center"
               >
                 <div className="flex items-center">
                   <img

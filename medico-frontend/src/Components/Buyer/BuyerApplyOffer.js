@@ -4,7 +4,8 @@ import Navbar from "./Navbar";
 import { cart } from "../../Services/cart";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoMdArrowRoundBack, IoMdClose } from "react-icons/io";
-import { getOffersByEmail } from "../../Services/offer";
+import { applyOffer, getOffersByEmail } from "../../Services/offer";
+import { decodeToken } from "../../Services/auth";
 
 export default function BuyerApplyOffer() {
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -32,6 +33,13 @@ export default function BuyerApplyOffer() {
     navigate("/Home/Cart");
   };
 
+  const user = decodeToken();
+  // console.log(user);
+
+  const keys = Object.keys(user);
+  const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+
+
   const openModal = (offer) => {
     setSelectedOffer(offer);
     setModalOpen(true);
@@ -41,9 +49,40 @@ export default function BuyerApplyOffer() {
     setModalOpen(false);
   };
 
-  const applyOffer = () => {
-    console.log("Applying offer code:", offerCode);
-    // Implement offer code application logic here
+  const onApplyOffer = () => {
+    // console.log("Applying offer code:", offerCode);
+    // // Implement offer code application logic here
+
+    // console.log(cart);
+    const orderProducts = cart.map(c=>{
+      return {
+        productId:c.prodId,
+        batchId:c.batchId,
+        totalQuantity:c.quantity,
+        totalPrice:c.price
+      }
+    });
+
+    let totalPrice = 0;
+
+    orderProducts.forEach(c=>{
+      totalPrice += c.totalPrice
+    });
+
+    const applyOfferObj = {
+      offerCode,
+      orderProducts,
+      totalPrice
+    }
+
+    applyOffer(email, applyOfferObj)
+    .then(resp=>{
+      console.log(resp);
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+
   };
 
   return (
@@ -135,7 +174,7 @@ export default function BuyerApplyOffer() {
                 className="p-2 w-2/3 border rounded"
               />
               <button
-                onClick={applyOffer}
+                onClick={onApplyOffer}
                 disabled={offerCode.length < 3} // Disable the button if less than 3 characters are entered
                 className={`py-2 bg-blue-500 w-1/3 text-white font-bold rounded ${
                   offerCode.length < 3

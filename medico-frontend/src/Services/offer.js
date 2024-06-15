@@ -193,3 +193,26 @@ export const getOffersByEmail = async (emailId) => {
       throw error; // Throw error for further handling if needed
     });
 };
+
+export const applyOffer = async (buyerEmail, applyOfferObj) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+
+  return axios
+    .post(url + `/api/buyer/${buyerEmail}/getofferbenefit`, applyOfferObj, config)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
