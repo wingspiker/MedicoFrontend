@@ -54,24 +54,24 @@ export default function BuyerApplyOffer() {
     // // Implement offer code application logic here
 
     // console.log(cart);
-    const orderProducts = cart.map(c=>{
+    const offerProducts = cart.map(c=>{
       return {
         productId:c.prodId,
         batchId:c.batchId,
-        totalQuantity:c.quantity,
-        totalPrice:c.price
+        quantity:c.quantity,
+        price:c.price
       }
     });
 
     let totalPrice = 0;
 
-    orderProducts.forEach(c=>{
+    offerProducts.forEach(c=>{
       totalPrice += c.totalPrice
     });
 
     const applyOfferObj = {
       offerCode,
-      orderProducts,
+      offerProducts,
       totalPrice
     }
 

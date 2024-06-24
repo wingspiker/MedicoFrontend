@@ -70,6 +70,12 @@ export default function BuyerCart() {
             <h2 className="text-xl font-semibold">Shopping Cart</h2>
           </div>
           <div className="flex flex-col gap-4">
+            {
+              currCart.length===0?
+              <p className=" text-center">
+              Your Cart is empty
+              </p>:<></>
+            }
             {currCart.map((item) => (
               <div
                 key={item.prodId}
@@ -108,7 +114,7 @@ export default function BuyerCart() {
             ))}
           </div>
         </div>
-        <div className="w-96 bg-white shadow-md p-4 flex flex-col justify-between">
+        {currCart.length ? <div className="w-96 bg-white shadow-md p-4 flex flex-col justify-between">
           <div>
             <h3 className="text-lg font-semibold mb-4">Price Details</h3>
             <div className="flex justify-between mb-2">
@@ -123,7 +129,8 @@ export default function BuyerCart() {
           >
             Apply Offers
           </button>
-        </div>
+        </div>:<></>} 
+        
       </div>
     </div>
   );
