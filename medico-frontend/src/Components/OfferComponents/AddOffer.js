@@ -283,7 +283,7 @@ function AddOffer() {
                 setCurrentStep(1);
                 setLoading(false);
                 setTimeout(() => {
-                  navigate("/Offer");
+                  navigate("/company/Offer");
                 }, 2000);
               })
               .catch((err) => {
@@ -301,7 +301,7 @@ function AddOffer() {
                 setCurrentStep(1);
                 setLoading(false);
                 setTimeout(() => {
-                  navigate("/Offer");
+                  navigate("/company/Offer");
                 }, 2000);
               })
               .catch((err) => {

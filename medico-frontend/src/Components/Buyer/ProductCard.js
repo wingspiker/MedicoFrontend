@@ -25,10 +25,11 @@ const ProductCard = ({ product }) => {
           {product.drugName}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {product.contents}
+          {/* {console.log(product)} */}
+          {product.contents && product.contents.length>50 ? product.contents.substring(0,40) + '...':product.contents}
         </Typography>
         <Typography variant="h6" color="text.primary">
-          Price: ${product.sellingPrice}
+          Price:  ₹ {product.sellingPrice} hhh
         </Typography>
       </CardContent>
     </Card>

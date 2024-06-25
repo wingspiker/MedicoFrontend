@@ -48,7 +48,8 @@ export default function Offer(props) {
   }, []);
 
   const handleView = (id, index) => {
-    navigate(`/company/Offer/${index}`, { state: { id } });
+    console.log(id);
+    navigate(`/company/Offer/${index}`, { state: { oid:id } });
   };
 
   return (
@@ -93,6 +94,7 @@ export default function Offer(props) {
                       Expires: {new Date(offer.expiryDate).toDateString()}
                     </Typography>
                     <div className="flex justify-between">
+                      {/* {console.log(offer)} */}
                       <Button
                         onClick={() => handleView(offer.id, index)}
                         variant="contained"
