@@ -30,8 +30,7 @@ export default function BuyerShippingandPayment() {
     navigate("/Home");
   };
 
-  const optionId = location?.state?.optionId;
-  if (optionId) setOptId(optionId);
+
   return (
     <div className="h-screen w-screen fixed flex flex-col bg-gray-100">
       <Toaster
@@ -59,30 +58,9 @@ export default function BuyerShippingandPayment() {
             <h3 className="text-lg font-semibold mb-4">Payment Details</h3>
           </div>
           <div>
-            {/* <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder="Enter offer code"
-                    value={offerCode}
-                    onChange={(e) => setOfferCode(e.target.value)}
-                    readOnly={offerEditable}
-                    className="p-2 w-2/3 border rounded"
-                  />
-                  <button
-                    onClick={onApplyOffer}
-                    disabled={offerCode.length < 3 || offerEditable}
-                    className={`py-2 bg-blue-500 w-1/3 text-white font-bold rounded  ${
-                      offerCode.length < 3 || offerEditable
-                        ? "opacity-50 cursor-not-allowed"
-                        : "hover:bg-blue-600"
-                    }`}
-                  >
-                    Apply Offer
-                  </button>
-                </div> */}
             <button
               className="mt-4 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded w-full"
-              //   onClick={handleAddShipping}
+
             >
               Add Payment
             </button>
