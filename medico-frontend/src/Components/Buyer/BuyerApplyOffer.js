@@ -84,11 +84,14 @@ export default function BuyerApplyOffer() {
       })
       .catch((err) => {
         console.log(err);
+        setOfferResponse(err);
+        setModalOpen(true);
       });
   };
 
   const handleAddShipping = () => {
-    console.log(selectedProductId);
+    console.log(optionId);
+    navigate('/Home/Checkout', {state:{optionId}})
   };
 
   const onChooseOptions = () => {
@@ -105,10 +108,14 @@ export default function BuyerApplyOffer() {
   };
 
   const renderOfferDetails = () => {
+    let x = offerResponse.response;
     if (!offerResponse) return null;
 
     const handleChange = (event) => {
-      setSelectedProductId(event.target.value);
+      const optId = event.target.value;
+      console.log(optId);
+      setSelectedProductId(optId);
+      // console.log(selectedProductId);
     };
 
     if (offerResponse.discountOffer) {
@@ -122,8 +129,11 @@ export default function BuyerApplyOffer() {
       return (
         <div>
           <h3>Select your free goods:</h3>
-          {offerResponse.freeGoodsBenefits.map((good) => (
+          {console.log(offerResponse.freeGoodsBenefits[0].articleOptions)}
+          {offerResponse.freeGoodsBenefits[0].articleOptions.map((good) => (
             <div key={good.id} className="my-2">
+              {/* {console.log("ppp")}
+              {console.log(good.id)} */}
               <label className="flex items-center space-x-3">
                 <input
                   type="radio"
@@ -133,13 +143,14 @@ export default function BuyerApplyOffer() {
                   className="form-radio h-5 w-5 text-blue-600"
                 />
                 <span>
-                  {good.articleOptions
+                  {/* {good.articleOptions
                     .map((option) =>
-                      option.articleWithQuantities.map(
+                      option.articleWithQuantities[0].map(
                         (q) => q.article.articleName
                       )
                     )
-                    .join(", ")}
+                    .join(", ")} */}
+                  {good.articleWithQuantities[0].article.articleName}
                 </span>
               </label>
             </div>
@@ -186,8 +197,15 @@ export default function BuyerApplyOffer() {
           </button>
         </div>
       );
+    } else if (offerResponse?.response?.status === 500) {
+      return (
+        <div>
+          <p>
+            {offerResponse?.response?.data?.detail ?? "something went wrong"}
+          </p>
+        </div>
+      );
     }
-
     return <div>No specific offer details available.</div>;
   };
 

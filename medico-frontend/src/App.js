@@ -66,6 +66,7 @@ import BuyerListing from "./Components/Buyer/BuyerListing";
 import BuyerProductDetails from "./Components/Buyer/BuyerProductDetails";
 import BuyerCart from "./Components/Buyer/BuyerCart";
 import BuyerApplyOffer from "./Components/Buyer/BuyerApplyOffer";
+import BuyerShippingandPayment from "./Components/Buyer/BuyerShippingandPayment";
 
 function App() {
   const loginStatus = token() !== null;
@@ -736,6 +737,22 @@ function App() {
               (() => isBuyer()) ? (
                 <>
                   <BuyerApplyOffer />
+                </>
+              ) : (
+                <>
+                  <Navigate to="/login" />
+                </>
+              )
+            }
+          />
+
+          <Route
+            path="/Home/Checkout"
+            exact
+            element={
+              (() => isBuyer()) ? (
+                <>
+                  <BuyerShippingandPayment />
                 </>
               ) : (
                 <>
