@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
-import { cart, deleteProductFromCart } from "../../Services/cart"; // Ensure you have a removeFromCart method in your cart service
+import { cart, deleteProductFromCart, loadCart, saveMyCart, setCart } from "../../Services/cart"; // Ensure you have a removeFromCart method in your cart service
 import { Toaster, toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { FaPlus, FaMinus } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import {
   IoRemoveCircleOutline,
   IoAddCircleOutline,
@@ -17,13 +18,15 @@ export default function BuyerCart() {
   const [isRed, setIsRed] = useState(true);
 
   useEffect(() => {
-    setCurrCart(cart);
+    const c = loadCart()
+    setCurrCart(c);
   }, [flag]);
 
   const navigate = useNavigate();
 
   // Calculate total price
-  const total = () => currCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const total = () =>
+    currCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   // Function to handle item deletion
   const handleDelete = (prodId, batchId) => {
@@ -38,6 +41,11 @@ export default function BuyerCart() {
   };
 
   const handleCheckout = () => {
+    // console.log(currCart);
+    // setCart(currCart);
+    // console.log("fff");
+    saveMyCart(currCart)
+    setFlag(f=>!f)
     if (validateCompanyNames()) {
       navigate("/Home/Applyoffer", {
         state: { ownerEmail: cart[0].ownerEmail },
@@ -118,8 +126,11 @@ export default function BuyerCart() {
                 key={item.prodId}
                 className="p-4 bg-slate-100 relative shadow rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between"
               >
+                <span className=" absolute z-50 -top-8 right-0 rounded-full cursor-pointer hover:text-red-500" onClick={()=>handleDelete(item.prodId, item.batchId)}>
+                  <MdDelete className=" text-red-400 text-2xl"/>
+                </span>
                 <div className="flex items-center mb-4 sm:mb-0">
-                  {console.log(item.photoUrl)}
+                  {/* {console.log(item.photoUrl)} */}
                   <img
                     src={item.photoUrl}
                     alt={item.productName}
@@ -143,7 +154,7 @@ export default function BuyerCart() {
                   >
                     <IoTrashBin size="24" />
                   </button> */}
-                  <div className="text-gray-600 mt-6 flex items-center border-2 rounded-lg gap-2 border-gray-500 p-2">
+                  <div className="text-gray-600 mt-0 flex items-center border-2 rounded-lg gap-2 border-gray-500 p-2">
                     <button
                       onClick={() => handleDecrease(item.prodId, item.batchId)}
                       className="hover:text-gray-800"
@@ -165,7 +176,7 @@ export default function BuyerCart() {
                     </button>
                   </div>
                 </div>
-                <span className="absolute top-0 right-0 bg-blue-500 text-white px-2 py-1 text-xs font-semibold rounded-bl-lg">
+                <span className="absolute bottom-0 right-0 bg-blue-500 text-white px-2 py-1 text-xs font-semibold rounded-tl-lg">
                   {item.companyName}
                 </span>
               </div>

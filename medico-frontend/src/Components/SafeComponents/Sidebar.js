@@ -129,7 +129,7 @@ export const Sidebar = (props) => {
                 return (
               
                   <NavLink
-                    to={`/${item}`}
+                    to={`/company/${item}`}
                     key={item}
                     className="px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4"
                   >

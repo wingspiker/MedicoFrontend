@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 import Navbar from "./Navbar";
-import { cart } from "../../Services/cart";
+import { cart, emptyCart, loadCart } from "../../Services/cart";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoMdArrowRoundBack, IoMdClose } from "react-icons/io";
 import { applyOffer, getOffersByEmail } from "../../Services/offer";
 import { decodeToken } from "../../Services/auth";
 
-import { addOrderAddress, getAlladdress } from "../../Services/buyer";
+
+
+import { addOrder, addOrderAddress, getAlladdress } from "../../Services/buyer";
 import { handleImageUpload } from "../../Services/upload";
+import Loader from "../../Loader";
 
 export default function BuyerApplyOffer() {
-  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  // Loader
+  const total = loadCart().reduce((acc, item) => acc + item.price * item.quantity, 0);
   const [isRed, setIsRed] = useState(true);
   const [offers, setOffers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -21,8 +26,10 @@ export default function BuyerApplyOffer() {
   const [offerCode, setOfferCode] = useState("");
   const [offerResponse, setOfferResponse] = useState(null);
   const [disAmount, setDisAmount] = useState(0);
-  const [optionId, setOptionId] = useState("");
+  const [selectedArticleOptionId, setSelectedArticleOptionId] = useState("");
+  const [selectedProductOptionId, setSelectedProductOptionId] = useState("");
   const [offerEditable, setOfferEditable] = useState(false);
+  const [orderResponse, setOrderResponse] = useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,6 +42,7 @@ export default function BuyerApplyOffer() {
   const [addresses, setAddresses] = useState([]);
   const [showModal, setShowModal] = useState(false); // State to control the modal visibility
   const [selectedAddressId, setSelectedAddressId] = useState(null); // State to track selected address
+  const [appliedOfferId, setAppliedOfferId] = useState(""); // State to track selected address
   const [paymentDetail, setPaymentDetail] = useState(null); // State to track payment detail upload
   const [newAddress, setNewAddress] = useState({
     addressLine1: "",
@@ -47,6 +55,8 @@ export default function BuyerApplyOffer() {
   });
 
   const [errors, setErrors] = useState({}); // State to track form errors
+
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     getOffersByEmail(ownerEmail)
@@ -65,7 +75,7 @@ export default function BuyerApplyOffer() {
   useEffect(() => {
     getAlladdress(email)
       .then((resp) => {
-        console.log(resp);
+        // console.log(resp);
         setAddresses(resp);
       })
       .catch((err) => {
@@ -198,7 +208,7 @@ export default function BuyerApplyOffer() {
   };
 
   const onApplyOffer = () => {
-    const offerProducts = cart.map((c) => ({
+    const offerProducts = loadCart().map((c) => ({
       productId: c.prodId,
       batchId: c.batchId,
       quantity: c.quantity,
@@ -221,6 +231,7 @@ export default function BuyerApplyOffer() {
         console.log(resp);
         setOfferResponse(resp);
         setModalOpen(true);
+        setAppliedOfferId(resp.offerId);
         if (resp.discountOffer) {
           setDisAmount(resp.discountOffer.maximumDiscount);
           setOfferEditable(true);
@@ -233,21 +244,79 @@ export default function BuyerApplyOffer() {
       });
   };
 
-  const handleAddShipping = () => {
-    console.log(optionId);
-    navigate("/Home/Checkout", { state: { optionId } });
+  const handleConfirmOrder = () => {
+    if (!selectedAddressId) {
+      // console.log('nahi hai');
+      setIsRed(true);
+      toast.error("Please select shipping address.");
+      return;
+    }
+
+    setIsLoading(true)
+
+    const cartData = loadCart();
+
+    const postCartProducts = cartData.map((c) => {
+      return {
+        productId: c.prodId,
+        batchId: c.batchId,
+        quantity: c.quantity,
+        price: c.price,
+      };
+    });
+    const buyerEmail = email;
+    // console.log("applied offer", appliedOfferId);
+    // console.log("address ",selectedAddressId);
+
+    let OrderPostObj = {products:postCartProducts, buyerEmail, orderAddressId:selectedAddressId};
+    if (appliedOfferId) {
+      OrderPostObj = {...OrderPostObj, appliedOfferId}
+      if(offerResponse.discountOffer){
+        OrderPostObj = {...OrderPostObj, discountAmount:offerResponse.appliedDiscount}
+      }
+      if(offerResponse.freeGoodsBenefits){
+        OrderPostObj = {...OrderPostObj, selectedArticleOptionId}
+      }
+      if(offerResponse.freeProductsBenefits){
+        OrderPostObj = {...OrderPostObj, selectedProductOptionId}
+      }
+    }
+    // console.log("final order maaal",OrderPostObj);
+
+    addOrder(OrderPostObj)
+    .then(resp=>{
+      // console.log(resp);
+      setOrderResponse(resp);
+      setIsLoading(false)
+      const c = loadCart()
+      emptyCart()
+      navigate('/Home/Checkout', {state:{orderResponse:resp,cart:c}})
+
+    })
+    .catch(err=>{
+      console.log(err);
+      setIsLoading(false)
+    });
   };
 
   const onChooseOptions = () => {
     setModalOpen(false);
-    setOptionId(selectedProductId);
+    // setOptionId(selectedProductId);
+    if (offerResponse.freeGoodsBenefits) {
+      setSelectedArticleOptionId(selectedProductId);
+    }
+    if (offerResponse.freeProductsBenefits) {
+      setSelectedProductOptionId(selectedProductId);
+    }
     setSelectedProductId("");
     setOfferEditable(true);
   };
 
   const cancleOffer = () => {
     setOfferCode("");
-    setOptionId("");
+    setAppliedOfferId("");
+    setSelectedArticleOptionId("");
+    setSelectedProductOptionId("");
     setOfferEditable(false);
   };
 
@@ -474,7 +543,7 @@ export default function BuyerApplyOffer() {
             </div>
 
             {offerEditable && (
-              <div className="flex relative justify-between mb-2 bg-green-300 p-2">
+              <div className="flex relative justify-between mb-2 bg-green-300 p-2 mt-4">
                 <p>Offer {offerCode} Applied Successfully</p>
                 <button
                   onClick={cancleOffer}
@@ -508,10 +577,11 @@ export default function BuyerApplyOffer() {
               </button>
             </div>
             <button
-              className="mt-4 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded w-full"
-              onClick={handleAddShipping}
-            >
-              Add Shipping
+              className="mt-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded w-full"
+              onClick={handleConfirmOrder}
+            > {isLoading ? <Loader />: "Confirm Order"}
+
+              {/* Confirm Order and make payment */}
             </button>
           </div>
         </div>
@@ -542,35 +612,7 @@ export default function BuyerApplyOffer() {
             <h1>Hello</h1>
           </div>
         </div>
-      )}
-
-      {/* <div className="flex flex-1 p-6 gap-4">
-        <div className="flex-1 overflow-y-auto pr-4 bg-white p-8 shadow-md h-[88vh] overflow-auto no-scrollbar">
-        </div>
-        <div className="w-96 bg-white shadow-md p-4 flex flex-col justify-between">
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Payment Details</h3>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handlePaymentDetailChange}
-              className="mb-4"
-            />
-            {payment && (
-              <p className="text-green-500 text-sm">uploaded successfully</p>
-            )}
-          </div>
-          <div>
-            <button
-              className="mt-4 py-3 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-bold rounded w-full"
-              disabled={!payment} // Disable button until a file is uploaded
-              onClick={onConfirmOrder}
-            >
-              Confirm Order
-            </button>
-          </div>
-        </div>
-      </div> */}
+      )}      
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-8 rounded shadow-md w-1/2">

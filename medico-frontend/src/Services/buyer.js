@@ -168,3 +168,56 @@ export const addOrderAddress = async (buyerEmail, newAddress) => {
       throw error; // Throw error for further handling if needed
     });
 };
+
+export const addOrder= async (orderObject) => {
+    const t = localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${t}`,
+      },
+    };
+    return axios
+      .post(
+        url + `/api/order`,
+        orderObject,
+        config
+      )
+      .then((response) => {
+        // Handle successful response
+        return response.data; // Return data if needed
+      })
+      .catch((error) => {
+        // Handle error
+        console.error("Error occurred during login:", error);
+        throw error; // Throw error for further handling if needed
+      });
+  };
+
+
+  export const addPayment= async (paymentObj) => {
+    const t = localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${t}`,
+      },
+    };
+    return axios
+      .post(
+        url + `/api/order/payment`,
+        paymentObj,
+        config
+      )
+      .then((response) => {
+        // Handle successful response
+        return response.data; // Return data if needed
+      })
+      .catch((error) => {
+        // Handle error
+        console.error("Error occurred during login:", error);
+        throw error; // Throw error for further handling if needed
+      });
+  };

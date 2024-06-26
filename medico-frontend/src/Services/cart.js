@@ -14,7 +14,7 @@ const SECRET_KEY = 'qrf6r4gweifsgbesgrt5dg3sv54'; // Use a strong, unique key fo
 export const cart = loadCart();
 
 export const cartLength = () => {
-    return cart.length;
+    return loadCart().length;
 };
 
 export const addProductToCart = (product) => {
@@ -41,10 +41,16 @@ export const deleteProductFromCart = (prodId, batchId) => {
 function saveCart() {
     const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(cart), SECRET_KEY).toString();
     localStorage.setItem(CART_KEY, encryptedData);
+}
+
+export function saveMyCart(myCart) {
+    // console.log(myCart);
+    const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(myCart), SECRET_KEY).toString();
+    localStorage.setItem(CART_KEY, encryptedData);
     // console.log("Cart saved to localStorage:", cart);
 }
 
-function loadCart() {
+export function loadCart() {
     const encryptedData = localStorage.getItem(CART_KEY);
     if (encryptedData) {
         const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
@@ -53,4 +59,8 @@ function loadCart() {
         return decryptedData;
     }
     return [];
+}
+
+export function emptyCart() {
+    saveMyCart([]);
 }
