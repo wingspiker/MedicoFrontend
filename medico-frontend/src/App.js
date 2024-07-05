@@ -67,6 +67,7 @@ import BuyerProductDetails from "./Components/Buyer/BuyerProductDetails";
 import BuyerCart from "./Components/Buyer/BuyerCart";
 import BuyerApplyOffer from "./Components/Buyer/BuyerApplyOffer";
 import BuyerShippingandPayment from "./Components/Buyer/BuyerShippingandPayment";
+import Orders from "./Components/OrderComponents/Orders";
 
 function App() {
   const loginStatus = token() !== null;
@@ -277,6 +278,20 @@ function App() {
                 <>
                   <Sidebar changeLogin={logout} />
                   <OfferDetails changeLogin={setIsLoggedIn} />
+                </>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/company/Order"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <Sidebar changeLogin={logout} />
+                  <Orders changeLogin={setIsLoggedIn} />
                 </>
               ) : (
                 <Navigate to="/login" replace />
