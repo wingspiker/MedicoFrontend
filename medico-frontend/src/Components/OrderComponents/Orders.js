@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { decodeToken, signOut } from "../../Services/auth";
+import { decodeToken, isAdmin, signOut } from "../../Services/auth";
 import { getOrdersByEmail } from "../../Services/orders";
 import {
   Table,
@@ -52,7 +52,12 @@ export default function Orders(props) {
   const navigate = useNavigate();
   const handleViewClick = (order, index) => {
     // implementation for handling view click
-    navigate(`/company/Order/${index}`, { state: { order } });
+    if(isAdmin()){
+        navigate(`/admin/Order/${index}`, { state: { order } });
+    }
+    else{
+        navigate(`/company/Order/${index}`, { state: { order } });
+    }
   };
 
   const getOrderStatus = (status) => {

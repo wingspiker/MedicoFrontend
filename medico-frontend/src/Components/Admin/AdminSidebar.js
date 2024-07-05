@@ -101,7 +101,7 @@ export const AdminSidebar = ({ changeLogin }) => {
 
       <div className="flex flex-col h-full">
         <div
-          className={`flex items-center justify-between px-2 py-5 border-b border-gray-200 ${isOpen ? "bg-cyan-800" : "bg-black bg-opacity-20"}`}
+          className={`flex items-center justify-between px-2 py-2 border-b border-gray-200 ${isOpen ? "bg-cyan-800" : "bg-black bg-opacity-20"}`}
         >
           <div className={`flex items-center gap-3 ${logoVisibility}`}>
             {/* <img

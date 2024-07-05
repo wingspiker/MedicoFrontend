@@ -514,6 +514,34 @@ function App() {
             }
           />
           <Route
+            path="/admin/Orders"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <>
+                <AdminSidebar changeLogin={logout}/>
+                <Orders changeLogin={setIsAdminLoggedIn}/>
+                </>
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+          <Route
+            path="/admin/Orders/:id"
+            exact
+            element={
+              isAdminLoggedIn ? (
+                <>
+                <AdminSidebar changeLogin={logout}/>
+                <OrderDetails changeLogin={setIsAdminLoggedIn}/>
+                </>
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            }
+          />
+          <Route
             path="/admin/Article"
             exact
             element={
