@@ -70,6 +70,7 @@ import BuyerShippingandPayment from "./Components/Buyer/BuyerShippingandPayment"
 import Orders from "./Components/OrderComponents/Orders";
 import OrderDetails from "./Components/OrderComponents/OrderDetails";
 import CreateScheme from "./Components/Salesman/CreateScheme";
+import SalesmanProductDetails from "./Components/Salesman/SalesmanProductDetails";
 
 function App() {
   const loginStatus = token() !== null;
@@ -703,6 +704,21 @@ function App() {
                 <>
                   <SalesmanSidebar changeLogin={setIsLoggedIn} />
                   <CreateScheme />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
+            path="/sales/Scheme/:id"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <SalesmanProductDetails />
                 </>
               ) : (
                 <Navigate to="/login" />
