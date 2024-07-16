@@ -33,6 +33,7 @@ const navItems = [
   },
 
   { label: "Offers", icon: <BiSolidOffer />, link: "/sales/Offers" },
+  { label: "Scheme", icon: <BiSolidOffer />, link: "/sales/Scheme" },
   { label: "Settings", icon: <IoSettingsSharp />, link: "/sales/Settings" },
 ];
 

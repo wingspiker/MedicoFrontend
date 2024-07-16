@@ -69,6 +69,7 @@ import BuyerApplyOffer from "./Components/Buyer/BuyerApplyOffer";
 import BuyerShippingandPayment from "./Components/Buyer/BuyerShippingandPayment";
 import Orders from "./Components/OrderComponents/Orders";
 import OrderDetails from "./Components/OrderComponents/OrderDetails";
+import CreateScheme from "./Components/Salesman/CreateScheme";
 
 function App() {
   const loginStatus = token() !== null;
@@ -519,8 +520,8 @@ function App() {
             element={
               isAdminLoggedIn ? (
                 <>
-                <AdminSidebar changeLogin={logout}/>
-                <Orders changeLogin={setIsAdminLoggedIn}/>
+                  <AdminSidebar changeLogin={logout} />
+                  <Orders changeLogin={setIsAdminLoggedIn} />
                 </>
               ) : (
                 <Navigate to="/admin" replace />
@@ -533,8 +534,8 @@ function App() {
             element={
               isAdminLoggedIn ? (
                 <>
-                <AdminSidebar changeLogin={logout}/>
-                <OrderDetails changeLogin={setIsAdminLoggedIn}/>
+                  <AdminSidebar changeLogin={logout} />
+                  <OrderDetails changeLogin={setIsAdminLoggedIn} />
                 </>
               ) : (
                 <Navigate to="/admin" replace />
@@ -687,6 +688,21 @@ function App() {
                 <>
                   <SalesmanSidebar changeLogin={setIsLoggedIn} />
                   <SalesmanOffers />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
+            path="/sales/Scheme"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <CreateScheme />
                 </>
               ) : (
                 <Navigate to="/login" />
