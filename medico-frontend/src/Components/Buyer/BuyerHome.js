@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "./Navbar";
 import BuyerSlider from "./BuyerSlider";
-import ProductCategory from "./ProductCategory";
+import ProductCategory, { BrandCards } from "./ProductCategory";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -44,6 +44,20 @@ export default function BuyerHome() {
     },
   ];
 
+  const brands = [
+    {
+      type: 0,
+      name: "Pfizer",
+      image:
+        "https://cdn.pixabay.com/photo/2014/10/14/16/34/maserati-488394_640.jpg",
+    },
+    {
+      type: 1,
+      name: "AstraZeneca",
+      image:
+        "https://cdn.pixabay.com/photo/2014/10/14/16/34/maserati-488394_640.jpg",
+    },
+  ];
   const handleCategoryClick = (type) => {
     // console.log("Category Clicked:", type);
     const searchStr = `?productTypes=${type}`;
@@ -75,11 +89,11 @@ export default function BuyerHome() {
           Shop by <span className="font-normal">Brand</span>
         </SectionTitle>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {categories.map((category, index) => (
-            <ProductCategory
+          {brands.map((item, index) => (
+            <BrandCards
               key={index}
-              category={category}
-              onClick={() => handleCategoryClick(category.type)}
+              brand={item}
+              // onClick={() => handleCategoryClick(category.type)}/
             />
           ))}
         </div>

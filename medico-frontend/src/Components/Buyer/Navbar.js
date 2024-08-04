@@ -11,6 +11,29 @@ import { signOut } from "../../Services/auth";
 import { FaSearch } from "react-icons/fa";
 import { cartLength } from "../../Services/cart";
 
+export const NavLinks = [
+  {
+    title: "Home",
+    href: "/Home",
+  },
+  {
+    title: "Offers",
+    href: "#offers",
+  },
+  {
+    title: "Products",
+    href: "/Home/Products",
+  },
+  {
+    title: "Contact",
+    href: "/Home/Contact",
+  },
+  {
+    title: "About",
+    href: "/Home/About",
+  },
+];
+
 export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -30,48 +53,43 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
     setOpen(false);
   };
 
-  const handleLogoClick =() =>{
-    navigate('/Home')
-  }
+  const handleLogoClick = () => {
+    navigate("/Home");
+  };
 
   return (
     <nav className="bg-white px-4 py-2 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-3xl font-bold text-blue-600 cursor-pointer" onClick={handleLogoClick}>Medico</div>
-        {/* <form onSubmit={onSearchSubmit} className="flex items-center space-x-2">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={onSearchChange}
-            className="border rounded px-2 py-1"
-            placeholder="Search..."
-          />
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-3 rounded flex items-center justify-center"
+        <div className="flex justify-center items-center gap-6">
+          <div
+            className="text-3xl font-bold text-blue-600 cursor-pointer"
+            onClick={handleLogoClick}
           >
-            <FaSearch />
-          </button>
-        </form> */}
+            Medico
+          </div>
+          {NavLinks.map((link, index) => (
+            <Link
+              key={index}
+              to={link.href}
+              className="text-gray-700 hover:text-gray-900   hover:font-medium"
+            >
+              {link.title}
+            </Link>
+          ))}
+        </div>
         <div className="flex space-x-8 items-center">
-          <Link
-            to="#offers"
-            className="text-gray-700 hover:text-gray-900 font-medium"
-          >
-            Offers
-          </Link>
           <Link
             to="/Home/Cart"
             className="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2 relative"
-        >
-            <IoCartOutline className="text-3xl" /> 
-            
+          >
+            <IoCartOutline className="text-3xl" />
+
             {cartLength() > 0 && (
-                <span className=" absolute -top-2 -right-2  bg-blue-600 text-white rounded-full px-2 py-1 text-xs">
-                    {cartLength()}
-                </span>
+              <span className=" absolute -top-2 -right-2  bg-blue-600 text-white rounded-full px-2 py-1 text-xs">
+                {cartLength()}
+              </span>
             )}
-        </Link>
+          </Link>
           <button
             onClick={handleClickOpen}
             className="cursor-pointer bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
