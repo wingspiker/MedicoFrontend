@@ -9,8 +9,14 @@ import {
 } from "@mui/material";
 import { prescriptionEnum } from "../../Models/enums.model";
 import { getAllCompanies } from "../../Services/company";
+import PriceRangeSlider from "../Global/PriceRangeSlider";
 
-const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCompanyFilter }) => {
+const ProductFilter = ({
+  setSearchProduct,
+  setPriceRange,
+  setFilterSearch,
+  setCompanyFilter,
+}) => {
   const [searchItem, setSearchItem] = useState("");
   const [priceRange, setPriceRangeState] = useState([0, 10000]);
   const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
@@ -69,19 +75,19 @@ const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCo
     // console.log(selectedPrescriptions);
     // console.log(selectedCompanies);
     // console.log(priceRange);
-    let str = ''
-    selectedPrescriptions.forEach(p=>{
-      str += `&prescriptionTypes=${p}`
-    })
+    let str = "";
+    selectedPrescriptions.forEach((p) => {
+      str += `&prescriptionTypes=${p}`;
+    });
 
-    str+=`&minSellingPrice=${priceRange[0]}&maxSellingPrice=${priceRange[1]}`
+    str += `&minSellingPrice=${priceRange[0]}&maxSellingPrice=${priceRange[1]}`;
 
     setFilterSearch(str);
     setCompanyFilter(selectedCompanies);
   };
 
   return (
-    <div className="w-1/4 p-4 bg-gray-100 h-[92vh] overflow-x-auto no-scrollbar">
+    <div className="p-4 bg-blue-100 h-[92vh] overflow-x-auto no-scrollbar">
       <h2 className="text-lg font-bold">Filters</h2>
       <div className="flex items-center mt-2">
         <input
@@ -89,11 +95,11 @@ const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCo
           value={searchItem}
           onChange={handleSearchProductName}
           placeholder="Search..."
-          className="flex-grow p-2 border border-gray-300 rounded-l"
+          className="flex-grow p-2 border border-gray-300 rounded-xl focus:outline-blue-600 focus:text-blue-800"
         />
         <button
           onClick={handleSearch}
-          className="bg-blue-500 text-white mx-2 p-2 rounded-r"
+          className="bg-blue-500 text-white mx-2 p-3 rounded-xl"
         >
           <FaSearch />
         </button>
@@ -102,13 +108,9 @@ const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCo
         Price Range
       </Typography>
       <Box sx={{ px: 2 }}>
-        <Slider
+        <PriceRangeSlider
           value={priceRange}
           onChange={handlePriceRangeChange}
-          valueLabelDisplay="auto"
-          min={0}
-          max={10000}
-          sx={{ color: "primary.main" }}
         />
         <Box display="flex" justifyContent="space-between">
           <Typography variant="body2">₹ {priceRange[0]}</Typography>

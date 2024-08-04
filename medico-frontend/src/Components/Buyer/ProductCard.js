@@ -3,7 +3,7 @@ import { BadgeCheck, ShoppingCart } from "lucide-react";
 
 const ProductCard = ({ product }) => {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
       <div className="relative">
         <img
           src={"https://placehold.co/600x400/EEE/31343C"}
@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
         </div>
       </div>
       <div className="p-4">
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+        <h2 className="text-lg font-semibold text-gray-800 mb-2">
           {product.drugName}
         </h2>
         <p className="text-gray-600 text-sm mb-4">
@@ -27,7 +27,7 @@ const ProductCard = ({ product }) => {
           <span className="text-2xl font-bold text-blue-600">
             ₹{product.sellingPrice}
           </span>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-full flex items-center space-x-1 hover:bg-blue-700 transition duration-300">
+          <button className="bg-blue-600 text-white text-sm px-4 py-2 rounded-xl flex items-center space-x-1 hover:bg-blue-700 transition duration-300">
             <ShoppingCart size={18} />
             <span>Add to Cart</span>
           </button>

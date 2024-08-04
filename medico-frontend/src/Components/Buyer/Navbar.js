@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IoCartOutline } from "react-icons/io5";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -37,6 +37,7 @@ export const NavLinks = [
 export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -58,7 +59,7 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   };
 
   return (
-    <nav className="bg-white px-4 py-2 shadow-md">
+    <nav className="bg-blue-100 px-4 py-2 shadow-md ">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex justify-center items-center gap-6">
           <div
@@ -71,16 +72,38 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
             <Link
               key={index}
               to={link.href}
-              className="text-gray-700 hover:text-gray-900   hover:font-medium"
+              className="group relative py-2 text-sm font-medium transition-colors duration-300 ease-in-out"
             >
-              {link.title}
+              <span
+                className={`
+              relative z-10
+              ${
+                location.pathname === link.href
+                  ? "text-blue-600"
+                  : " text-black group-hover:text-gray-50"
+              }
+            `}
+              >
+                {link.title}
+              </span>
+              <span
+                className={`
+              absolute bottom-0 left-0 w-full h-0.5 bg-blue-600
+              transform origin-left transition-all duration-300 ease-out
+              ${
+                location.pathname === link.href
+                  ? "scale-x-100"
+                  : "scale-x-0 group-hover:scale-x-100"
+              }
+            `}
+              ></span>
             </Link>
           ))}
         </div>
         <div className="flex space-x-8 items-center">
           <Link
             to="/Home/Cart"
-            className="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2 relative"
+            className="text-black hover:text-gray-900 font-medium flex items-center gap-2 relative"
           >
             <IoCartOutline className="text-3xl" />
 
