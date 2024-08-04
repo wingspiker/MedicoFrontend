@@ -26,7 +26,7 @@ export default function ProductCategory({ category, onClick }) {
 
 export function BrandCards({ brand }) {
   return (
-    <div className="group relative overflow-hidden rounded-[120px] shadow-lg transition-all duration-300 hover:shadow-xl">
+    <div className="group relative overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
       <div className=" h-36">
         <img
           src={brand?.image}

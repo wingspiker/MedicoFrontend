@@ -80,7 +80,7 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
               ${
                 location.pathname === link.href
                   ? "text-blue-600"
-                  : " text-black group-hover:text-gray-50"
+                  : " text-black group-hover:text-blue-600"
               }
             `}
               >

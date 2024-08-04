@@ -6,6 +6,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
+import ProductCard from "./ProductCard";
 
 export default function BuyerHome() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,7 +25,7 @@ export default function BuyerHome() {
 
   // Example image URLs
   const images = [
-    "https://images.unsplash.com/photo-1487777571634-48eb9b252b68?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://www.shutterstock.com/image-vector/colorful-discount-sale-podium-special-600nw-2055955985.jpg",
     "https://media.istockphoto.com/id/1487007474/photo/snowy-landscape-during-blizzard-conditions.webp?s=170667a&w=0&k=20&c=cQ9sPHhXy-lDwJiX35iUxe-yvIjQF_HN3BBqbJ1FDK0=",
     "https://media.istockphoto.com/id/1487007474/photo/snowy-landscape-during-blizzard-conditions.webp?s=170667a&w=0&k=20&c=cQ9sPHhXy-lDwJiX35iUxe-yvIjQF_HN3BBqbJ1FDK0=",
   ];
@@ -73,29 +74,76 @@ export default function BuyerHome() {
       />
       <BuyerSlider images={images} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <SectionTitle>
-          Shop by <span className="font-normal">Product Category</span>
-        </SectionTitle>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {categories.map((category, index) => (
-            <ProductCategory
-              key={index}
-              category={category}
-              onClick={() => handleCategoryClick(category.type)}
-            />
-          ))}
+        <div className="rounded-xl border py-4 px-4 my-4 bg-orange-100">
+          <h2 className="text-lg text-orange-600 font-medium pb-4 ">
+            Shop by <span className="font-normal">Product Category</span>
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {categories.map((category, index) => (
+              <ProductCategory
+                key={index}
+                category={category}
+                onClick={() => handleCategoryClick(category.type)}
+              />
+            ))}
+          </div>
         </div>
-        <SectionTitle>
-          Shop by <span className="font-normal">Brand</span>
-        </SectionTitle>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {brands.map((item, index) => (
-            <BrandCards
-              key={index}
-              brand={item}
-              // onClick={() => handleCategoryClick(category.type)}/
-            />
-          ))}
+
+        <div className="rounded-xl border py-4 px-4 my-4 bg-rose-100">
+          <h2 className="text-lg text-rose-600 font-medium pb-4">
+            Shop by <span className="font-normal">Brand</span>
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {brands.map((item, index) => (
+              <BrandCards
+                key={index}
+                brand={item}
+                // onClick={() => handleCategoryClick(category.type)}/
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-xl border py-4 px-4 my-4 bg-blue-100">
+          <h2 className="text-lg text-zinc-600 font-medium pb-4">
+            Featured Products
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[
+              {
+                drugName: "Paracetamol",
+                manufacturerName: "Cipla",
+                contents: "500mg",
+                sellingPrice: 50,
+              },
+              {
+                drugName: "Disprin",
+                manufacturerName: "Reckitt Benckiser",
+                contents: "500mg",
+                sellingPrice: 20,
+              },
+              {
+                drugName: "Dolo 650",
+                manufacturerName: "Micro Labs",
+                contents: "650mg",
+                sellingPrice: 30,
+              },
+              {
+                drugName: "Crocin",
+                manufacturerName: "GSK",
+                contents: "500mg",
+                sellingPrice: 40,
+              },
+            ].map((item, index) => (
+              <ProductCard
+                key={index}
+                product={item}
+                // onClick={() => handleCategoryClick(category.type)}/
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -103,7 +151,7 @@ export default function BuyerHome() {
 }
 
 const SectionTitle = ({ children }) => (
-  <h2 className="text-2xl font-semibold my-8 pb-2 border-b-2 border-emerald-400">
+  <h2 className="text-xl font-medium text-zinc-500 my-8 pb-2 border-b-2 border-blue-800">
     {children}
   </h2>
 );
