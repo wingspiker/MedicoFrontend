@@ -28,10 +28,14 @@ export default function BuyerScanQR() {
   };
 
   useEffect(() => {
-    if(scanResult){
-        console.log(scanResult);
-    }  
-  }, [scanResult])
+    if (scanResult) {
+      console.log(scanResult);
+    }
+  }, [scanResult]);
+
+  const videoConstraints = {
+    facingMode: "environment",
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -52,6 +56,7 @@ export default function BuyerScanQR() {
             style={previewStyle}
             onError={handleError}
             onScan={handleScan}
+            constraints={videoConstraints}
           />
         </div>
       </div>
