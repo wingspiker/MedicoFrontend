@@ -46,32 +46,50 @@ export default function BuyerHome() {
 
   const handleCategoryClick = (type) => {
     // console.log("Category Clicked:", type);
-    const searchStr = `?productTypes=${type}`
-    navigate('/Home/Products',{state:{search:searchStr}})
-  }
+    const searchStr = `?productTypes=${type}`;
+    navigate("/Home/Products", { state: { search: searchStr } });
+  };
 
   return (
-    <div className="bg-white h-screen">
+    <div className="bg-white min-h-screen">
       <Navbar
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
         onSearchSubmit={handleSearchSubmit}
       />
       <BuyerSlider images={images} />
-      <Container className="mt-8">
-        <Typography variant="h4" component="h2" gutterBottom align="center">
-          Shop by Product Category
-        </Typography>
-        <Grid container spacing={2} justifyContent="center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <SectionTitle>
+          Shop by <span className="font-normal">Product Category</span>
+        </SectionTitle>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {categories.map((category, index) => (
-            <Grid item key={index}>
-              <div onClick={()=>handleCategoryClick(category.type)} className=" cursor-pointer">
-                <ProductCategory category={category} />
-              </div>
-            </Grid>
+            <ProductCategory
+              key={index}
+              category={category}
+              onClick={() => handleCategoryClick(category.type)}
+            />
           ))}
-        </Grid>
-      </Container>
+        </div>
+        <SectionTitle>
+          Shop by <span className="font-normal">Brand</span>
+        </SectionTitle>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {categories.map((category, index) => (
+            <ProductCategory
+              key={index}
+              category={category}
+              onClick={() => handleCategoryClick(category.type)}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
+
+const SectionTitle = ({ children }) => (
+  <h2 className="text-2xl font-semibold my-8 pb-2 border-b-2 border-emerald-400">
+    {children}
+  </h2>
+);
