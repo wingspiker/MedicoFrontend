@@ -7,16 +7,16 @@ import { IoMdArrowRoundBack, IoMdClose } from "react-icons/io";
 import { applyOffer, getOffersByEmail } from "../../Services/offer";
 import { decodeToken } from "../../Services/auth";
 
-
-
 import { addOrder, addOrderAddress, getAlladdress } from "../../Services/buyer";
 import { handleImageUpload } from "../../Services/upload";
 import Loader from "../../Loader";
 
 export default function BuyerApplyOffer() {
-
   // Loader
-  const total = loadCart().reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const total = loadCart().reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
   const [isRed, setIsRed] = useState(true);
   const [offers, setOffers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -56,7 +56,7 @@ export default function BuyerApplyOffer() {
 
   const [errors, setErrors] = useState({}); // State to track form errors
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getOffersByEmail(ownerEmail)
@@ -252,7 +252,7 @@ export default function BuyerApplyOffer() {
       return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     const cartData = loadCart();
 
@@ -268,35 +268,41 @@ export default function BuyerApplyOffer() {
     // console.log("applied offer", appliedOfferId);
     // console.log("address ",selectedAddressId);
 
-    let OrderPostObj = {products:postCartProducts, buyerEmail, orderAddressId:selectedAddressId};
+    let OrderPostObj = {
+      products: postCartProducts,
+      buyerEmail,
+      orderAddressId: selectedAddressId,
+    };
     if (appliedOfferId) {
-      OrderPostObj = {...OrderPostObj, appliedOfferId}
-      if(offerResponse.discountOffer){
-        OrderPostObj = {...OrderPostObj, discountAmount:offerResponse.appliedDiscount}
+      OrderPostObj = { ...OrderPostObj, appliedOfferId };
+      if (offerResponse.discountOffer) {
+        OrderPostObj = {
+          ...OrderPostObj,
+          discountAmount: offerResponse.appliedDiscount,
+        };
       }
-      if(offerResponse.freeGoodsBenefits){
-        OrderPostObj = {...OrderPostObj, selectedArticleOptionId}
+      if (offerResponse.freeGoodsBenefits) {
+        OrderPostObj = { ...OrderPostObj, selectedArticleOptionId };
       }
-      if(offerResponse.freeProductsBenefits){
-        OrderPostObj = {...OrderPostObj, selectedProductOptionId}
+      if (offerResponse.freeProductsBenefits) {
+        OrderPostObj = { ...OrderPostObj, selectedProductOptionId };
       }
     }
     // console.log("final order maaal",OrderPostObj);
 
     addOrder(OrderPostObj)
-    .then(resp=>{
-      // console.log(resp);
-      setOrderResponse(resp);
-      setIsLoading(false)
-      const c = loadCart()
-      emptyCart()
-      navigate('/Home/Checkout', {state:{orderResponse:resp,cart:c}})
-
-    })
-    .catch(err=>{
-      console.log(err);
-      setIsLoading(false)
-    });
+      .then((resp) => {
+        // console.log(resp);
+        setOrderResponse(resp);
+        setIsLoading(false);
+        const c = loadCart();
+        emptyCart();
+        navigate("/Home/Checkout", { state: { orderResponse: resp, cart: c } });
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
   };
 
   const onChooseOptions = () => {
@@ -579,29 +585,21 @@ export default function BuyerApplyOffer() {
             <button
               className="mt-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded w-full"
               onClick={handleConfirmOrder}
-            > {isLoading ? <Loader />: "Confirm Order"}
-
+            >
+              {" "}
+              {isLoading ? <Loader /> : "Confirm Order"}
               {/* Confirm Order and make payment */}
             </button>
           </div>
         </div>
       </div>
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-1/4 relative">
-            <button
-              onClick={closeModal}
-              className="absolute top-0 right-0 text-2xl text-red-500 p-2"
-            >
-              <IoMdClose />
-            </button>
-            {renderOfferDetails()}
-          </div>
-        </div>
+        <CustomModel onClose={closeModal}>{renderOfferDetails()}</CustomModel>
       )}
+
       {offerModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-1/4 relative">
+          <div className="bg-white p-4 rounded-xl shadow-lg w-1/4 relative">
             <button
               onClick={offerCloseModal}
               className="absolute top-0 right-0 text-2xl text-red-500 p-2"
@@ -612,11 +610,13 @@ export default function BuyerApplyOffer() {
             <h1>Hello</h1>
           </div>
         </div>
-      )}      
+      )}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded shadow-md w-1/2">
-            <h2 className="text-2xl mb-4">Add New Address</h2>
+          <div className="bg-white p-8 rounded-xl shadow-md w-1/2">
+            <h2 className="text-lg font-medium text-zinc-500 mb-4">
+              Add New Address
+            </h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
                 <input
@@ -694,13 +694,13 @@ export default function BuyerApplyOffer() {
                 <button
                   type="button"
                   onClick={() => handleModalClose(null)}
-                  className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
+                  className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-xl"
                 >
                   Save
                 </button>
@@ -712,3 +712,21 @@ export default function BuyerApplyOffer() {
     </div>
   );
 }
+
+export const CustomModel = ({ children, onClose }) => {
+  return (
+    <>
+      <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center px-32 py-5">
+        <div className="bg-white p-4 rounded-xl shadow-lg w-1/4 relative">
+          <button
+            onClick={onClose}
+            className="absolute top-0 right-0 text-2xl text-red-500 p-2"
+          >
+            <IoMdClose />
+          </button>
+          <div className="my-5 mx-3">{children}</div>
+        </div>
+      </div>
+    </>
+  );
+};

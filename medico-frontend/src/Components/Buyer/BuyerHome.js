@@ -76,7 +76,7 @@ export default function BuyerHome() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="rounded-xl border py-4 px-4 my-4 bg-orange-100">
           <h2 className="text-lg text-orange-600 font-medium pb-4 ">
-            Shop by <span className="font-normal">Product Category</span>
+            Shop by <span className="">Product Category</span>
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -92,7 +92,7 @@ export default function BuyerHome() {
 
         <div className="rounded-xl border py-4 px-4 my-4 bg-rose-100">
           <h2 className="text-lg text-rose-600 font-medium pb-4">
-            Shop by <span className="font-normal">Brand</span>
+            Shop by <span className="">Brand</span>
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -107,7 +107,7 @@ export default function BuyerHome() {
         </div>
 
         <div className="rounded-xl border py-4 px-4 my-4 bg-blue-100">
-          <h2 className="text-lg text-zinc-600 font-medium pb-4">
+          <h2 className="text-lg text-blue-600 font-medium pb-4">
             Featured Products
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

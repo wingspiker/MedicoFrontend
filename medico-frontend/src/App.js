@@ -73,6 +73,7 @@ import CreateScheme from "./Components/Salesman/CreateScheme";
 import SalesmanProductDetails from "./Components/Salesman/SalesmanProductDetails";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "./lib/theme";
+import BuyerAboutPage from "./Components/Buyer/BuyerAboutPage";
 
 function App() {
   const loginStatus = token() !== null;
@@ -767,6 +768,21 @@ function App() {
                 (() => isBuyer()) ? (
                   <>
                     <BuyerHome />
+                  </>
+                ) : (
+                  <>
+                    <Navigate to="/login" />
+                  </>
+                )
+              }
+            />
+            <Route
+              path="/Home/About"
+              exact
+              element={
+                (() => isBuyer()) ? (
+                  <>
+                    <BuyerAboutPage />
                   </>
                 ) : (
                   <>

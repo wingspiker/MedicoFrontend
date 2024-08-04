@@ -96,9 +96,7 @@ export default function BuyerProductDetails() {
                 />
               </div>
               <div className="lg:w-1/2 mt-6 lg:mt-16 lg:pl-12 h-[88vh] overflow-auto no-scrollbar">
-                <h1 className="text-3xl font-bold">
-                  {product.drugName} Lorem ipsum foo foo{" "}
-                </h1>
+                <h1 className="text-3xl font-bold">{product.drugName}</h1>
                 <p className="text-lg text-gray-700">{product.brandName}</p>
 
                 <div className="my-4 bg-zinc-50 border rounded-2xl p-6 w-full">
