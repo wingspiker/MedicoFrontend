@@ -71,6 +71,10 @@ import Orders from "./Components/OrderComponents/Orders";
 import OrderDetails from "./Components/OrderComponents/OrderDetails";
 import CreateScheme from "./Components/Salesman/CreateScheme";
 import SalesmanProductDetails from "./Components/Salesman/SalesmanProductDetails";
+import SalesmanCart from "./Components/Salesman/SalesmanCart";
+import SalesmanApplyOffer from "./Components/Salesman/SalesmanApplyOffer";
+import SchemeQR from "./Components/Salesman/SchemeQR";
+import BuyerScanQR from "./Components/Buyer/BuyerScanQR";
 
 function App() {
   const loginStatus = token() !== null;
@@ -727,6 +731,51 @@ function App() {
           />
 
           <Route
+            path="/sales/Cart"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <SalesmanCart />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
+            path="/sales/Applyoffer"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <SalesmanApplyOffer />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
+            path="/sales/schemeQR"
+            exact
+            element={
+              isLoggedIn ? (
+                <>
+                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                  <SchemeQR />
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
             path="/sales/Offers/:id"
             exact
             element={
@@ -763,6 +812,22 @@ function App() {
               (() => isBuyer()) ? (
                 <>
                   <BuyerHome />
+                </>
+              ) : (
+                <>
+                  <Navigate to="/login" />
+                </>
+              )
+            }
+          />
+
+          <Route
+            path="/Home/Scan"
+            exact
+            element={
+              (() => isBuyer()) ? (
+                <>
+                  <BuyerScanQR />
                 </>
               ) : (
                 <>

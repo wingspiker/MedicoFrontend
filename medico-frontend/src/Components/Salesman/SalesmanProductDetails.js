@@ -37,7 +37,7 @@ function SalesmanProductDetails() {
   useEffect(() => {
     getProductById(pid)
       .then((resp) => {
-        console.log(resp);
+        // console.log(resp);
         setProduct(resp);
       })
       .catch((err) => {
@@ -77,7 +77,7 @@ function SalesmanProductDetails() {
   return (
     <div className="container">
       <SalesmanNavbar />
-      {console.log(product)}
+      {/* {console.log(product)} */}
       {product && (
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row">
@@ -134,6 +134,7 @@ function SalesmanProductDetails() {
                       type="number"
                       value={quantity}
                       onChange={handleQuantityChange}
+                      readOnly
                       placeholder="Qty"
                       min="1"
                       className="block w-16 text-center bg-cyan-800 border border-gray-500 hover:border-gray-400 px-4 py-2 rounded-none shadow leading-tight focus:outline-none focus:shadow-outline text-white"
