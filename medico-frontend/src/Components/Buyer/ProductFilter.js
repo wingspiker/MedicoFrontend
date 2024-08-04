@@ -133,7 +133,7 @@ const ProductFilter = ({
           />
         ))}
       </Box>
-      <Box sx={{ mt: 4, display: "flex", flexDirection: "column" }}>
+      <Box sx={{ mt: 4, display: "flex", flexDirection: "column", mb: 6 }}>
         <Typography gutterBottom>Company Names</Typography>
         {companies.map((company) => (
           <FormControlLabel
@@ -154,7 +154,7 @@ const ProductFilter = ({
       {/* {console.log(companies)} */}
       <button
         onClick={handleFilter}
-        className="bg-blue-500 w-full hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-blue-500 w-[270px] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl fixed bottom-4"
       >
         Apply
       </button>
