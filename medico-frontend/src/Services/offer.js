@@ -220,3 +220,72 @@ export const applyOffer = async (buyerEmail, applyOfferObj) => {
       throw error; // Throw error for further handling if needed
     });
 };
+
+export const applySalesmanOffer = async (salesmanEmail, applyOfferObj) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+
+  return axios
+    .post(url + `/api/salesman/${salesmanEmail}/getofferbenefit`, applyOfferObj, config)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
+
+export const checkOfferAvailability = async (applyOfferObj) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+
+  return axios
+    .post(url + `/api/offer/checkavailability`, applyOfferObj, config)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
+
+export const getSalesmanOffersByEmail = async (emailId) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+
+  return axios
+    .get(url + `/api/salesman/${emailId}/offers`, config)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};

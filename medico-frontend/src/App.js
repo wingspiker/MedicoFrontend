@@ -71,6 +71,10 @@ import Orders from "./Components/OrderComponents/Orders";
 import OrderDetails from "./Components/OrderComponents/OrderDetails";
 import CreateScheme from "./Components/Salesman/CreateScheme";
 import SalesmanProductDetails from "./Components/Salesman/SalesmanProductDetails";
+import SalesmanCart from "./Components/Salesman/SalesmanCart";
+import SalesmanApplyOffer from "./Components/Salesman/SalesmanApplyOffer";
+import SchemeQR from "./Components/Salesman/SchemeQR";
+import BuyerScanQR from "./Components/Buyer/BuyerScanQR";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "./lib/theme";
 import BuyerAboutPage from "./Components/Buyer/BuyerAboutPage";
@@ -768,21 +772,6 @@ function App() {
                 (() => isBuyer()) ? (
                   <>
                     <BuyerHome />
-                  </>
-                ) : (
-                  <>
-                    <Navigate to="/login" />
-                  </>
-                )
-              }
-            />
-            <Route
-              path="/Home/About"
-              exact
-              element={
-                (() => isBuyer()) ? (
-                  <>
-                    <BuyerAboutPage />
                   </>
                 ) : (
                   <>
