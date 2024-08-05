@@ -902,6 +902,22 @@ function App() {
           />
 
           <Route
+            path="/Home/OrderFromScheme"
+            exact
+            element={
+              (() => isBuyer()) ? (
+                <>
+                  <BuyerApplyOffer />
+                </>
+              ) : (
+                <>
+                  <Navigate to="/login" />
+                </>
+              )
+            }
+          />
+
+          <Route
             path="/Home/Checkout"
             exact
             element={

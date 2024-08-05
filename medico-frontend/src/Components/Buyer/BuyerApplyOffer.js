@@ -9,7 +9,7 @@ import { decodeToken } from "../../Services/auth";
 
 
 
-import { addOrder, addOrderAddress, getAlladdress } from "../../Services/buyer";
+import { addOrder, addOrderAddress, getAlladdress, QRApi } from "../../Services/buyer";
 import { handleImageUpload } from "../../Services/upload";
 import Loader from "../../Loader";
 
@@ -57,15 +57,36 @@ export default function BuyerApplyOffer() {
   const [errors, setErrors] = useState({}); // State to track form errors
 
   const [isLoading, setIsLoading] = useState(false)
+  const [orderByScheme, setOrderByScheme] = useState(false)
 
   useEffect(() => {
-    getOffersByEmail(ownerEmail)
-      .then((resp) => {
-        setOffers(resp);
-      })
-      .catch((err) => {
+    const api = location?.state?.api;
+    if(api){
+      setOrderByScheme(true)
+      // console.log(api);
+      QRApi(api).then(
+        resp=>{
+          console.log(resp);
+        }
+      ).catch(err=>{
         console.log(err);
-      });
+      })
+    }else{
+      setOrderByScheme(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    // console.log(orderByScheme);
+    if(!orderByScheme){
+      getOffersByEmail(ownerEmail)
+        .then((resp) => {
+          setOffers(resp);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, [ownerEmail]);
 
   const handleBack = () => {
@@ -134,7 +155,7 @@ export default function BuyerApplyOffer() {
       return;
     }
     const address = { ...newAddress, talukaId: 1 }; // Mock new address
-    console.log(address);
+    // console.log(address);
 
     addOrderAddress(email, address)
       .then((resp) => {
@@ -228,7 +249,7 @@ export default function BuyerApplyOffer() {
 
     applyOffer(email, applyOfferObj)
       .then((resp) => {
-        console.log(resp);
+        // console.log(resp);
         setOfferResponse(resp);
         setModalOpen(true);
         setAppliedOfferId(resp.offerId);
@@ -439,7 +460,7 @@ export default function BuyerApplyOffer() {
           >
             <IoMdArrowRoundBack />
           </button>
-          <div className="flex items-center mb-4">
+          {!orderByScheme && <><div className="flex items-center mb-4">
             <h2 className="text-xl font-semibold">Available Offers</h2>
           </div>
           <div className="flex gap-4 flex-nowrap overflow-auto mb-4">
@@ -490,6 +511,9 @@ export default function BuyerApplyOffer() {
               </div>
             ))}
           </div>
+          </> }
+
+          
 
           <div className="flex items-center mb-4">
             <h2 className="text-xl font-semibold">Select Address</h2>

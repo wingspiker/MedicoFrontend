@@ -169,33 +169,7 @@ export const addOrderAddress = async (buyerEmail, newAddress) => {
     });
 };
 
-export const addOrder= async (orderObject) => {
-    const t = localStorage.getItem("token");
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${t}`,
-      },
-    };
-    return axios
-      .post(
-        url + `/api/order`,
-        orderObject,
-        config
-      )
-      .then((response) => {
-        // Handle successful response
-        return response.data; // Return data if needed
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error occurred during login:", error);
-        throw error; // Throw error for further handling if needed
-      });
-  };
-
-export const addScheme= async (orderObject) => {
+export const addOrder = async (orderObject) => {
   const t = localStorage.getItem("token");
   const config = {
     headers: {
@@ -205,11 +179,7 @@ export const addScheme= async (orderObject) => {
     },
   };
   return axios
-    .post(
-      url + `/api/salesman/create-scheme`,
-      orderObject,
-      config
-    )
+    .post(url + `/api/order`, orderObject, config)
     .then((response) => {
       // Handle successful response
       return response.data; // Return data if needed
@@ -221,7 +191,7 @@ export const addScheme= async (orderObject) => {
     });
 };
 
-export const GetSchemeUrl= async (schemeId) => {
+export const addScheme = async (orderObject) => {
   const t = localStorage.getItem("token");
   const config = {
     headers: {
@@ -231,10 +201,7 @@ export const GetSchemeUrl= async (schemeId) => {
     },
   };
   return axios
-    .get(
-      url + `/api/salesman/get-scheme-url/${schemeId}`,
-      config
-    )
+    .post(url + `/api/salesman/create-scheme`, orderObject, config)
     .then((response) => {
       // Handle successful response
       return response.data; // Return data if needed
@@ -246,29 +213,68 @@ export const GetSchemeUrl= async (schemeId) => {
     });
 };
 
-
-  export const addPayment= async (paymentObj) => {
-    const t = localStorage.getItem("token");
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${t}`,
-      },
-    };
-    return axios
-      .post(
-        url + `/api/order/payment`,
-        paymentObj,
-        config
-      )
-      .then((response) => {
-        // Handle successful response
-        return response.data; // Return data if needed
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error occurred during login:", error);
-        throw error; // Throw error for further handling if needed
-      });
+export const GetSchemeUrl = async (schemeId) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
   };
+  return axios
+    .get(url + `/api/salesman/get-scheme-url/${schemeId}`, config)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
+
+export const addPayment = async (paymentObj) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+  return axios
+    .post(url + `/api/order/payment`, paymentObj, config)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
+
+export const QRApi = async (apiRoute) => { 
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+  return axios
+    .get(apiRoute, config)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
