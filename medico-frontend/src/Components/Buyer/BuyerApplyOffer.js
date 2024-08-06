@@ -461,36 +461,43 @@ export default function BuyerApplyOffer() {
                     className="w-20 h-20 object-cover"
                   />
                   <div>
-                    <h5 className="text-lg font-bold text-orange-600">
+                    <h5 className="text-lg font-bold text-emerald-400">
                       {offer.offerName}
                     </h5>
                     <p>{offer.offerDescription}</p>
-                    <p className="text-sm">
-                      Promo Code:{" "}
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                          textTransform: "uppercase",
-                        }}
+                    <div className="bg-black w-full h-[1px] m-[2px]"></div>
+                    <div className=" rounded-lg w-[100%] h-[50%]">
+                      <div className="text-sm">
+                        <p className="text-zinc-500 font-medium">
+                          Promo Code:{" "}
+                        </p>
+                        <span
+                          style={{
+                            fontWeight: "bold",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {offer.offerCode}
+                        </span>
+                        <div>
+                          <p className="text-zinc-500 font-medium">Expiry: </p>
+                          <span
+                            style={{
+                              fontWeight: "bold",
+                              textTransform: "uppercase",
+                            }}
+                          >
+                            {new Date(offer.expiryDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => offerOpenModal(offer)}
+                        className="text-violet-50 bg-violet-600 text-xs my-1 hover:underline rounded-3xl border py-1 px-2"
                       >
-                        {offer.offerCode}
-                      </span>
-                      {" | "}Expiry:{" "}
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {new Date(offer.expiryDate).toLocaleDateString()}
-                      </span>
-                    </p>
-                    <button
-                      onClick={() => offerOpenModal(offer)}
-                      className="text-blue-500 hover:underline"
-                    >
-                      Offer Details
-                    </button>
+                        Offer Details
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -543,9 +550,11 @@ export default function BuyerApplyOffer() {
               <p>-₹ {Number(disAmount).toFixed(2)}</p>
             </div>
             <hr />
-            <div className="flex justify-between mb-2">
+            <div className="flex justify-between mb-2 border rounded-3xl py-1 px-3 bg-emerald-200 mt-2">
               <p>Payable Amount:</p>
-              <p>₹ {Number(total - disAmount).toFixed(2)}</p>
+              <p className="font-bold text-zinc-600">
+                ₹ {Number(total - disAmount).toFixed(2)}
+              </p>
             </div>
 
             {offerEditable && (

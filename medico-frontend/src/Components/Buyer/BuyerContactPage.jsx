@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "./Navbar";
 import Footer from "../Global/Footer";
 import { Button, TextareaAutosize, TextField } from "@mui/material";
+// import contactSvg from "../../../public/contact.svg";
 
 export default function BuyerContactPage() {
   return (
@@ -59,7 +60,7 @@ export default function BuyerContactPage() {
               </div>
             </div>
             <div className="grid place-content-center">
-              <img src="/contact.svg" />
+              <img src={"../../../public/contact.svg"} alt="contact svg" />
             </div>
           </div>
         </div>

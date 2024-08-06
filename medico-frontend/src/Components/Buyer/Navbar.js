@@ -168,6 +168,9 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        style={{
+          backdropFilter: "blur(5px)",
+        }}
       >
         <DialogTitle id="alert-dialog-title">{"Confirm Logout"}</DialogTitle>
         <DialogContent>

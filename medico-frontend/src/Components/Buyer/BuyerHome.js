@@ -74,7 +74,7 @@ export default function BuyerHome() {
         onSearchSubmit={handleSearchSubmit}
       />
       <BuyerSlider images={images} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="rounded-xl border py-4 px-4 my-4 bg-orange-100">
           <h2 className="text-lg text-orange-600 font-medium pb-4 ">
             Shop by <span className="">Product Category</span>
