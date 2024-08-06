@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
+import Footer from "../Global/Footer";
 
 export default function BuyerHome() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -146,6 +147,7 @@ export default function BuyerHome() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

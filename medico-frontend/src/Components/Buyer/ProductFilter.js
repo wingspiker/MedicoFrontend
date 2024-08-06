@@ -87,7 +87,7 @@ const ProductFilter = ({
   };
 
   return (
-    <div className="p-4 bg-blue-100 h-[92vh] overflow-x-auto no-scrollbar">
+    <div className="p-4 bg-cyan-100 h-[92vh] overflow-x-auto no-scrollbar">
       <h2 className="text-lg font-bold">Filters</h2>
       <div className="flex items-center mt-2">
         <input
@@ -95,11 +95,11 @@ const ProductFilter = ({
           value={searchItem}
           onChange={handleSearchProductName}
           placeholder="Search..."
-          className="flex-grow p-2 border border-gray-300 rounded-xl focus:outline-blue-600 focus:text-blue-800"
+          className="flex-grow p-2 border border-gray-300 rounded-xl focus:outline-cyan-600 focus:text-cyan-800"
         />
         <button
           onClick={handleSearch}
-          className="bg-blue-500 text-white mx-2 p-3 rounded-xl"
+          className="bg-cyan-500 text-white mx-2 p-3 rounded-xl"
         >
           <FaSearch />
         </button>
@@ -154,7 +154,7 @@ const ProductFilter = ({
       {/* {console.log(companies)} */}
       <button
         onClick={handleFilter}
-        className="bg-blue-500 w-[270px] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl fixed bottom-4"
+        className="bg-cyan-500 w-[270px] hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-xl fixed bottom-4"
       >
         Apply
       </button>

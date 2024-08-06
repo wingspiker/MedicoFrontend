@@ -10,6 +10,8 @@ import Button from "@mui/material/Button";
 import { signOut } from "../../Services/auth";
 import { FaSearch } from "react-icons/fa";
 import { cartLength } from "../../Services/cart";
+import { Menu, MenuItem } from "@mui/material";
+import { CircleUserRound } from "lucide-react";
 
 export const NavLinks = [
   {
@@ -36,10 +38,19 @@ export const NavLinks = [
 
 export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const openMenu = Boolean(anchorEl);
 
-  const handleClickOpen = () => {
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = () => {
     setOpen(true);
   };
 
@@ -59,15 +70,15 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   };
 
   return (
-    <nav className="bg-blue-100 px-4 py-2 shadow-md ">
+    <nav className="bg-cyan-100 px-4 py-2 shadow-md ">
       <div className="container mx-auto flex justify-between items-center">
+        <div
+          className="text-3xl font-bold text-cyan-600 cursor-pointer"
+          onClick={handleLogoClick}
+        >
+          Medico
+        </div>
         <div className="flex justify-center items-center gap-6">
-          <div
-            className="text-3xl font-bold text-blue-600 cursor-pointer"
-            onClick={handleLogoClick}
-          >
-            Medico
-          </div>
           {NavLinks.map((link, index) => (
             <Link
               key={index}
@@ -79,8 +90,8 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
               relative z-10
               ${
                 location.pathname === link.href
-                  ? "text-blue-600"
-                  : " text-black group-hover:text-blue-600"
+                  ? "text-cyan-600"
+                  : " text-black group-hover:text-cyan-600"
               }
             `}
               >
@@ -88,7 +99,7 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
               </span>
               <span
                 className={`
-              absolute bottom-0 left-0 w-full h-0.5 bg-blue-600
+              absolute bottom-0 left-0 w-full h-0.5 bg-cyan-600
               transform origin-left transition-all duration-300 ease-out
               ${
                 location.pathname === link.href
@@ -108,17 +119,46 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
             <IoCartOutline className="text-3xl" />
 
             {cartLength() > 0 && (
-              <span className=" absolute -top-2 -right-2  bg-blue-600 text-white rounded-full px-2 py-1 text-xs">
+              <span className=" absolute -top-2 -right-2  bg-cyan-600 text-white rounded-full px-2 py-1 text-xs">
                 {cartLength()}
               </span>
             )}
           </Link>
-          <button
+          <Button
+            id="basic-button"
+            aria-controls={openMenu ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={openMenu ? "true" : undefined}
+            onClick={handleClickMenu}
+          >
+            <CircleUserRound />
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={openMenu}
+            onClose={handleCloseMenu}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={handleCloseMenu}>Profile</MenuItem>
+            <MenuItem onClick={handleCloseMenu}>My account</MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClick();
+                // handleCloseMenu()
+              }}
+            >
+              Logout
+            </MenuItem>
+          </Menu>
+          {/* <button
             onClick={handleClickOpen}
             className="cursor-pointer bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
           >
             Logout
-          </button>
+          </button> */}
         </div>
       </div>
 

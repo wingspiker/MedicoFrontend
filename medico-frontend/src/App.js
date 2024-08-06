@@ -78,6 +78,7 @@ import BuyerScanQR from "./Components/Buyer/BuyerScanQR";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "./lib/theme";
 import BuyerAboutPage from "./Components/Buyer/BuyerAboutPage";
+import BuyerContactPage from "./Components/Buyer/BuyerContactPage";
 
 function App() {
   const loginStatus = token() !== null;
@@ -674,7 +675,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/sales/Company"
               exact
@@ -689,7 +689,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/sales/Offers"
               exact
@@ -704,7 +703,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/sales/Scheme"
               exact
@@ -719,7 +717,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/sales/Scheme/:id"
               exact
@@ -734,7 +731,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/sales/Offers/:id"
               exact
@@ -749,7 +745,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/sales/Settings"
               exact
@@ -764,7 +759,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/Home"
               exact
@@ -772,6 +766,36 @@ function App() {
                 (() => isBuyer()) ? (
                   <>
                     <BuyerHome />
+                  </>
+                ) : (
+                  <>
+                    <Navigate to="/login" />
+                  </>
+                )
+              }
+            />
+            <Route
+              path="/Home/About"
+              exact
+              element={
+                (() => isBuyer()) ? (
+                  <>
+                    <BuyerAboutPage />
+                  </>
+                ) : (
+                  <>
+                    <Navigate to="/login" />
+                  </>
+                )
+              }
+            />
+            <Route
+              path="/Home/Contact"
+              exact
+              element={
+                (() => isBuyer()) ? (
+                  <>
+                    <BuyerContactPage />
                   </>
                 ) : (
                   <>
@@ -796,7 +820,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/Home/Products/:id"
               exact
@@ -812,7 +835,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/Home/Cart"
               exact
@@ -828,7 +850,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/Home/Applyoffer"
               exact
@@ -844,7 +865,6 @@ function App() {
                 )
               }
             />
-
             <Route
               path="/Home/Checkout"
               exact
@@ -860,7 +880,6 @@ function App() {
                 )
               }
             />
-
             <Route path="*" exact element={<PageNotFound />} />
           </Routes>
         </div>
