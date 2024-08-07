@@ -21,7 +21,6 @@ export const addProductToCart = (product) => {
     const ifExists = cart.findIndex(
         (c) => c.prodId === product.prodId && c.batchId === product.batchId
     );
-
     if (ifExists === -1) {
         cart.push(product);
     } else {

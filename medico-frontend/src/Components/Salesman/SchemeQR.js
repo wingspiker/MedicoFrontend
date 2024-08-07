@@ -18,7 +18,7 @@ export default function SchemeQR() {
       return;
     }
     const schemeUrl = `${route}`;
-    // console.log(schemeUrl);
+    console.log(schemeUrl);
     setSchemeUrl(schemeUrl)
   }, []);
 

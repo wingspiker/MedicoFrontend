@@ -35,6 +35,8 @@ export default function BuyerScanQR() {
 
   useEffect(() => {
     if (scanResult) {
+      console.log(scanResult);
+        console.log('commming hereee');
         navigate('/Home/OrderFromScheme',{state:{api:scanResult}})
     }
   }, [scanResult]);

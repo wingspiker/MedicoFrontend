@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 import Navbar from "./Navbar";
-import { cart, emptyCart, loadCart } from "../../Services/cart";
+import { addProductToCart, cart, emptyCart, loadCart, saveMyCart } from "../../Services/cart";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoMdArrowRoundBack, IoMdClose } from "react-icons/io";
 import { applyOffer, getOffersByEmail } from "../../Services/offer";
@@ -9,14 +9,16 @@ import { decodeToken } from "../../Services/auth";
 
 
 
-import { addOrder, addOrderAddress, getAlladdress, QRApi } from "../../Services/buyer";
+import { addOrder, addOrderAddress, cvtToOrder, getAlladdress, QRApi } from "../../Services/buyer";
 import { handleImageUpload } from "../../Services/upload";
 import Loader from "../../Loader";
 
 export default function BuyerApplyOffer() {
 
   // Loader
-  const total = loadCart().reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const [tot, setTot] = useState(0)
+  let total = loadCart().reduce((acc, item) => acc + item.price * item.quantity, 0);
+  
   const [isRed, setIsRed] = useState(true);
   const [offers, setOffers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -58,15 +60,40 @@ export default function BuyerApplyOffer() {
 
   const [isLoading, setIsLoading] = useState(false)
   const [orderByScheme, setOrderByScheme] = useState(false)
+  const [currScheme, setCurrScheme] = useState('')
+  useEffect(()=>{
+    const x = total;
+    setTot(x);
+  },[])
 
   useEffect(() => {
+    
     const api = location?.state?.api;
     if(api){
+      // saveMyCart([])
       setOrderByScheme(true)
       // console.log(api);
       QRApi(api).then(
         resp=>{
           console.log(resp);
+          if(resp.appliedOffer){
+            setAppliedOfferId(resp.appliedOffer.id)
+            setOfferCode(resp.appliedOffer.offerCode)
+            setOfferEditable(true)
+          }
+          setOfferResponse(resp)
+          if (resp.discount) {
+            setDisAmount(resp.discount);
+            setOfferEditable(true);
+          }
+          total = 0;
+          resp.products.forEach(element => {
+            // console.log(element.price * element.quantity);
+            total += (element.price * element.quantity);
+          });
+          setTot(total)
+          
+          
         }
       ).catch(err=>{
         console.log(err);
@@ -78,8 +105,12 @@ export default function BuyerApplyOffer() {
 
   useEffect(() => {
     // console.log(orderByScheme);
+    const user = decodeToken();
+    const keys = Object.keys(user);
+    const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+    console.log(email);
     if(!orderByScheme){
-      getOffersByEmail(ownerEmail)
+      getOffersByEmail(email)
         .then((resp) => {
           setOffers(resp);
         })
@@ -265,6 +296,22 @@ export default function BuyerApplyOffer() {
       });
   };
 
+  const getTotal = () => {
+    console.log(total);
+    return total;
+  };
+
+  const convertToOrder = () => {
+    const cvtOdr = {
+      salesmanId:offerResponse.salesmanId,
+      schemeId:offerResponse.id,
+      buyerEmail:email,
+      orderAddressId:selectedAddressId      
+    }
+
+    return cvtOdr;
+  }
+
   const handleConfirmOrder = () => {
     if (!selectedAddressId) {
       // console.log('nahi hai');
@@ -274,8 +321,23 @@ export default function BuyerApplyOffer() {
     }
 
     setIsLoading(true)
+    if(orderByScheme){    
+      const obb = convertToOrder();
+      cvtToOrder(obb).then(resp=>{
+        console.log(resp);
+        setOrderResponse(resp);
+        setIsLoading(false)
+        emptyCart()
+        navigate('/Home/Checkout', {state:{orderResponse:resp}})
+      }).then(err=>{
+        console.log(err);
+      })
+      return;
+    }
 
     const cartData = loadCart();
+
+    
 
     const postCartProducts = cartData.map((c) => {
       return {
@@ -554,7 +616,7 @@ export default function BuyerApplyOffer() {
             <h3 className="text-lg font-semibold mb-4">Price Details</h3>
             <div className="flex justify-between mb-2">
               <p>Total Price:</p>
-              <p>₹ {Number(total).toFixed(2)}</p>
+              <p>₹ {tot}</p>
             </div>
             <div className="flex justify-between mb-2">
               <p>Total Discount:</p>
@@ -563,7 +625,7 @@ export default function BuyerApplyOffer() {
             <hr />
             <div className="flex justify-between mb-2">
               <p>Payable Amount:</p>
-              <p>₹ {Number(total - disAmount).toFixed(2)}</p>
+              <p>₹ {Number(tot - disAmount).toFixed(2)}</p>
             </div>
 
             {offerEditable && (
