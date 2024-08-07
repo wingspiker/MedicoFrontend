@@ -331,6 +331,8 @@ export default function BuyerApplyOffer() {
         navigate('/Home/Checkout', {state:{orderResponse:resp}})
       }).then(err=>{
         console.log(err);
+        setIsLoading(false)
+        toast.error('Something Went Wrong')
       })
       return;
     }
