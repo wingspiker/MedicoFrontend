@@ -12,14 +12,13 @@ export default function SchemeQR() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const preUrl = process.env.REACT_APP_API_BASE_URL;
     const route = location?.state?.schemeUrl;
     if (!route) {
       toast.error("Something Went Wrong");
       return;
     }
-    const schemeUrl = `${preUrl}${route}`;
-    // console.log(schemeUrl);
+    const schemeUrl = `${route}`;
+    console.log(schemeUrl);
     setSchemeUrl(schemeUrl)
   }, []);
 

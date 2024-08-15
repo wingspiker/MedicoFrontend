@@ -1,22 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 import Navbar from "./Navbar";
-import { cart, emptyCart, loadCart } from "../../Services/cart";
+import {
+  addProductToCart,
+  cart,
+  emptyCart,
+  loadCart,
+  saveMyCart,
+} from "../../Services/cart";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoMdArrowRoundBack, IoMdClose } from "react-icons/io";
 import { applyOffer, getOffersByEmail } from "../../Services/offer";
 import { decodeToken } from "../../Services/auth";
 
-import { addOrder, addOrderAddress, getAlladdress } from "../../Services/buyer";
+import {
+  addOrder,
+  addOrderAddress,
+  cvtToOrder,
+  getAlladdress,
+  QRApi,
+} from "../../Services/buyer";
 import { handleImageUpload } from "../../Services/upload";
 import Loader from "../../Loader";
 
 export default function BuyerApplyOffer() {
   // Loader
-  const total = loadCart().reduce(
+  const [tot, setTot] = useState(0);
+  let total = loadCart().reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
+
   const [isRed, setIsRed] = useState(true);
   const [offers, setOffers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -57,15 +71,28 @@ export default function BuyerApplyOffer() {
   const [errors, setErrors] = useState({}); // State to track form errors
 
   const [isLoading, setIsLoading] = useState(false);
+  const [orderByScheme, setOrderByScheme] = useState(false);
+  const [currScheme, setCurrScheme] = useState("");
+  useEffect(() => {
+    const x = total;
+    setTot(x);
+  }, []);
 
   useEffect(() => {
-    getOffersByEmail(ownerEmail)
-      .then((resp) => {
-        setOffers(resp);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // console.log(orderByScheme);
+    const user = decodeToken();
+    const keys = Object.keys(user);
+    const email = user[keys.find((k) => k.endsWith("emailaddress"))];
+    console.log(email);
+    if (!orderByScheme) {
+      getOffersByEmail(email)
+        .then((resp) => {
+          setOffers(resp);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, [ownerEmail]);
 
   const handleBack = () => {
@@ -134,7 +161,7 @@ export default function BuyerApplyOffer() {
       return;
     }
     const address = { ...newAddress, talukaId: 1 }; // Mock new address
-    console.log(address);
+    // console.log(address);
 
     addOrderAddress(email, address)
       .then((resp) => {
@@ -228,7 +255,7 @@ export default function BuyerApplyOffer() {
 
     applyOffer(email, applyOfferObj)
       .then((resp) => {
-        console.log(resp);
+        // console.log(resp);
         setOfferResponse(resp);
         setModalOpen(true);
         setAppliedOfferId(resp.offerId);
@@ -244,6 +271,22 @@ export default function BuyerApplyOffer() {
       });
   };
 
+  const getTotal = () => {
+    console.log(total);
+    return total;
+  };
+
+  const convertToOrder = () => {
+    const cvtOdr = {
+      salesmanId: offerResponse.salesmanId,
+      schemeId: offerResponse.id,
+      buyerEmail: email,
+      orderAddressId: selectedAddressId,
+    };
+
+    return cvtOdr;
+  };
+
   const handleConfirmOrder = () => {
     if (!selectedAddressId) {
       // console.log('nahi hai');
@@ -253,6 +296,23 @@ export default function BuyerApplyOffer() {
     }
 
     setIsLoading(true);
+    if (orderByScheme) {
+      const obb = convertToOrder();
+      cvtToOrder(obb)
+        .then((resp) => {
+          console.log(resp);
+          setOrderResponse(resp);
+          setIsLoading(false);
+          emptyCart();
+          navigate("/Home/Checkout", { state: { orderResponse: resp } });
+        })
+        .then((err) => {
+          console.log(err);
+          setIsLoading(false);
+          toast.error("Something Went Wrong");
+        });
+      return;
+    }
 
     const cartData = loadCart();
 
@@ -445,64 +505,72 @@ export default function BuyerApplyOffer() {
           >
             <IoMdArrowRoundBack />
           </button>
-          <div className="flex items-center mb-4">
-            <h2 className="text-xl font-semibold">Available Offers</h2>
-          </div>
-          <div className="flex gap-4 flex-nowrap overflow-auto mb-4">
-            {offers.map((offer) => (
-              <div
-                key={offer.id}
-                className="p-4 bg-slate-100 shadow rounded-lg flex justify-between items-center"
-              >
-                <div className=" flex flex-col gap-4 w-48">
-                  <img
-                    src={offer.offerPhoto}
-                    alt={offer.offerName}
-                    className="w-20 h-20 object-cover"
-                  />
-                  <div>
-                    <h5 className="text-lg font-bold text-emerald-400">
-                      {offer.offerName}
-                    </h5>
-                    <p>{offer.offerDescription}</p>
-                    <div className="bg-black w-full h-[1px] m-[2px]"></div>
-                    <div className=" rounded-lg w-[100%] h-[50%]">
-                      <div className="text-sm">
-                        <p className="text-zinc-500 font-medium">
-                          Promo Code:{" "}
-                        </p>
-                        <span
-                          style={{
-                            fontWeight: "bold",
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          {offer.offerCode}
-                        </span>
-                        <div>
-                          <p className="text-zinc-500 font-medium">Expiry: </p>
-                          <span
-                            style={{
-                              fontWeight: "bold",
-                              textTransform: "uppercase",
-                            }}
+          {!orderByScheme && (
+            <>
+              <div className="flex items-center mb-4">
+                <h2 className="text-xl font-semibold">Available Offers</h2>
+              </div>
+              <div className="flex gap-4 flex-nowrap overflow-auto mb-4">
+                {offers.map((offer) => (
+                  <div
+                    key={offer.id}
+                    className="p-4 bg-slate-100 shadow rounded-lg flex justify-between items-center"
+                  >
+                    <div className=" flex flex-col gap-4 w-48">
+                      <img
+                        src={offer.offerPhoto}
+                        alt={offer.offerName}
+                        className="w-20 h-20 object-cover"
+                      />
+                      <div>
+                        <h5 className="text-lg font-bold text-emerald-400">
+                          {offer.offerName}
+                        </h5>
+                        <p>{offer.offerDescription}</p>
+                        <div className="bg-black w-full h-[1px] m-[2px]"></div>
+                        <div className=" rounded-lg w-[100%] h-[50%]">
+                          <div className="text-sm">
+                            <p className="text-zinc-500 font-medium">
+                              Promo Code:{" "}
+                            </p>
+                            <span
+                              style={{
+                                fontWeight: "bold",
+                                textTransform: "uppercase",
+                              }}
+                            >
+                              {offer.offerCode}
+                            </span>
+                            <div>
+                              <p className="text-zinc-500 font-medium">
+                                Expiry:{" "}
+                              </p>
+                              <span
+                                style={{
+                                  fontWeight: "bold",
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                {new Date(
+                                  offer.expiryDate
+                                ).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => offerOpenModal(offer)}
+                            className="text-violet-50 bg-violet-600 text-xs my-1 hover:underline rounded-3xl border py-1 px-2"
                           >
-                            {new Date(offer.expiryDate).toLocaleDateString()}
-                          </span>
+                            Offer Details
+                          </button>
                         </div>
                       </div>
-                      <button
-                        onClick={() => offerOpenModal(offer)}
-                        className="text-violet-50 bg-violet-600 text-xs my-1 hover:underline rounded-3xl border py-1 px-2"
-                      >
-                        Offer Details
-                      </button>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
 
           <div className="flex items-center mb-4">
             <h2 className="text-xl font-semibold">Select Address</h2>
@@ -543,7 +611,7 @@ export default function BuyerApplyOffer() {
             <h3 className="text-lg font-semibold mb-4">Price Details</h3>
             <div className="flex justify-between mb-2">
               <p>Total Price:</p>
-              <p>₹ {Number(total).toFixed(2)}</p>
+              <p>₹ {tot}</p>
             </div>
             <div className="flex justify-between mb-2">
               <p>Total Discount:</p>
@@ -553,7 +621,7 @@ export default function BuyerApplyOffer() {
             <div className="flex justify-between mb-2 border rounded-3xl py-1 px-3 bg-emerald-200 mt-2">
               <p>Payable Amount:</p>
               <p className="font-bold text-zinc-600">
-                ₹ {Number(total - disAmount).toFixed(2)}
+                ₹ {Number(tot - disAmount).toFixed(2)}
               </p>
             </div>
 

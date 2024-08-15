@@ -256,3 +256,47 @@ export const addPayment = async (paymentObj) => {
       throw error; // Throw error for further handling if needed
     });
 };
+
+export const cvtToOrder = async (cvtObj) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+  return axios
+    .post(url + `/scheme/convert-to-order`, cvtObj, config)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
+
+export const QRApi = async (apiRoute) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+  return axios
+    .get(url + apiRoute, config)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
