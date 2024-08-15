@@ -10,6 +10,7 @@ import {
   formdata,
   initialData,
   setIsBuyer,
+  isBuyer,
 } from "../Services/auth";
 import { Toaster, toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
@@ -76,14 +77,20 @@ const Login = (props) => {
 
       loginService(loginData)
         .then((response) => {
-          console.log(response);
+          // debugger;
+          // console.log(response);
           setLoading(false); // Set loading to false after API response
           // Handle successful login response
 
           localStorage.setItem("token", response.accessToken);
           setMessage(true);
           const user = decodeToken();
-          console.log(user);
+          if (user?.userType === "Salesman") {
+            changeLogin(true);
+            navigate("/sales");
+            return;
+          }
+          // console.log(user);
           const keys = Object.keys(user);
           const role = keys.find((claim) => claim.endsWith("role"));
           if (user[role] === "Admin") {
@@ -110,16 +117,22 @@ const Login = (props) => {
             toast.error("You are not verified. kindly get verified.");
             signOut();
           } else {
+            // if(user[role]==="Buyer"){
+            //   signOut()
+            //   navigate('/');
+            //   setFormData({...formdata, email:''})
+            //   setCurrStep(1)
+            //   return
+            // }
+
             if (user[role] === "Buyer") {
-              signOut();
-              navigate("/");
-              setFormData({ ...formdata, email: "" });
-              setCurrStep(1);
+              // console.log('this is me');
+              navigate("/Home");
               return;
             }
             changeLogin(true);
             setShowSidebar(true);
-            navigate("/Home");
+            navigate("/company/Home");
           }
         })
         .catch((error) => {

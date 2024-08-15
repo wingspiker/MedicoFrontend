@@ -22,7 +22,7 @@ import { toast, Toaster } from "sonner";
 import ArticleCard from "./ArticleCard";
 import ArticlePreviewCard from "./ArticlesPreviewCard";
 import { handleImageUpload } from "../../Services/upload";
-import { decodeToken } from "../../Services/auth";
+import { decodeToken, isAdmin } from "../../Services/auth";
 import { getProducts } from "../../Services/product";
 import {
   addDiscountBenefit,
@@ -184,7 +184,7 @@ function AddOffer() {
             addOffer({
               ...formData,
               offerType: 0,
-              companyEmail: email,
+              email: email,
             })
               .then((res) => {
                 setOfferId(res.id);
@@ -206,7 +206,7 @@ function AddOffer() {
               sanitizeObject({
                 ...formData,
                 offerType: 1,
-                companyEmail: email,
+                email: email,
                 conditions: undefined,
                 productCentricOffer: { conditions: formData.conditions },
               })
@@ -227,7 +227,7 @@ function AddOffer() {
               sanitizeObject({
                 ...formData,
                 offerType: 2,
-                companyEmail: email,
+                email: email,
                 conditions: undefined,
                 boxBaseOffer: {
                   boxBaseOfferProduct: formData.boxBaseOfferProduct,
@@ -260,7 +260,11 @@ function AddOffer() {
                 setOfferId(res.id);
                 setLoading(false);
                 setTimeout(() => {
-                  navigate("/Offer");
+                  if(isAdmin()){  
+                    navigate("/admin/Offer");
+                  }else{
+                    navigate("/company/Offer");
+                  }
                   setCurrentStep(1);
                 }, 2000);
               })
@@ -279,7 +283,7 @@ function AddOffer() {
                 setCurrentStep(1);
                 setLoading(false);
                 setTimeout(() => {
-                  navigate("/Offer");
+                  navigate("/company/Offer");
                 }, 2000);
               })
               .catch((err) => {
@@ -297,7 +301,7 @@ function AddOffer() {
                 setCurrentStep(1);
                 setLoading(false);
                 setTimeout(() => {
-                  navigate("/Offer");
+                  navigate("/company/Offer");
                 }, 2000);
               })
               .catch((err) => {
@@ -903,7 +907,7 @@ function AddOffer() {
                     className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                     type="submit"
                   >
-                    {loading?<Loader/>:'Next'} 
+                    {loading ? <Loader /> : "Next"}
                   </button>
                 </div>
               </form>
@@ -1199,7 +1203,7 @@ function AddOffer() {
                     className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
                     type="submit"
                   >
-                    {loading?<Loader/>:'Next'} 
+                    {loading ? <Loader /> : "Next"}
                   </button>
                 </div>
               </form>

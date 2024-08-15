@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ProductInformation from "../ProductComponents/CaseOne/ProductInfo";
 import ManufacturerInformation from "../ProductComponents/CaseOne/ManufacturerInfo";
@@ -7,15 +7,17 @@ import PricingInformation from "../ProductComponents/CaseOne/PricingInfo";
 import SelectExistingGroup from "../ProductComponents/CaseTwo/SelectGroup";
 import Occupation from "../ProductComponents/CaseFour/Occupation";
 import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
-import { decodeToken } from "../../Services/auth";
+import { decodeToken, isAdmin, isCompanySelf } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
-import { addGroup, getGroupById, getGroups } from "../../Services/group";
+import { addGroup, addProductToGroup, getGroupById, getGroups } from "../../Services/group";
 import { addBuyerGroup, addBuyers, filterBuyrs } from "../../Services/buyer";
 import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
 import ShowBuyer from "../ProductComponents/CaseFive/ShowBuyer";
 import AddPricing from "../ProductComponents/CaseSix/AddPricing";
 import { getDivisions } from "../../Services/division";
+import { AdminSidebar } from "../Admin/AdminSidebar";
+import { signOut } from "../../Services/auth";
 
 function AddProduct() {
   const [currentStep, setCurrentStep] = React.useState(1);
@@ -25,8 +27,21 @@ function AddProduct() {
   const [divisions, setDivisions] = React.useState([]);
 
   const [isRed, setIsRed] = useState(true);
+  const [isAdminLocal, setIsAdminLocal] = useState(false);
 
   const navigate = useNavigate();
+
+  const location = useLocation()
+
+  useEffect(() => {
+    if(location.state){
+      setCurrentProdId(location.state.pid);
+      setCurrentStep(location.state.step);
+      setSp(location.state.sp)
+      setIsAdminLocal(true)
+    }
+  
+  }, [])
 
   const showToast = (message, isRed) => {
     setIsRed(isRed);
@@ -84,7 +99,7 @@ function AddProduct() {
 
     if (currentStep < 6) {
       if (currentStep === 1) {
-        console.log("yele", data);
+        // console.log("yele", data);
         AddProductData(data);
       }
 
@@ -119,6 +134,20 @@ function AddProduct() {
           console.log(data.existingGroupNo);
           getGroupById(data.existingGroupNo)
             .then((g) => {
+
+              const addData = {
+                groupId:g.id,
+                productIds:[currentProdId]
+              }
+
+              addProductToGroup(addData)
+              .then(r=>{
+                console.log('group added to this product');
+                console.log(r);
+              })
+              .catch(err=>{
+                console.log(err);
+              })
               // console.log("ss");
               // console.log(g);
               // setBuyers(g.buyers);
@@ -148,7 +177,7 @@ function AddProduct() {
         // setCurrentStep(currentStep + 1);
       }
     } else {
-      // console.log("final maal",psdata);
+      console.log("final maal", psdata);
       // console.log(currentProdId);
 
       const buyerProd = psdata.map((ps) => {
@@ -244,6 +273,13 @@ function AddProduct() {
         console.log(response);
         setCurrentProdId(response.id);
         showToast("Product Added  Successfully", false);
+        if(isAdminLocal){
+          navigate("/admin/Product");
+          
+        }
+        else if (!isCompanySelf()) {
+          navigate("/company/Product");
+        }
         setCurrentStep(currentStep + 1);
         setLoading(false);
       })
@@ -263,7 +299,7 @@ function AddProduct() {
     const { groupName, groupDescription, talukaIds } = rawData;
 
     let formattedApiInput = {
-      companyEmail: email,
+      email: email,
       name: groupName,
       description: groupDescription,
       buyerIds: [],
@@ -332,6 +368,7 @@ function AddProduct() {
   };
 
   const AddBuyerProduct = (buyProd) => {
+    console.log("yy");
     setLoading(true);
     addBuyerGroup(buyProd)
       .then((resp) => {
@@ -340,7 +377,12 @@ function AddProduct() {
         setIsRed(false);
         toast.success("Added Successfully!");
         setTimeout(() => {
-          navigate("/Product");
+          if(isAdminLocal){
+            navigate("/admin/Product");
+          }else{
+            navigate("/company/Product");
+
+          }
           setIsRed(true);
         }, 3000);
       })
@@ -350,7 +392,7 @@ function AddProduct() {
         setIsRed(true);
         toast.success("Something Went Wrong");
         setTimeout(() => {
-          navigate("/Product");
+          navigate("/company/Product");
           setIsRed(true);
         }, 3000);
       });
@@ -566,10 +608,9 @@ function AddProduct() {
                 <button
                   type="submit"
                   disabled={errSix}
-                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
                   {loading ? <Loader /> : "Submit"}
-                  {console.log(errSix)}
                 </button>
               </div>
             </form>
@@ -578,6 +619,11 @@ function AddProduct() {
       default:
         return null;
     }
+  };
+
+  const onlogout = () => {
+    signOut();
+    navigate("/admin");
   };
 
   return (
@@ -590,7 +636,12 @@ function AddProduct() {
             // style: { color: `red` },
           }}
         />
+        {
+         isAdmin() && <AdminSidebar changeLogin={onlogout} />
+        }
+        
         {renderStep()}
+        {/* {console.log(currentProdId)} */}
       </div>
     </>
   );

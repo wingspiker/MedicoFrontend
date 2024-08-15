@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { HiMenuAlt1 } from "react-icons/hi";
-import { IoCloseSharp, IoLogOut } from "react-icons/io5";
+import { IoCloseSharp, IoLogOut, IoSettings } from "react-icons/io5";
 import { MdHome, MdGroups, MdLocalOffer } from "react-icons/md";
 import { SiProducthunt } from "react-icons/si";
 import { BiSolidOffer } from "react-icons/bi";
-import { FaUserCircle, FaGift  } from "react-icons/fa";
-import { BsFillCartCheckFill, BsFillSignIntersectionYFill } from "react-icons/bs";
-import { NavLink } from "react-router-dom";
+import { FaGift } from "react-icons/fa";
+import {
+  BsFillCartCheckFill,
+  BsFillSignIntersectionYFill,
+} from "react-icons/bs";
+import { NavLink, useLocation } from "react-router-dom";
+import { isCompanySelf } from "../../Services/auth";
 
 const navItems = [
   "Home",
@@ -17,8 +21,10 @@ const navItems = [
   "Order",
   "Division",
   "Article",
-  "Profile",
+  "Settings",
 ];
+
+const notForAdminSelling = ["Group", "Offer", "Salesman", "Article"];
 const navItemsIcons = [
   <MdHome />,
   <SiProducthunt />,
@@ -28,7 +34,7 @@ const navItemsIcons = [
   <BsFillCartCheckFill />,
   <BsFillSignIntersectionYFill />,
   <FaGift />,
-  <FaUserCircle />,
+  <IoSettings />,
 ];
 
 export const Sidebar = (props) => {
@@ -38,6 +44,8 @@ export const Sidebar = (props) => {
 
   const sidebarWidth = isOpen ? "w-64" : "w-14";
   const buttonText = isOpen ? <IoCloseSharp /> : <HiMenuAlt1 />;
+  const location = useLocation();
+  const path = location.pathname
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -53,9 +61,10 @@ export const Sidebar = (props) => {
       {showModal && (
         <div className="fixed inset-0  flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-4 rounded-md mx-4 md:w-4/12">
-            <p className="text-lg text-cyan-900">Are you sure you want to sign out?</p>
+            <p className="text-lg text-cyan-900">
+              Are you sure you want to sign out?
+            </p>
             <div className="mt-4 flex justify-end gap-4">
-              
               <button
                 onClick={toggleModal}
                 className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
@@ -83,11 +92,11 @@ export const Sidebar = (props) => {
         >
           {isOpen ? (
             <div className=" flex items-center gap-3">
-              <img
+              {/* <img
                 src="medico-logo.png"
                 alt="Medico Logo"
                 className="w-10 h-10"
-              />
+              /> */}
               <h1 className="text-3xl font-bold">Medico</h1>
             </div>
           ) : (
@@ -102,15 +111,34 @@ export const Sidebar = (props) => {
           </button>
         </div>
         <nav className="flex-1 mt-2">
-          {navItems.map((item, index) => (
-            <NavLink
-              to={`/${item}`}
-              key={item}
-              className="px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4"
-            >
-              {navItemsIcons[index]} {isOpen ? item : ""}
-            </NavLink>
-          ))}
+          {navItems.map((item, index) => {
+            if(isCompanySelf()){
+              return (              
+                <NavLink
+                  to={`/company/${item}`}
+                  key={item}
+                  className={`px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4 ${path==='/company/'+item?'bg-white text-cyan-800 hover:bg-slate-300':''}`}
+                >
+                  {/* {console.log(path, item)} */}
+                  {navItemsIcons[index]} {isOpen ? item : ""}
+                </NavLink>
+              );
+            }
+            else{
+              if((!notForAdminSelling.includes(item))){
+                return (
+              
+                  <NavLink
+                    to={`/company/${item}`}
+                    key={item}
+                    className="px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4"
+                  >
+                    {navItemsIcons[index]} {isOpen ? item : ""}
+                  </NavLink>
+                );
+              }
+            }
+            })}
 
           <div className={`absolute bottom-4 w-full flex justify-end px-1`}>
             <button

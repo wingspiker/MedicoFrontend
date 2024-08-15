@@ -76,7 +76,7 @@ const Register = (props) => {
       } else {
         changeLogin(true);
         setShowSidebar(true);
-        navigate("/Home");
+        navigate("/company/Home");
       }
     }
 

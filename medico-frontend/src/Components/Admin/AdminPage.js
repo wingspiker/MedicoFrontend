@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { isAdmin, loginService } from "../../Services/auth";
 import Loader from "../../Loader";
-import { toast } from "sonner";
+import { Toaster, toast } from "sonner";
 
 export default function AdminPage(props) {
   const { setIsAdminLoggedIn } = props;
@@ -49,11 +49,12 @@ export default function AdminPage(props) {
             setIsAdminLoggedIn(true);
             navigate("/admin/dashboard");
           } else {
-            toast.error("You are not authorized to view the admin panel");
+            showErr("You are not authorized to view the admin panel");
           }
         })
         .catch((err) => {
           console.log(err);
+          showErr(err.response.data.detail)
           setloading(false);
         });
       setEmail("");
@@ -61,8 +62,27 @@ export default function AdminPage(props) {
     }
   };
 
+  const [isRed, setIsRed] = useState(true);
+
+  const showSucc = (message) => {
+    setIsRed(false);
+    toast.success(message)
+  };
+
+  const showErr = (message) => {
+    setIsRed(true);
+    toast.error(message)
+  };
+
   return (
     <div className="bg-cyan-900 h-screen text-white flex flex-col justify-center items-center">
+      <Toaster
+            position="top-center"
+            toastOptions={{
+              style: { color: `${isRed ? "red" : "green"}` },
+            }}
+          />
+        
       <header className="flex justify-between items-center w-full px-8 py-4 absolute top-0">
         <h1 className="text-3xl font-bold">
           Medico{" "}
