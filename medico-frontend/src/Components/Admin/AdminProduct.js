@@ -21,16 +21,18 @@ export default function AdminProduct() {
   }, []);
 
   const viewCompany = (index) => {
-    const company = adminSellingCompanies[index]
-    const email = company.companyEmail
+    const company = adminSellingCompanies[index];
+    const email = company.companyEmail;
     // console.log(company);
-    navigate(`/admin/Product/${index}`,{state:{email:email, companyName:company.companyName}})
-  }
+    navigate(`/admin/Product/${index}`, {
+      state: { email: email, companyName: company.companyName },
+    });
+  };
 
   return (
     <>
       <div className="p-5 pb-6 flex justify-between">
-        <h1 className=" ms-16 text-3xl font-semibold text-white">
+        <h1 className=" ms-16 text-3xl font-semibold text-cyan-800">
           Products - Admin Selling Companies
         </h1>
       </div>
@@ -39,7 +41,7 @@ export default function AdminProduct() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {adminSellingCompanies.map((company, index) => (
             <div
-              key={index} 
+              key={index}
               className=" bg-teal-300 rounded-lg shadow-lg overflow-hidden"
             >
               <div className="relative">
@@ -49,20 +51,20 @@ export default function AdminProduct() {
                   alt="Company"
                 />
                 <div className="absolute top-0 right-0 bg-yellow-400 text-white p-2 text-xs uppercase font-bold rounded-bl-lg">
-                  {company.companyType }{" "}
+                  {company.companyType}{" "}
                   {/* Example condition, adjust according to your data */}
                 </div>
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-bold">{company.companyName}</h3>
                 <p className="text-sm text-gray-500">{company.companyEmail}</p>
-                <div className="text-sm mt-2">
-                  
-                  
-                </div>
-              <button onClick={()=>viewCompany(index)} className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                View
-              </button>
+                <div className="text-sm mt-2"></div>
+                <button
+                  onClick={() => viewCompany(index)}
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  View
+                </button>
               </div>
             </div>
           ))}

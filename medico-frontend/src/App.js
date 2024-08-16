@@ -111,7 +111,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <div className="bg-cyan-900 h-screen overflow-auto">
+        <div className="bg-cyan-100 h-screen overflow-auto">
           {/* {(isLoggedIn && showSidebar) ? <Sidebar changeLogin={logout}  /> : ""} */}
 
           <Routes>
