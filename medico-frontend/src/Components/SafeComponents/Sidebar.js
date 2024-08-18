@@ -45,7 +45,7 @@ export const Sidebar = (props) => {
   const sidebarWidth = isOpen ? "w-64" : "w-14";
   const buttonText = isOpen ? <IoCloseSharp /> : <HiMenuAlt1 />;
   const location = useLocation();
-  const path = location.pathname
+  const path = location.pathname;
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -112,22 +112,24 @@ export const Sidebar = (props) => {
         </div>
         <nav className="flex-1 mt-2">
           {navItems.map((item, index) => {
-            if(isCompanySelf()){
-              return (              
+            if (isCompanySelf()) {
+              return (
                 <NavLink
                   to={`/company/${item}`}
                   key={item}
-                  className={`px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4 ${path==='/company/'+item?'bg-white text-cyan-800 hover:bg-slate-300':''}`}
+                  className={`px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4 ${
+                    path === "/company/" + item
+                      ? "bg-white text-cyan-800 hover:bg-slate-300"
+                      : ""
+                  }`}
                 >
                   {/* {console.log(path, item)} */}
                   {navItemsIcons[index]} {isOpen ? item : ""}
                 </NavLink>
               );
-            }
-            else{
-              if((!notForAdminSelling.includes(item))){
+            } else {
+              if (!notForAdminSelling.includes(item)) {
                 return (
-              
                   <NavLink
                     to={`/company/${item}`}
                     key={item}
@@ -138,7 +140,7 @@ export const Sidebar = (props) => {
                 );
               }
             }
-            })}
+          })}
 
           <div className={`absolute bottom-4 w-full flex justify-end px-1`}>
             <button

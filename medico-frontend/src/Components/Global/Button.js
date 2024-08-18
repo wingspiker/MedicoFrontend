@@ -2,7 +2,7 @@ import React from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { cn } from "../../lib/cn";
 
-export default function Button({ children, className, ...props }) {
+export default function CustomButton({ children, className, ...props }) {
   return (
     <button
       {...props}

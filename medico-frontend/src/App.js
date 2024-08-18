@@ -679,7 +679,7 @@ function App() {
               path="/sales/Company"
               exact
               element={
-                isLoggedIn ? (
+                isLoggedIn ? (  
                   <>
                     <SalesmanSidebar changeLogin={setIsLoggedIn} />
                     <SalesmanCompany />

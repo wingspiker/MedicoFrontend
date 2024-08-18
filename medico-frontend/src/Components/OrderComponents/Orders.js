@@ -52,11 +52,10 @@ export default function Orders(props) {
   const navigate = useNavigate();
   const handleViewClick = (order, index) => {
     // implementation for handling view click
-    if(isAdmin()){
-        navigate(`/admin/Order/${index}`, { state: { order } });
-    }
-    else{
-        navigate(`/company/Order/${index}`, { state: { order } });
+    if (isAdmin()) {
+      navigate(`/admin/Order/${index}`, { state: { order } });
+    } else {
+      navigate(`/company/Order/${index}`, { state: { order } });
     }
   };
 
@@ -83,10 +82,10 @@ export default function Orders(props) {
   };
 
   return (
-    <div className="flex h-screen bg-cyan-900 text-white">
+    <div className="flex h-screen bg-white text-slate-700">
       <div className="flex-1 ms-14">
         <div className="p-2 flex justify-between">
-          <p className="text-3xl">Orders</p>
+          <p className="text-3xl font-bold">Orders</p>
           <Button onClick={logout} variant="contained" color="error">
             Logout
           </Button>
