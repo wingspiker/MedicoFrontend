@@ -1,7 +1,7 @@
 import axios from "axios";
 import { token } from "./auth";
 
-const url = process.env.REACT_APP_API_BASE_URL;
+const url = "https://crmwe5yxfs.ap-south-1.awsapprunner.com";
 
 export const filterBuyrs = async (filterDetails) => {
   const t = localStorage.getItem("token");
@@ -279,7 +279,7 @@ export const cvtToOrder = async (cvtObj) => {
     });
 };
 
-export const QRApi = async (apiRoute) => { 
+export const QRApi = async (apiRoute) => {
   const t = localStorage.getItem("token");
   const config = {
     headers: {
@@ -289,7 +289,7 @@ export const QRApi = async (apiRoute) => {
     },
   };
   return axios
-    .get(url+apiRoute, config) 
+    .get(url + apiRoute, config)
     .then((response) => {
       // Handle successful response
       return response.data; // Return data if needed

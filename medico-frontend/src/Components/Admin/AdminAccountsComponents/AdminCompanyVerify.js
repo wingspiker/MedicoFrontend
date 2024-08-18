@@ -83,14 +83,16 @@ function CompanyTable({ companies, isVerified, verifyCompany }) {
   };
 
   const handleVerify = () => {
-    if (currentCompany.chargesType===1 && percentage >= 1 && percentage <= 100) {
+    if (
+      currentCompany.chargesType === 1 &&
+      percentage >= 1 &&
+      percentage <= 100
+    ) {
       verifyCompany(currentCompany.companyEmail, percentage);
       handleCloseDialog();
-    } 
-    else if(currentCompany.chargesType===0){
-        verifyCompany(currentCompany.companyEmail);
-    }
-    else {
+    } else if (currentCompany.chargesType === 0) {
+      verifyCompany(currentCompany.companyEmail);
+    } else {
       setSnackbarMessage("Please enter a valid percentage (1-100).");
       setOpenSnackbar(true);
     }
@@ -195,11 +197,11 @@ function CompanyTable({ companies, isVerified, verifyCompany }) {
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Verify Company</DialogTitle>
         <DialogContent>
-            {/* {console.log(currentCompany)} */}
-          <DialogContentText sx={{marginBottom:2}}> 
+          {/* {console.log(currentCompany)} */}
+          <DialogContentText sx={{ marginBottom: 2 }}>
             Are you sure You want to verify the company {currentCompany?.name} ?
           </DialogContentText>
-          { currentCompany?.chargesType===1 &&
+          {currentCompany?.chargesType === 1 && (
             <>
               {/* <DialogContentText>
                 Please enter the percentage for the commission:
@@ -215,11 +217,13 @@ function CompanyTable({ companies, isVerified, verifyCompany }) {
                 value={percentage}
                 onChange={(e) => setPercentage(e.target.value)}
                 InputProps={{
-                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                  }}
+                  endAdornment: (
+                    <InputAdornment position="end">%</InputAdornment>
+                  ),
+                }}
               />
             </>
-          }
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
@@ -302,28 +306,27 @@ export default function AdminCompanyVerify() {
 
   const verifyCompany = (email, percentage) => {
     verifyCompanyApi(email, percentage)
-    .then(resp=>{
+      .then((resp) => {
         console.log(resp);
         setSnackbarMessage("Hello World");
-        setIsRed(false)
+        setIsRed(false);
         setOpenSnackbar(true);
-        setFlag(f=>!f)
-
-    })
-    .catch(err=>{
+        setFlag((f) => !f);
+      })
+      .catch((err) => {
         console.log(err);
         setSnackbarMessage(err.response.data.detail);
-        setIsRed(true)
+        setIsRed(true);
         setOpenSnackbar(true);
-        setFlag(f=>!f)
-    })
+        setFlag((f) => !f);
+      });
   };
 
   return (
     <>
       {/* {console.log(unverified)} */}
       <div className="p-4 pb-7 flex justify-between">
-        <h1 className="ms-16 text-3xl font-semibold text-white flex items-center">
+        <h1 className="ms-16 text-3xl font-semibold text-cyan-700 flex items-center">
           Company Accounts
         </h1>
       </div>
@@ -367,7 +370,7 @@ export default function AdminCompanyVerify() {
       >
         <Alert
           onClose={handleCloseSnackbar}
-          severity={isRed?'error':'success'}
+          severity={isRed ? "error" : "success"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}

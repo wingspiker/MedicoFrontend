@@ -66,11 +66,13 @@ export const AdminSidebar = ({ changeLogin }) => {
   };
 
   const location = useLocation();
-  const path = location.pathname
+  const path = location.pathname;
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-30 overflow-visible ${isOpen ? " bg-cyan-700" : "bg-black bg-opacity-30"} text-white transition-all duration-300 ease-in-out ${sidebarWidth} rounded-xl rounded-l-none`}
+      className={`fixed inset-y-0 left-0 z-30 overflow-visible ${
+        isOpen ? " bg-cyan-200" : "bg-white"
+      } text-cyan-800 transition-all duration-300 ease-in-out ${sidebarWidth} rounded-xl rounded-l-none`}
     >
       {/* Modal */}
       {showModal && (
@@ -101,20 +103,19 @@ export const AdminSidebar = ({ changeLogin }) => {
 
       <div className="flex flex-col h-full">
         <div
-          className={`flex items-center justify-between px-2 py-2 border-b border-gray-200 ${isOpen ? "bg-cyan-800" : "bg-black bg-opacity-20"}`}
+          className={`flex items-center justify-between px-2 py-2 border-b border-gray-200  rounded-xl ${
+            isOpen ? "bg-cyan-100" : "bg-white"
+          }`}
         >
           <div className={`flex items-center gap-3 ${logoVisibility}`}>
-            {/* <img
-              src="/medico-logo.png"
-              alt="Medico Logo"
-              className="w-12 h-10"
-            /> */}
-            <h1 className="text-3xl font-bold text-white">Medico <p className=" text-red-500 text-xs text-right -me-6 -mt-2">Admin</p> </h1>
+            <div className="flex gap-2">
+              <h1 className="text-2xl font-bold text-cyan-700">Medico </h1>
+              <span className="text-2xl font-bold text-slate-600">
+                admin
+              </span>{" "}
+            </div>
           </div>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="text-3xl h-10"
-          >
+          <button onClick={() => setIsOpen(!isOpen)} className="text-3xl h-10">
             {isOpen ? <IoCloseSharp /> : <HiMenuAlt1 />}
           </button>
         </div>
@@ -122,33 +123,42 @@ export const AdminSidebar = ({ changeLogin }) => {
           {navItems.map((item) => (
             <React.Fragment key={item.label}>
               <div className="relative group">
-                {!item.subItems ? <NavLink
-                  to={item.link}
-                  className={`px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4 ${path===item.link?'bg-white text-cyan-800 hover:bg-slate-300':''}`}
-                >
-                  {item.icon} {isOpen ? item.label : ""}
-                </NavLink>:
-                <p                
-                className="px-4 py-2 rounded hover:bg-cyan-800  text-xl flex items-center gap-4"
-              >
-                {item.icon} {isOpen ? item.label : ""}
-              </p>
-
-                }
+                {!item.subItems ? (
+                  <NavLink
+                    to={item.link}
+                    className={`px-4 py-2 rounded hover:bg-cyan-800 hover:text-cyan-100  text-xl flex items-center gap-4 ${
+                      path === item.link
+                        ? `bg-white text-cyan-800 hover:bg-slate-300
+                        `
+                        : ""
+                    }`}
+                  >
+                    {item.icon} {isOpen ? item.label : ""}
+                  </NavLink>
+                ) : (
+                  <p
+                    className="px-4 py-2 rounded hover:bg-cyan-800
+                  hover:text-cyan-100  text-xl flex items-center gap-4"
+                  >
+                    {item.icon} {isOpen ? item.label : ""}
+                  </p>
+                )}
                 {item.subItems && (
                   <div className="absolute left-full top-0 w-48 bg-white text-cyan-800 font-semibold rounded hidden group-hover:flex flex-col">
                     {item.subItems.map((sub) => (
                       <>
-                      <NavLink
-                        key={sub.label}
-                        to={sub.link}
-                        className="px-4 py-2 hover:bg-slate-300 text-cyan-600 text-lg flex justify-between"
-                      >
-                        <span>{sub.label}</span>
-                        <span className=" flex items-center"> <FaAngleRight /> </span>
-                        
-                      </NavLink>
-                      <hr/>
+                        <NavLink
+                          key={sub.label}
+                          to={sub.link}
+                          className="px-4 py-2 hover:bg-slate-300  text-cyan-600 text-lg flex justify-between"
+                        >
+                          <span>{sub.label}</span>
+                          <span className=" flex items-center">
+                            {" "}
+                            <FaAngleRight />{" "}
+                          </span>
+                        </NavLink>
+                        <hr />
                       </>
                     ))}
                   </div>

@@ -26,6 +26,7 @@ import { getDistricts, getStates, getTalukas } from "../Services/location";
 import { handleImageUpload } from "../Services/upload";
 import { registerBuyer, registerCompany } from "../Services/user";
 import Loader from "../Loader";
+import Textv1 from "./Global/Textv1";
 
 const Register = (props) => {
   const { changeLogin, setShowSidebar, setIsComplete } = props;
@@ -88,7 +89,7 @@ const Register = (props) => {
 
   const navigate = useNavigate();
   const currSt = currStep;
-  const [step, setStep] = useState(currSt);
+  const [step, setStep] = useState(1);
   const [red, isRed] = useState(true);
   const [formData, setFormData] = useState(initialData);
 
@@ -333,7 +334,7 @@ const Register = (props) => {
 
   const [loadingstate, setloadingstate] = useState(false);
   const handleFileChange = (e) => {
-    setloadingstate(true)
+    setloadingstate(true);
     // console.log("tttt");
     // const file = e.target.files[0];
     // const name = e.target.name;
@@ -348,20 +349,18 @@ const Register = (props) => {
           name: e.target.name,
           link: urlData,
         };
-        console.log('doc',doc);
-        const existingDocIndex = documentLinks.findIndex(
-          (item) => {
-            console.log(item);
-            return item.name == doc.name
-          }
-        );
+        console.log("doc", doc);
+        const existingDocIndex = documentLinks.findIndex((item) => {
+          console.log(item);
+          return item.name == doc.name;
+        });
         console.log(existingDocIndex);
 
         if (existingDocIndex !== -1) {
-          console.log('hum yaha',existingDocIndex);
+          console.log("hum yaha", existingDocIndex);
           documentLinks[existingDocIndex].link = doc.link;
         } else {
-          console.log('aa gaya');
+          console.log("aa gaya");
           documentLinks.push(doc);
           console.log(documentLinks);
         }
@@ -641,7 +640,7 @@ const Register = (props) => {
 
   const saveBuyerData = (bData) => {
     setSubmitLoading(true);
-    console.log("hhhhhhh",bData);
+    console.log("hhhhhhh", bData);
 
     registerBuyer(bData)
       .then((resp) => {
@@ -797,7 +796,9 @@ const Register = (props) => {
           }  text-4xl mb-4`}
         >
           {/* Add back button */}
-          <p className=" text-center w-full mb-4">Register</p>
+          <p className=" text-center w-full mb-4 ">
+            <Textv1>Register</Textv1>
+          </p>
         </h2>
 
         {step === 1 && (

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Sidebar } from './Sidebar';
-import { useNavigate } from 'react-router-dom';
-import { decodeToken, signOut } from '../../Services/auth';
-import { getUserByEmail } from '../../Services/user';
-import { subscriptionTypeEnum } from '../../Models/enums.model';
+import React, { useEffect, useState } from "react";
+import { Sidebar } from "./Sidebar";
+import { useNavigate } from "react-router-dom";
+import { decodeToken, signOut } from "../../Services/auth";
+import { getUserByEmail } from "../../Services/user";
+import { subscriptionTypeEnum } from "../../Models/enums.model";
+import CustomButton from "../Global/Button";
 
 export default function Settings(props) {
   const { changeLogin } = props;
@@ -20,22 +21,22 @@ export default function Settings(props) {
     const email = user[keys.find((k) => k.endsWith("emailaddress"))];
     // console.log(user);
     getUserByEmail(email)
-      .then(resp => {
+      .then((resp) => {
         // console.log(resp);
         setUser(resp);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   }, []);
 
   return (
-    <div className="flex h-screen bg-cyan-900 text-white">
+    <div className="flex h-screen bg-white text-slate-700">
       <Sidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
           <div className="p-2 flex justify-between gap-4">
-            <h1 className="text-3xl font-semibold text-white mb-1">Settings</h1>
+            <h1 className="text-3xl font-semibold mb-1">Settings</h1>
             {/* <button
               className="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2"
             >
@@ -45,7 +46,7 @@ export default function Settings(props) {
           <hr />
           <div className="p-8">
             {user && (
-              <div className="bg-cyan-700 p-6 rounded-lg shadow-lg">
+              <div className="bg-cyan-100 text-cyan-900 p-6 rounded-2xl shadow-lg">
                 <h2 className="text-2xl font-bold mb-4">User Details</h2>
                 <div className="grid grid-cols-2 gap-4">
                   {/* <div>
@@ -84,17 +85,27 @@ export default function Settings(props) {
                     <p className="font-semibold">Charges:</p>
                     <p>{user.company.charges}</p>
                   </div>
-                  { user.company.charges==='Subscription' && <div>
-                    <p className="font-semibold">Subscription:</p>
-                    <p>{subscriptionTypeEnum[Object.keys(subscriptionTypeEnum)[user.company.subscription]]}</p>
-                  </div>}
+                  {user.company.charges === "Subscription" && (
+                    <div>
+                      <p className="font-semibold">Subscription:</p>
+                      <p>
+                        {
+                          subscriptionTypeEnum[
+                            Object.keys(subscriptionTypeEnum)[
+                              user.company.subscription
+                            ]
+                          ]
+                        }
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <button
-                  className="mt-6 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                <CustomButton
+                  className="mt-6 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full"
                   onClick={() => console.log("Reset Password Clicked")}
                 >
                   Reset Password
-                </button>
+                </CustomButton>
               </div>
             )}
           </div>

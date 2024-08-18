@@ -14,6 +14,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import { handleImageUpload } from "../../Services/upload";
+import { Trash2 } from "lucide-react";
 
 const AddArticleModal = ({ isOpen, onClose, setArticles, changeEffect }) => {
   const {
@@ -240,7 +241,7 @@ export default function Article(props) {
   };
 
   return (
-    <div className="flex h-screen bg-cyan-900 text-white">
+    <div className="flex h-screen bg-white text-slate-700">
       <Sidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
@@ -254,36 +255,36 @@ export default function Article(props) {
           </div>
           <hr />
         </div>
-        <div className=" p-8 flex gap-6">
-          {articles.map((a) => (
-            <Card className="flex-1" sx={{ maxWidth: 345 }} key={a.id}>
-              <CardHeader title={a.articleName} />
-              <CardMedia
-                component="img"
-                image={a.articlePhoto}
-                alt={a.articleName}
-                style={{ height: "350px" }}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+          {articles.map((article) => (
+            <div
+              key={article.id}
+              className="bg-cyan-50 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            >
+              <img
+                src={article.articlePhoto}
+                alt={article.articleName}
+                className="w-full h-[400px] object-cover"
               />
-              <CardContent>
-                <Typography variant="body2" color="text.secondary">
-                  {a.articleDescription}
-                </Typography>
-                <Button
-                  variant="contained"
+              <div className="p-6">
+                <h2 className="text-xl font-semibold text-cyan-900 mb-2">
+                  {article.articleName}
+                </h2>
+                <p className="text-cyan-700 mb-4">
+                  {article.articleDescription}
+                </p>
+                <button
                   onClick={() => {
-                    setCurrArt(a.id);
+                    setCurrArt(article.id);
                     openModal2();
                   }}
-                  style={{
-                    backgroundColor: "#f44336",
-                    color: "#ffffff",
-                    marginTop: "1rem",
-                  }}
+                  className="flex items-center justify-center w-full bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700 transition-colors duration-300"
                 >
+                  <Trash2 size={18} className="mr-2" />
                   Delete
-                </Button>
-              </CardContent>
-            </Card>
+                </button>
+              </div>
+            </div>
           ))}
         </div>
       </div>

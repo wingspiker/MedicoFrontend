@@ -1,51 +1,53 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Toaster, toast } from "sonner";
 import { setFormData } from "../../Services/auth";
 import Loader from "../../Loader";
 
 const StepTwo = (props) => {
-
   const { formData, handleChange, errors, signUp } = props;
 
-  const [loading, setLoading] = useState(false)
-  
+  const [loading, setLoading] = useState(false);
 
   const Validate = () => {
-    setLoading(true)
-    if(formData.role===''||errors.role){
-      toast.error(errors.role??'Role is required');
+    setLoading(true);
+    if (formData.role === "" || errors.role) {
+      toast.error(errors.role ?? "Role is required");
       return;
-      
     }
-    if(formData.username===''||errors.username){
-      toast.error(errors.username??'Username is required');
+    if (formData.username === "" || errors.username) {
+      toast.error(errors.username ?? "Username is required");
       return;
-      
     }
-    if(formData.password===''||errors.password){
-      toast.error(errors.password??'Password is required');
+    if (formData.password === "" || errors.password) {
+      toast.error(errors.password ?? "Password is required");
       return;
-      
     }
-    if(formData.confirmPassword===''||errors.confirmPassword){
-      toast.error(errors.confirmPassword??'Confirm Password is required');
+    if (formData.confirmPassword === "" || errors.confirmPassword) {
+      toast.error(errors.confirmPassword ?? "Confirm Password is required");
       return;
-      
     }
 
-    const {email, mobile, role, username, password, confirmPassword} = formData;
-    const fD = {email, phoneNumber:mobile, role:Number(role), username, password, confirmPassword};
+    const { email, mobile, role, username, password, confirmPassword } =
+      formData;
+    const fD = {
+      email,
+      phoneNumber: mobile,
+      role: Number(role),
+      username,
+      password,
+      confirmPassword,
+    };
     console.log(fD);
-    setFormData(formData)
-    signUp(fD)
+    setFormData(formData);
+    signUp(fD);
     // setLoading(false)
-  }
+  };
   return (
     <>
       <Toaster
         position="top-center"
         toastOptions={{
-          style: { color: "red"},
+          style: { color: "red" },
         }}
       />
       <div className="mb-4">
@@ -56,7 +58,7 @@ const StepTwo = (props) => {
           value={formData.email}
           onChange={handleChange}
           readOnly
-          className="text-gray-900 bg-green-200 flex-1 w-full px-3 py-2 rounded-l border border-gray-300 mb-4 focus:outline-none focus:border-green-500"
+          className="text-gray-900 bg-green-50 flex-1 w-full px-3 py-2 rounded-xl border border-gray-300 mb-4 focus:outline-none focus:border-green-500"
         />
         <input
           type="text"
@@ -65,16 +67,18 @@ const StepTwo = (props) => {
           value={formData.mobile}
           onChange={handleChange}
           readOnly
-          className="text-gray-900 bg-green-200 flex-1 w-full px-3 py-2 rounded-l border border-gray-300 mb-4 focus:outline-none focus:border-green-500"
+          className="text-gray-900 bg-green-50 flex-1 w-full px-3 py-2 rounded-xl border border-gray-300 mb-4 focus:outline-none focus:border-green-500"
         />
         <div className="mb-4">
           <select
             name="role"
             value={formData.role}
             onChange={handleChange}
-            className="text-gray-900 w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:border-green-500"
+            className="text-gray-900 w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-green-500"
           >
-            <option value="" disabled>Select Role</option>
+            <option value="" disabled>
+              Select Role
+            </option>
             <option value="0">Buyer</option>
             <option value="1">Company</option>
           </select>
@@ -86,7 +90,7 @@ const StepTwo = (props) => {
           placeholder="Username"
           value={formData.username}
           onChange={handleChange}
-          className="text-gray-900 w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:border-green-500"
+          className="text-gray-900 w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-green-500"
         />
         {errors.username && (
           <span className="text-red-500">{errors.username}</span>
@@ -99,7 +103,7 @@ const StepTwo = (props) => {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          className="text-gray-900 w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:border-green-500"
+          className="text-gray-900 w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-green-500"
         />
         {errors.password && (
           <span className="text-red-500">{errors.password}</span>
@@ -112,7 +116,7 @@ const StepTwo = (props) => {
           placeholder="Confirm Password"
           value={formData.confirmPassword}
           onChange={handleChange}
-          className="text-gray-900 w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:border-green-500"
+          className="text-gray-900 w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-green-500"
         />
         {errors.confirmPassword && (
           <span className="text-red-500">{errors.confirmPassword}</span>
@@ -121,22 +125,19 @@ const StepTwo = (props) => {
       <div className="flex justify-end mt-4">
         {/* <button
         onClick={prevStep}
-        className="w-1/2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+        className="w-1/2 px-4 py-2 bg-gray-500 text-white rounded-xl hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
       >
         Previous
       </button> */}
         <button
           onClick={Validate}
-          className="w-2/3 px-4 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600"
+          className="w-full px-4 py-2 bg-[#3e9a6f] text-white rounded-xl-xl hover:bg-green-600 focus:outline-none focus:bg-green-600"
         >
-          {loading?<Loader/>: 'Create Account'}
-          
+          {loading ? <Loader /> : "Create Account"}
         </button>
-          
       </div>
     </>
   );
 };
 
 export default StepTwo;
-

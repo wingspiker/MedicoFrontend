@@ -3,7 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { decodeToken, signOut } from "../../Services/auth";
 import { Sidebar } from "../SafeComponents/Sidebar";
 import { getOffers, deleteOfferbyId } from "../../Services/offer";
-import { Card, CardContent, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import CustomButton from "../Global/Button";
 
 export default function Offer(props) {
   const navigate = useNavigate();
@@ -49,25 +60,25 @@ export default function Offer(props) {
 
   const handleView = (id, index) => {
     console.log(id);
-    navigate(`/company/Offer/${index}`, { state: { oid:id } });
+    navigate(`/company/Offer/${index}`, { state: { oid: id } });
   };
 
   return (
-    <div className="flex h-screen bg-cyan-900 text-white">
+    <div className="flex h-screen bg-white text-slate-700">
       <Sidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
           <div className="p-2 flex justify-end">
-            <button
+            <CustomButton
               onClick={onAddOffer}
-              className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+              className={`rounded-full bg-orange-500`}
             >
               Add Offer
-            </button>
+            </CustomButton>
           </div>
           <hr />
           <div className="p-4">
-            <p className="mb-4 text-3xl text-white">Offers</p>
+            <p className="mb-4 text-3xl font-bold">Offers</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 overflow-y-auto no-scrollbar">
               {offers.map((offer, index) => (
@@ -80,7 +91,7 @@ export default function Offer(props) {
                       width: "90%",
                       margin: "auto",
                       borderRadius: "16px",
-                      marginTop: "0.5rem"
+                      marginTop: "0.5rem",
                     }}
                   />
                   <CardContent>
@@ -101,7 +112,7 @@ export default function Offer(props) {
                         color="primary"
                         sx={{
                           bgcolor: "blue.300",
-                          marginTop: '1rem',
+                          marginTop: "1rem",
                           "&:hover": {
                             bgcolor: "blue.500",
                           },
@@ -115,7 +126,7 @@ export default function Offer(props) {
                         color="error"
                         sx={{
                           bgcolor: "red.500",
-                          marginTop: '1rem',
+                          marginTop: "1rem",
                           "&:hover": {
                             bgcolor: "red.700",
                           },
@@ -131,10 +142,7 @@ export default function Offer(props) {
           </div>
         </div>
       </div>
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-      >
+      <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Delete Offer</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -142,7 +150,13 @@ export default function Offer(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => {setOpen(false); setSelectedOffer(null);}} color="primary">
+          <Button
+            onClick={() => {
+              setOpen(false);
+              setSelectedOffer(null);
+            }}
+            color="primary"
+          >
             Cancel
           </Button>
           <Button onClick={handleDeleteConfirm} color="error">

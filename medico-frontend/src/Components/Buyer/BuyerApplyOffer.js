@@ -1,24 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 import Navbar from "./Navbar";
-import { addProductToCart, cart, emptyCart, loadCart, saveMyCart } from "../../Services/cart";
+import {
+  addProductToCart,
+  cart,
+  emptyCart,
+  loadCart,
+  saveMyCart,
+} from "../../Services/cart";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoMdArrowRoundBack, IoMdClose } from "react-icons/io";
 import { applyOffer, getOffersByEmail } from "../../Services/offer";
 import { decodeToken } from "../../Services/auth";
 
-
-
-import { addOrder, addOrderAddress, cvtToOrder, getAlladdress, QRApi } from "../../Services/buyer";
+import {
+  addOrder,
+  addOrderAddress,
+  cvtToOrder,
+  getAlladdress,
+  QRApi,
+} from "../../Services/buyer";
 import { handleImageUpload } from "../../Services/upload";
 import Loader from "../../Loader";
 
 export default function BuyerApplyOffer() {
-
   // Loader
-  const [tot, setTot] = useState(0)
-  let total = loadCart().reduce((acc, item) => acc + item.price * item.quantity, 0);
-  
+  const [tot, setTot] = useState(0);
+  let total = loadCart().reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
   const [isRed, setIsRed] = useState(true);
   const [offers, setOffers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -58,50 +70,13 @@ export default function BuyerApplyOffer() {
 
   const [errors, setErrors] = useState({}); // State to track form errors
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [orderByScheme, setOrderByScheme] = useState(false)
-  const [currScheme, setCurrScheme] = useState('')
-  useEffect(()=>{
+  const [isLoading, setIsLoading] = useState(false);
+  const [orderByScheme, setOrderByScheme] = useState(false);
+  const [currScheme, setCurrScheme] = useState("");
+  useEffect(() => {
     const x = total;
     setTot(x);
-  },[])
-
-  useEffect(() => {
-    
-    const api = location?.state?.api;
-    if(api){
-      // saveMyCart([])
-      setOrderByScheme(true)
-      // console.log(api);
-      QRApi(api).then(
-        resp=>{
-          console.log(resp);
-          if(resp.appliedOffer){
-            setAppliedOfferId(resp.appliedOffer.id)
-            setOfferCode(resp.appliedOffer.offerCode)
-            setOfferEditable(true)
-          }
-          setOfferResponse(resp)
-          if (resp.discount) {
-            setDisAmount(resp.discount);
-            setOfferEditable(true);
-          }
-          total = 0;
-          resp.products.forEach(element => {
-            // console.log(element.price * element.quantity);
-            total += (element.price * element.quantity);
-          });
-          setTot(total)
-          
-          
-        }
-      ).catch(err=>{
-        console.log(err);
-      })
-    }else{
-      setOrderByScheme(false)
-    }
-  }, [])
+  }, []);
 
   useEffect(() => {
     // console.log(orderByScheme);
@@ -109,7 +84,7 @@ export default function BuyerApplyOffer() {
     const keys = Object.keys(user);
     const email = user[keys.find((k) => k.endsWith("emailaddress"))];
     console.log(email);
-    if(!orderByScheme){
+    if (!orderByScheme) {
       getOffersByEmail(email)
         .then((resp) => {
           setOffers(resp);
@@ -303,14 +278,14 @@ export default function BuyerApplyOffer() {
 
   const convertToOrder = () => {
     const cvtOdr = {
-      salesmanId:offerResponse.salesmanId,
-      schemeId:offerResponse.id,
-      buyerEmail:email,
-      orderAddressId:selectedAddressId      
-    }
+      salesmanId: offerResponse.salesmanId,
+      schemeId: offerResponse.id,
+      buyerEmail: email,
+      orderAddressId: selectedAddressId,
+    };
 
     return cvtOdr;
-  }
+  };
 
   const handleConfirmOrder = () => {
     if (!selectedAddressId) {
@@ -320,26 +295,26 @@ export default function BuyerApplyOffer() {
       return;
     }
 
-    setIsLoading(true)
-    if(orderByScheme){    
+    setIsLoading(true);
+    if (orderByScheme) {
       const obb = convertToOrder();
-      cvtToOrder(obb).then(resp=>{
-        console.log(resp);
-        setOrderResponse(resp);
-        setIsLoading(false)
-        emptyCart()
-        navigate('/Home/Checkout', {state:{orderResponse:resp}})
-      }).then(err=>{
-        console.log(err);
-        setIsLoading(false)
-        toast.error('Something Went Wrong')
-      })
+      cvtToOrder(obb)
+        .then((resp) => {
+          console.log(resp);
+          setOrderResponse(resp);
+          setIsLoading(false);
+          emptyCart();
+          navigate("/Home/Checkout", { state: { orderResponse: resp } });
+        })
+        .then((err) => {
+          console.log(err);
+          setIsLoading(false);
+          toast.error("Something Went Wrong");
+        });
       return;
     }
 
     const cartData = loadCart();
-
-    
 
     const postCartProducts = cartData.map((c) => {
       return {
@@ -353,35 +328,41 @@ export default function BuyerApplyOffer() {
     // console.log("applied offer", appliedOfferId);
     // console.log("address ",selectedAddressId);
 
-    let OrderPostObj = {products:postCartProducts, buyerEmail, orderAddressId:selectedAddressId};
+    let OrderPostObj = {
+      products: postCartProducts,
+      buyerEmail,
+      orderAddressId: selectedAddressId,
+    };
     if (appliedOfferId) {
-      OrderPostObj = {...OrderPostObj, appliedOfferId}
-      if(offerResponse.discountOffer){
-        OrderPostObj = {...OrderPostObj, discountAmount:offerResponse.appliedDiscount}
+      OrderPostObj = { ...OrderPostObj, appliedOfferId };
+      if (offerResponse.discountOffer) {
+        OrderPostObj = {
+          ...OrderPostObj,
+          discountAmount: offerResponse.appliedDiscount,
+        };
       }
-      if(offerResponse.freeGoodsBenefits){
-        OrderPostObj = {...OrderPostObj, selectedArticleOptionId}
+      if (offerResponse.freeGoodsBenefits) {
+        OrderPostObj = { ...OrderPostObj, selectedArticleOptionId };
       }
-      if(offerResponse.freeProductsBenefits){
-        OrderPostObj = {...OrderPostObj, selectedProductOptionId}
+      if (offerResponse.freeProductsBenefits) {
+        OrderPostObj = { ...OrderPostObj, selectedProductOptionId };
       }
     }
     // console.log("final order maaal",OrderPostObj);
 
     addOrder(OrderPostObj)
-    .then(resp=>{
-      // console.log(resp);
-      setOrderResponse(resp);
-      setIsLoading(false)
-      const c = loadCart()
-      emptyCart()
-      navigate('/Home/Checkout', {state:{orderResponse:resp,cart:c}})
-
-    })
-    .catch(err=>{
-      console.log(err);
-      setIsLoading(false)
-    });
+      .then((resp) => {
+        // console.log(resp);
+        setOrderResponse(resp);
+        setIsLoading(false);
+        const c = loadCart();
+        emptyCart();
+        navigate("/Home/Checkout", { state: { orderResponse: resp, cart: c } });
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
   };
 
   const onChooseOptions = () => {
@@ -524,60 +505,72 @@ export default function BuyerApplyOffer() {
           >
             <IoMdArrowRoundBack />
           </button>
-          {!orderByScheme && <><div className="flex items-center mb-4">
-            <h2 className="text-xl font-semibold">Available Offers</h2>
-          </div>
-          <div className="flex gap-4 flex-nowrap overflow-auto mb-4">
-            {offers.map((offer) => (
-              <div
-                key={offer.id}
-                className="p-4 bg-slate-100 shadow rounded-lg flex justify-between items-center"
-              >
-                <div className=" flex flex-col gap-4 w-48">
-                  <img
-                    src={offer.offerPhoto}
-                    alt={offer.offerName}
-                    className="w-20 h-20 object-cover"
-                  />
-                  <div>
-                    <h5 className="text-lg font-bold text-orange-600">
-                      {offer.offerName}
-                    </h5>
-                    <p>{offer.offerDescription}</p>
-                    <p className="text-sm">
-                      Promo Code:{" "}
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {offer.offerCode}
-                      </span>
-                      {" | "}Expiry:{" "}
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {new Date(offer.expiryDate).toLocaleDateString()}
-                      </span>
-                    </p>
-                    <button
-                      onClick={() => offerOpenModal(offer)}
-                      className="text-blue-500 hover:underline"
-                    >
-                      Offer Details
-                    </button>
-                  </div>
-                </div>
+          {!orderByScheme && (
+            <>
+              <div className="flex items-center mb-4">
+                <h2 className="text-xl font-semibold">Available Offers</h2>
               </div>
-            ))}
-          </div>
-          </> }
-
-          
+              <div className="flex gap-4 flex-nowrap overflow-auto mb-4">
+                {offers.map((offer) => (
+                  <div
+                    key={offer.id}
+                    className="p-4 bg-slate-100 shadow rounded-lg flex justify-between items-center"
+                  >
+                    <div className=" flex flex-col gap-4 w-48">
+                      <img
+                        src={offer.offerPhoto}
+                        alt={offer.offerName}
+                        className="w-20 h-20 object-cover"
+                      />
+                      <div>
+                        <h5 className="text-lg font-bold text-emerald-400">
+                          {offer.offerName}
+                        </h5>
+                        <p>{offer.offerDescription}</p>
+                        <div className="bg-black w-full h-[1px] m-[2px]"></div>
+                        <div className=" rounded-lg w-[100%] h-[50%]">
+                          <div className="text-sm">
+                            <p className="text-zinc-500 font-medium">
+                              Promo Code:{" "}
+                            </p>
+                            <span
+                              style={{
+                                fontWeight: "bold",
+                                textTransform: "uppercase",
+                              }}
+                            >
+                              {offer.offerCode}
+                            </span>
+                            <div>
+                              <p className="text-zinc-500 font-medium">
+                                Expiry:{" "}
+                              </p>
+                              <span
+                                style={{
+                                  fontWeight: "bold",
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                {new Date(
+                                  offer.expiryDate
+                                ).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => offerOpenModal(offer)}
+                            className="text-violet-50 bg-violet-600 text-xs my-1 hover:underline rounded-3xl border py-1 px-2"
+                          >
+                            Offer Details
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
           <div className="flex items-center mb-4">
             <h2 className="text-xl font-semibold">Select Address</h2>
@@ -625,9 +618,11 @@ export default function BuyerApplyOffer() {
               <p>-₹ {Number(disAmount).toFixed(2)}</p>
             </div>
             <hr />
-            <div className="flex justify-between mb-2">
+            <div className="flex justify-between mb-2 border rounded-3xl py-1 px-3 bg-emerald-200 mt-2">
               <p>Payable Amount:</p>
-              <p>₹ {Number(tot - disAmount).toFixed(2)}</p>
+              <p className="font-bold text-zinc-600">
+                ₹ {Number(tot - disAmount).toFixed(2)}
+              </p>
             </div>
 
             {offerEditable && (
@@ -667,29 +662,21 @@ export default function BuyerApplyOffer() {
             <button
               className="mt-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded w-full"
               onClick={handleConfirmOrder}
-            > {isLoading ? <Loader />: "Confirm Order"}
-
+            >
+              {" "}
+              {isLoading ? <Loader /> : "Confirm Order"}
               {/* Confirm Order and make payment */}
             </button>
           </div>
         </div>
       </div>
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-1/4 relative">
-            <button
-              onClick={closeModal}
-              className="absolute top-0 right-0 text-2xl text-red-500 p-2"
-            >
-              <IoMdClose />
-            </button>
-            {renderOfferDetails()}
-          </div>
-        </div>
+        <CustomModel onClose={closeModal}>{renderOfferDetails()}</CustomModel>
       )}
+
       {offerModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-1/4 relative">
+          <div className="bg-white p-4 rounded-xl shadow-lg w-1/4 relative">
             <button
               onClick={offerCloseModal}
               className="absolute top-0 right-0 text-2xl text-red-500 p-2"
@@ -700,11 +687,13 @@ export default function BuyerApplyOffer() {
             <h1>Hello</h1>
           </div>
         </div>
-      )}      
+      )}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded shadow-md w-1/2">
-            <h2 className="text-2xl mb-4">Add New Address</h2>
+          <div className="bg-white p-8 rounded-xl shadow-md w-1/2">
+            <h2 className="text-lg font-medium text-zinc-500 mb-4">
+              Add New Address
+            </h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
                 <input
@@ -782,13 +771,13 @@ export default function BuyerApplyOffer() {
                 <button
                   type="button"
                   onClick={() => handleModalClose(null)}
-                  className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
+                  className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-xl"
                 >
                   Save
                 </button>
@@ -800,3 +789,21 @@ export default function BuyerApplyOffer() {
     </div>
   );
 }
+
+export const CustomModel = ({ children, onClose }) => {
+  return (
+    <>
+      <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center px-32 py-5">
+        <div className="bg-white p-4 rounded-xl shadow-lg w-1/4 relative">
+          <button
+            onClick={onClose}
+            className="absolute top-0 right-0 text-2xl text-red-500 p-2"
+          >
+            <IoMdClose />
+          </button>
+          <div className="my-5 mx-3">{children}</div>
+        </div>
+      </div>
+    </>
+  );
+};
