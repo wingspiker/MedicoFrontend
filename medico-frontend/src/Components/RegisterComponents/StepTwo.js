@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Toaster, toast } from "sonner";
 import { setFormData } from "../../Services/auth";
 import Loader from "../../Loader";
+import CustomButton from "../Global/Button";
 
 const StepTwo = (props) => {
   const { formData, handleChange, errors, signUp } = props;
@@ -129,12 +130,12 @@ const StepTwo = (props) => {
       >
         Previous
       </button> */}
-        <button
+        <CustomButton
           onClick={Validate}
-          className="w-full px-4 py-2 bg-[#3e9a6f] text-white rounded-xl-xl hover:bg-green-600 focus:outline-none focus:bg-green-600"
+          className="w-full px-4 py-2  hover:bg-green-600 focus:outline-none focus:bg-green-600"
         >
           {loading ? <Loader /> : "Create Account"}
-        </button>
+        </CustomButton>
       </div>
     </>
   );

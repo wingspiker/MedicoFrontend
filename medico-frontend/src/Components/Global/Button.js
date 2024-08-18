@@ -7,7 +7,7 @@ export default function CustomButton({ children, className, ...props }) {
     <button
       {...props}
       className={cn(
-        `flex items-center justify-center bg-cyan-600 text-white px-4 py-2 rounded-xl`,
+        `flex items-center justify-center bg-cyan-600 text-cyan-50 px-4 py-2 rounded-full hover:bg-cyan-800  hover:text-white focus:bg-cyan-800 focus:outline-none`,
         className
       )}
     >

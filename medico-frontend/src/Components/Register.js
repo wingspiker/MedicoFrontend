@@ -759,7 +759,7 @@ const Register = (props) => {
   };
 
   return (
-    <div className="min-h-screen bg-cyan-900 flex flex-col justify-center items-center">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-300 via-cyan-50 to-cyan-50 flex flex-col justify-center items-center">
       {loadingstate && (
         <div className="fixed h-screen w-screen bg-black bg-opacity-35">
           <div className=" absolute top-1/2 left-1/2 text-white">

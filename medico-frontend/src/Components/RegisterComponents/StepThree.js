@@ -3,6 +3,7 @@ import Subscription from "./Subscription";
 import Modal from "react-modal";
 import { getStates } from "../../Services/location";
 import { setFormData } from "../../Services/auth";
+import CustomButton from "../Global/Button";
 
 const StepThree = (props) => {
   const {
@@ -392,12 +393,12 @@ const StepThree = (props) => {
             </div>
           )}
           <div className="mt-4 w-full">
-            <button
+            <CustomButton
               onClick={nextStep}
-              className="px-4 py-2 bg-[#3e9a6f] text-white rounded-lg hover:bg-green-600 focus:outline-none focus:bg-green-600"
+              className="px-4 py-2 bg-cyan-100 text-cyan-800 rounded-xl hover:bg-cyan-600 focus:outline-none focus:bg-cyan-600"
             >
               Next
-            </button>
+            </CustomButton>
           </div>
         </div>
       </div>

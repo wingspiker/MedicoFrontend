@@ -2,6 +2,7 @@ import React from "react";
 import Loader from "../../Loader";
 import { MdVerified } from "react-icons/md";
 import { Link } from "react-router-dom";
+import CustomButton from "../Global/Button";
 
 const StepOne = ({
   formData,
@@ -35,8 +36,10 @@ const StepOne = ({
         />
         <button
           onClick={verifyEmail}
-          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r-lg hover:bg-green-600 focus:outline-none ${
-            E ? "disabled:bg-green-600" : "disabled:bg-[#72d3a6]"
+          className={` px-4 py-2 bg-cyan-600 text-white rounded-r-lg hover:bg-green-600 focus:outline-none ${
+            E
+              ? "disabled:bg-green-600"
+              : "disabled:bg-cyan-200 disabled:text-cyan-700 disabled:cursor-not-allowed"
           } `}
           disabled={errors.email || formData.email === "" || emailVerified || E}
         >
@@ -83,8 +86,10 @@ const StepOne = ({
         />
         <button
           onClick={verifyMobile}
-          className={` px-4 py-2 bg-[#3e9a6f] text-white  rounded-r-lg hover:bg-green-600 focus:outline-none ${
-            M ? "disabled:bg-green-600" : "disabled:bg-[#72d3a6]"
+          className={` px-4 py-2 bg-cyan-600 text-white  rounded-r-lg hover:bg-green-600 focus:outline-none ${
+            M
+              ? "disabled:bg-green-600"
+              : "disabled:bg-cyan-200 disabled:text-cyan-700 disabled:cursor-not-allowed"
           }`}
           disabled={
             errors.mobile || formData.mobile === "" || mobileVerified || M
@@ -121,13 +126,13 @@ const StepOne = ({
         </div>
       )}
       {errors.mobile && <span className="text-red-500">{errors.mobile}</span>}
-      <button
+      <CustomButton
         onClick={nextStep}
         disabled={!(E && M)}
-        className="w-full mt-4 px-4 py-2 bg-[#3e9a6f] text-white rounded-lg hover:bg-green-600 disabled:bg-[#72d3a6] focus:outline-none focus:bg-green-600"
+        className="w-full mt-4 px-4 py-2 disabled:bg-cyan-200 disabled:text-cyan-700 disabled:cursor-not-allowed"
       >
         Next
-      </button>
+      </CustomButton>
       <p className=" text-center mt-4 text-cyan-800">
         Already an User?{" "}
         <Link className=" font-semibold hover:text-cyan-600" to={"/login"}>
