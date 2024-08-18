@@ -11,6 +11,7 @@ import {
 } from "react-icons/bs";
 import { NavLink, useLocation } from "react-router-dom";
 import { isCompanySelf } from "../../Services/auth";
+import { cn } from "../../lib/cn";
 
 const navItems = [
   "Home",
@@ -54,8 +55,8 @@ export const Sidebar = (props) => {
   return (
     <aside
       className={`fixed inset-y-0 left-0 z-30 overflow-hidden ${
-        isOpen ? " bg-cyan-700" : "bg-black bg-opacity-30"
-      }  text-white transition-all duration-300 ease-in-out ${sidebarWidth} rounded-xl rounded-l-none`}
+        isOpen ? " bg-slate-100" : "bg-blue-200"
+      }  text-slate-700 transition-all duration-300 ease-in-out ${sidebarWidth} rounded-xl rounded-l-none`}
     >
       {/* Modal */}
       {showModal && (
@@ -87,7 +88,7 @@ export const Sidebar = (props) => {
       <div className="flex flex-col h-full">
         <div
           className={`flex items-center justify-between px-2 py-2 border-b border-gray-200 ${
-            isOpen ? "bg-cyan-800" : "bg-black bg-opacity-20  "
+            isOpen ? "bg-blue-50" : "bg-black bg-opacity-20  "
           } `}
         >
           {isOpen ? (
@@ -105,7 +106,7 @@ export const Sidebar = (props) => {
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center justify-center h-10 text-3xl rounded-md text-white hover:text-cyan-600 focus:outline-none"
+            className="flex items-center justify-center h-10 text-3xl rounded-md text-blue-800 hover:text-black focus:outline-none"
           >
             {buttonText}
           </button>
@@ -117,11 +118,12 @@ export const Sidebar = (props) => {
                 <NavLink
                   to={`/company/${item}`}
                   key={item}
-                  className={`px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4 ${
+                  className={cn(
+                    `px-4 py-2 rounded hover:bg-blue-200 hover:text-blue-800 text-xl flex items-center gap-4`,
                     path === "/company/" + item
-                      ? "bg-white text-cyan-800 hover:bg-slate-300"
+                      ? "bg-blue-800 text-blue-50 hover:bg-blue-400 hover:text-white"
                       : ""
-                  }`}
+                  )}
                 >
                   {/* {console.log(path, item)} */}
                   {navItemsIcons[index]} {isOpen ? item : ""}
@@ -133,7 +135,7 @@ export const Sidebar = (props) => {
                   <NavLink
                     to={`/company/${item}`}
                     key={item}
-                    className="px-4 py-2 rounded hover:bg-cyan-800 text-xl flex items-center gap-4"
+                    className="px-4 py-2 rounded hover:bg-blue-200 hover:text-blue-800 text-xl flex items-center gap-4"
                   >
                     {navItemsIcons[index]} {isOpen ? item : ""}
                   </NavLink>
@@ -147,7 +149,7 @@ export const Sidebar = (props) => {
               onClick={toggleModal}
               className={`${
                 isOpen ? "mx-4 w-full" : "me-2"
-              } cursor-pointer bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+              } cursor-pointer bg-red-500 hover:bg-red-600 text-white py-2 px-2 rounded-full flex items-center gap-2`}
             >
               <IoLogOut /> {isOpen ? "Logout" : ""}
             </button>

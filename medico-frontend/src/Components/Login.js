@@ -234,7 +234,7 @@ const Login = (props) => {
                 </div>
                 <CustomButton
                   type="submit"
-                  className="block mx-auto w-full px-5 py-2.5 text-sm font-medium text-center text-cyan-800 bg-cyan-200 hover:bg-green-600 rounded-lg hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 relative rounded-full" // Added relative class
+                  className="block mx-auto w-full px-5 py-2.5 text-sm font-medium text-center text-cyan-800 bg-cyan-200 hover:bg-cyan-400 hover:text-white  focus:ring-4 focus:ring-primary-300 relative "
                 >
                   {loading ? <Loader /> : "Login"}
                 </CustomButton>
