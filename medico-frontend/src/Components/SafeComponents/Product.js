@@ -143,7 +143,7 @@ export default function Product(props) {
       });
   };
   return (
-    <div className="flex h-screen bg-white text-slate-600">
+    <div className="flex min-h-screen bg-white text-slate-600">
       <Toaster
         position="top-center"
         toastOptions={{
