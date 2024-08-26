@@ -32,7 +32,8 @@ const navItems = [
     icon: <MdSubscriptions />,
     link: "/admin/Subscription",
     subItems: [
-      { label: "Percentage", link: "/admin/SubscriptionPercentage" },
+      { label: "Percentage (New Companies)", link: "/admin/SubscriptionPercentage" },
+      { label: "Percentage (Bills)", link: "/admin/SubscriptionPercentageBills" },
       { label: "Plan", link: "/admin/SubscriptionPlan" },
     ],
   },

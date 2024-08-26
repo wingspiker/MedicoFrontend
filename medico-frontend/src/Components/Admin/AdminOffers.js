@@ -54,7 +54,7 @@ export default function AdminOffers() {
 
   return (
     <>
-      <div className=" p-5 flex justify-between ms-12">
+      <div className=" p-2  flex justify-between ms-16">
         <h1 className="text-3xl font-semibold text-white">Offers </h1>
         <button
           onClick={onAddOffer}

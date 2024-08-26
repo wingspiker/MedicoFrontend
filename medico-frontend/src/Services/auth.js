@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {jwtDecode as jwt_decode} from 'jwt-decode';
+import { toast } from 'sonner';
 
 
 const url = process.env.REACT_APP_API_BASE_URL
@@ -75,6 +76,7 @@ export const verifyMobileOtp = async  (mobileData) => {
         .catch(error => {
             // Handle error
             console.error('Error occurred', error);
+           
             throw error; // Throw error for further handling if needed
         });    
 }
@@ -103,7 +105,14 @@ export const signUpService = async (signUpDto) => {
 // signout
 
 export const signOut = () => {
+    if(isAdmin()){
+        window.location.href='/admin'
+    }
+    else{
+        window.location.href='/login'
+    }
     localStorage.removeItem("token");
+    
 }
 
 export const token = () => localStorage.getItem("token");
@@ -130,7 +139,7 @@ export const isCompanySelf = () => {
     if(user){
         const key = Object.keys(user).find((key)=> key.endsWith('role'))
         if(user[key]==='Company'){
-            return user['CompanyType']=='SelfSelling'
+            return user['CompanyType']==='SelfSelling'
         }
     }
     return false
@@ -179,7 +188,6 @@ export let formdata  = {
     role: "",
     password: "",
     confirmPassword: "",
-    role:"",
 
     //step 3
     companyEmail: "",
@@ -208,43 +216,42 @@ export let formdata  = {
     occupation: "",
   };
 
-  export let initialData  = {
-    email: "",
-    emailOtp: "",
-    mobile: "",
-    mobileOtp: "",
-    username: "",
-    role: "",
-    password: "",
-    confirmPassword: "",
-    role:"",
+export let initialData  = {
+email: "",
+emailOtp: "",
+mobile: "",
+mobileOtp: "",
+username: "",
+role: "",
+password: "",
+confirmPassword: "",
 
-    //step 3
-    companyEmail: "",
-    companyName: "",
-    licenseNumber: "",
-    gstNumber: "",
-    panCardNumber: "",
-    displayName: "",
-    state: "",
-    district: "",
-    taluka: "",
-    companyAddress1: "",
-    companyAddress2: "",
-    pincode: "",
-    logo: "",
-    drugLicenseNumber: "",
-    wholesaleLicenseNumber: "",
-    companyType: "",
-    chargeType: "",
-    subscription: "",
+//step 3
+companyEmail: "",
+companyName: "",
+licenseNumber: "",
+gstNumber: "",
+panCardNumber: "",
+displayName: "",
+state: "",
+district: "",
+taluka: "",
+companyAddress1: "",
+companyAddress2: "",
+pincode: "",
+logo: "",
+drugLicenseNumber: "",
+wholesaleLicenseNumber: "",
+companyType: "",
+chargeType: "",
+subscription: "",
 
-    //Buyer
-    degree: "",
-    firstName: "",
-    lastName: "",
-    occupation: "",
-  };
+//Buyer
+degree: "",
+firstName: "",
+lastName: "",
+occupation: "",
+};
 
 export const setFormData = (f) =>{
     formdata=f;
@@ -267,7 +274,7 @@ export const getAllUnverifiedBuyers = async () => {
         .then(response => {
             // Handle successful response
             console.log(response);
-            return response; // Return data if needed
+            return response.data; // Return data if needed
         })
         .catch(error => {
             // Handle error
@@ -286,7 +293,7 @@ export const getAllVerifiedBuyers = async () => {
         .then(response => {
             // Handle successful response
             console.log(response);
-            return response; // Return data if needed
+            return response.data; // Return data if needed
         })
         .catch(error => {
             // Handle error
@@ -352,3 +359,5 @@ export const forceVerify = async (email) => {
         });
     
 }
+        
+// export const currChargeType = 0;

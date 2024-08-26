@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   decodeToken,
   signOut,
@@ -20,6 +20,10 @@ import { IoClose } from "react-icons/io5";
 
 const Login = (props) => {
   // console.log(env);
+
+  // useEffect(() => {
+  //   console.log("useEffect");
+  // }, [])
 
   const { changeLogin, setShowSidebar } = props;
   const [email, setEmail] = useState("");
@@ -78,7 +82,7 @@ const Login = (props) => {
         .then((response) => {
           // debugger;
           // console.log(response);
-          setLoading(false); // Set loading to false after API response
+          
           // Handle successful login response
 
           localStorage.setItem("token", response.accessToken);
@@ -127,13 +131,28 @@ const Login = (props) => {
             // }
             
             if(user[role]==="Buyer"){
-// console.log('this is me');
-              navigate('/Home');
+              navigate(0)
+              setTimeout(() => {
+                navigate('/Home');
+              }, 100);
               return
             }
             changeLogin(true);
             setShowSidebar(true);
-            navigate("/company/Home");
+            console.log(user);
+            // navigate(0)
+            // debugger;
+            if(user.isPaymentPending==='True'){
+              navigate('/company/CompletePayment')
+              return;
+            }else{
+              setTimeout(() => {
+                navigate("/company/Home");
+                navigate(0)
+                setLoading(false); // Set loading to false after API response
+              }, 2500);
+            }
+            
           }
         })
         .catch((error) => {

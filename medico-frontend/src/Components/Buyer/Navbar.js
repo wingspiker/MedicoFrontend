@@ -11,10 +11,12 @@ import { signOut } from "../../Services/auth";
 import { FaSearch } from "react-icons/fa";
 import { cartLength } from "../../Services/cart";
 import { BsQrCodeScan } from "react-icons/bs"; // Import the QR scan icon
+import { Toaster } from "sonner";
 
 export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const [red, isRed] = useState(true);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -25,9 +27,9 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   };
 
   const handleLogout = () => {
-    // Place your logout logic here
-    signOut();
-    navigate("/login");
+
+    signOut()
+
     setOpen(false);
   };
 
@@ -37,6 +39,12 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
 
   return (
     <nav className="bg-white px-4 py-2 shadow-md">
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: { color: `${red ? "red" : "green"}` },
+        }}
+      />
       <div className="container mx-auto flex justify-between items-center">
         <div
           className="text-3xl font-bold text-blue-600 cursor-pointer"

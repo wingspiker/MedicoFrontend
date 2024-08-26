@@ -22,7 +22,7 @@ export default function SalesmanLanding() {
 
   return (
     <div className="flex-1 ms-14">
-      <div className="p-4 pt-3 flex justify-between gap-4">
+      <div className="p-1 pb-2 ms-2  flex justify-between gap-4">
         <h1 className="text-3xl font-semibold text-white mt-4">
           My Profile
         </h1>

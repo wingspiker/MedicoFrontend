@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { isAdmin, loginService } from "../../Services/auth";
 import Loader from "../../Loader";
 import { Toaster, toast } from "sonner";
@@ -14,6 +14,14 @@ export default function AdminPage(props) {
   const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
+  const location = useLocation();
+  useEffect(() => {
+    const setting = location?.state?.setting;
+    if(setting){
+      console.log('main yaha');
+      navigate('')
+    }  
+  }, [])
 
   const validateForm = () => {
     let errors = {};
@@ -51,14 +59,19 @@ export default function AdminPage(props) {
           } else {
             showErr("You are not authorized to view the admin panel");
           }
+          setEmail("");
+          setPassword("");
+          
         })
         .catch((err) => {
           console.log(err);
           showErr(err.response.data.detail)
           setloading(false);
+          setEmail("");
+          setPassword("");
+                
         });
-      setEmail("");
-      setPassword("");
+      
     }
   };
 

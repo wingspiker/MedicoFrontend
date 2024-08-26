@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 
 const SalesmanProductCard = ({ product }) => {
+  console.log(product);
   return (
     <div className="container mx-auto px-4 py-4">
       <Card className="m-2 shadow-lg relative">

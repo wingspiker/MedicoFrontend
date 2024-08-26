@@ -29,8 +29,8 @@ export default function AdminProduct() {
 
   return (
     <>
-      <div className="p-5 pb-6 flex justify-between">
-        <h1 className=" ms-16 text-3xl font-semibold text-white">
+      <div className="flex justify-between">
+        <h1 className=" ms-16 p-2 pb-3  text-3xl font-semibold text-white">
           Products - Admin Selling Companies
         </h1>
       </div>

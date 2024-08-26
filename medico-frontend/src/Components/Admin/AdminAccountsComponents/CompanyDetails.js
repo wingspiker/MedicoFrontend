@@ -1,27 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AdminSidebar } from '../AdminSidebar';
 import { signOut } from '../../../Services/auth';
+import DocumentViewer from './DocumentViewer';
 
 export default function CompanyDetails() {
     const navigate = useNavigate();
     const location = useLocation();
     const company = location?.state?.company;
+    const [selectedDocument, setSelectedDocument] = useState(null);
 
-    const onlogout = () => {
+    const onLogout = () => {
         signOut();
         navigate("/admin");
+    };
+    
+    const goBack = () => {
+        navigate(-1);
+    };
+
+    const handleDocumentClick = (doc) => {
+        setSelectedDocument(doc);
+    };
+
+    const handleCloseViewer = () => {
+        setSelectedDocument(null);
     };
 
     return (
         <>
-            <div className="p-4 pb-7 flex justify-between">
-                <h1 className="ms-16 text-3xl font-semibold text-white flex items-center">
+        {/* {console.log(company)} */}
+            <div className=" flex justify-between">
+                <h1 className="p-2 pb-3 ms-16  text-3xl font-semibold text-white flex items-center">
                     Company Details
                 </h1>
             </div>
             <hr />
             <div className="p-2 ps-16">
+            <button onClick={goBack} className="p-2 text-sm bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+               Back 
+            </button>
                 <div className="p-5 h-[88vh] overflow-auto no-scrollbar rounded shadow-lg">
                     <h2 className="text-2xl font-semibold text-orange-500 mb-4">
                         General Information
@@ -69,11 +87,32 @@ export default function CompanyDetails() {
                             </svg>
                             <span className="text-gray-400">Address:</span> <span className="text-white font-bold ml-1">{company.address1}, {company.address2}</span>
                         </div>
+
+                        <div className="mt-4">
+                        <h2 className="text-xl font-semibold text-orange-500 mb-4">
+                            Documents
+                        </h2>
+                        <div className="space-y-2">
+                            {company.documentLink.map((doc) => (
+                                <div key={doc.id} className="flex items-center text-white">
+                                    <button
+                                        onClick={() => handleDocumentClick(doc)}
+                                        className="p-2 text-sm bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    >
+                                        View {doc.name}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                         
                     </div>
                 </div>
             </div>
-            <AdminSidebar changeLogin={onlogout} />
+            <AdminSidebar changeLogin={onLogout} />
+            {selectedDocument && (
+                <DocumentViewer open={Boolean(selectedDocument)} onClose={handleCloseViewer} file={selectedDocument} />
+            )}
         </>
     );
 }
