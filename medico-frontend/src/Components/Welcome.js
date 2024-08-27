@@ -28,10 +28,14 @@ const Welcome = (props) => {
       toast.success("You are not verified kindly get verified", {autoClose: 1000});
       signOut()
     }
+
+    // if(user)
+    
     
     if(showMessage){
     setIsRed(false)
-      toast.success("Logged in successfully!", {autoClose: 1000});
+    // console.log(user);
+    toast.success("Logged in successfully!", {autoClose: 1000});
     }
     setTimeout(() => {
       setIsRed(true)

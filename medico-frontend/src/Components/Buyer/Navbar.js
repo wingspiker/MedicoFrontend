@@ -35,11 +35,13 @@ export const NavLinks = [
     href: "/Home/About",
   },
 ];
+import { Toaster } from "sonner";
 
 export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
+  const [red, isRed] = useState(true);
   const location = useLocation();
   const openMenu = Boolean(anchorEl);
 
@@ -50,7 +52,7 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
     setAnchorEl(null);
   };
 
-  const handleClick = () => {
+  const handleClickOpen = () => {
     setOpen(true);
   };
 
@@ -59,9 +61,8 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   };
 
   const handleLogout = () => {
-    // Place your logout logic here
     signOut();
-    navigate("/login");
+
     setOpen(false);
   };
 
@@ -70,7 +71,13 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   };
 
   return (
-    <nav className="bg-cyan-100 px-4 py-2 shadow-md ">
+    <nav className="bg-cyan-100 px-4 py-2 shadow-md">
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: { color: `${red ? "red" : "green"}` },
+        }}
+      />
       <div className="container mx-auto flex justify-between items-center">
         <div
           className="text-3xl font-bold text-cyan-600 cursor-pointer"

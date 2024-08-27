@@ -33,6 +33,7 @@ import {
 } from "@mui/material";
 import { MdVerified } from "react-icons/md";
 import { verifyCompanyApi } from "../../../Services/company";
+import { subscriptionTypeEnum } from "../../../Models/enums.model";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -63,6 +64,8 @@ function CompanyTable({ companies, isVerified, verifyCompany }) {
   const [percentage, setPercentage] = useState("");
   const [currentCompany, setCurrentCompany] = useState(null);
 
+  console.log(companies);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -89,9 +92,11 @@ function CompanyTable({ companies, isVerified, verifyCompany }) {
       percentage <= 100
     ) {
       verifyCompany(currentCompany.companyEmail, percentage);
+      console.log("ee");
       handleCloseDialog();
     } else if (currentCompany.chargesType === 0) {
       verifyCompany(currentCompany.companyEmail);
+      handleCloseDialog();
     } else {
       setSnackbarMessage("Please enter a valid percentage (1-100).");
       setOpenSnackbar(true);
@@ -138,12 +143,32 @@ function CompanyTable({ companies, isVerified, verifyCompany }) {
                     />
                   </TableCell>
                   <TableCell>{company.companyEmail}</TableCell>
+                  {console.log(company)}
                   <TableCell>
                     <Chip
                       label={
-                        company.chargesType === 0
-                          ? "Subscription"
-                          : "Percentage"
+                        company.chargesType === 0 ? (
+                          <p>
+                            Subscription{" "}
+                            {isVerified && (
+                              <>
+                                :{" "}
+                                {
+                                  Object.values(subscriptionTypeEnum)[
+                                    company.activeSubscription ?? 0
+                                  ]
+                                }
+                              </>
+                            )}
+                          </p>
+                        ) : (
+                          <p>
+                            Percentage{" "}
+                            {isVerified && (
+                              <>: {(+company.percentage).toFixed(2)} %</>
+                            )}
+                          </p>
+                        )
                       }
                       color={
                         company.chargesType === 0 ? "primary" : "secondary"

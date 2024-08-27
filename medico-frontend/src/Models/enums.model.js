@@ -8,6 +8,11 @@
 //     MEDICAL_OWNER : 'Medical Owner',
 // }
 
+export const chargesTypeEnum = {
+  SUBSCRIPTION:0,
+  PERCENTAGE:1
+};
+
 export const productTypeEnum = {
   CAPSULE: "Capsule",
   TABLET: "Tablet",
@@ -26,7 +31,7 @@ export const pricingPreferenceEnum = {
 
 export const subscriptionTypeEnum = {
   PERMONTH_3000: "Monthly Plan",
-  PERSIXMONTH_15000: "Monthly Plan",
+  PERSIXMONTH_15000: "Six Monthly Plan",
   PERYEAR_25000: "Annual Plan",
 };
 

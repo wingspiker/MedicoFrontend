@@ -42,7 +42,7 @@ const onViewProduct = (pid, index) => {
         <hr/>
       <div className="p-5">
         <div className="grid grid-cols-4 gap-4">
-          {currSalesman?.assignedProducts.map((product, index) => (
+          {currSalesman?.productTalukaAssignments?.map((product, index) => (
             <div key={product.id} className="bg-white p-4 rounded-lg shadow-lg">
                 {/* {console.log(product)} */}
               <img src={product.photoUrl} alt="Product" className="w-full h-48 object-cover mb-4 rounded"/>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import StepOne from "./RegisterComponents/StepOne";
 import StepTwo from "./RegisterComponents/StepTwo";
 import StepThree from "./RegisterComponents/StepThree";
@@ -44,7 +44,18 @@ const Register = (props) => {
   // }
 
   // Your form state and functions...
+  const location = useLocation();
   useEffect(() => {
+    // console.log('jjjj');
+    debugger;
+
+    const setting = location?.state?.setting;
+    console.log(location.state);
+    if(setting){
+      // console.log(setting);
+      navigate('/login')
+      return;
+    }  
     setFormData(formdata);
     setCurrStep(1);
     // signOut();
@@ -583,7 +594,7 @@ const Register = (props) => {
 
         if (chargeType == 0) {
           const { subscription } = formData;
-          submitData.subscription = Number(subscription);
+          submitData.subscriptionPlanType = Number(subscription);
         }
         console.log(submitData);
         // console.log('company');
@@ -629,7 +640,7 @@ const Register = (props) => {
     registerCompany(cData)
       .then((resp) => {
         console.log(resp);
-        navigate("/Home");
+        navigate("/Login");
         setSubmitLoading(false);
       })
       .catch((err) => {

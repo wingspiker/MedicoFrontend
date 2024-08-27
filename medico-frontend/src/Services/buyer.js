@@ -300,3 +300,25 @@ export const QRApi = async (apiRoute) => {
       throw error; // Throw error for further handling if needed
     });
 };
+
+export const verifyBuyerApi = async (verifyObj) => { 
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+  return axios
+    .post(url+'/api/user/force-verify', verifyObj, config) 
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
