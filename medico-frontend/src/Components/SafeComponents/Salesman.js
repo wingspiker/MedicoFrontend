@@ -170,7 +170,7 @@ const AddSalesmanModal = ({
     >
       <div className="bg-white text-black p-4 rounded-2xl mx-4 md:w-4/12">
         <form onSubmit={handleSubmit(onsubmit)}>
-          <p className="text-3xl text-cyan-900  border rounded-2xl font-semibold mb-6">
+          <p className="text-3xl text-cyan-900  border rounded-full font-semibold mb-6">
             Add Salesman
           </p>
           <div className="flex">
@@ -533,7 +533,7 @@ export default function Salesman(props) {
           <div className=" p-2 flex justify-end gap-4">
             <CustomButton
               onClick={openModal}
-              className={` rounded-full bg-orange-500 hover:bg-orange-600 text-white `}
+              className={`rounded-full bg-orange-500 hover:bg-orange-600 text-white`}
             >
               Add Salesman
             </CustomButton>

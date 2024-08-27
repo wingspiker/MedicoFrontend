@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { deleteOfferbyId, getOffers } from "../../Services/offer";
+import CustomButton from "../Global/Button";
 
 export default function AdminOffers() {
   const navigate = useNavigate();
@@ -66,12 +67,12 @@ export default function AdminOffers() {
     <>
       <div className=" p-2  flex justify-between ms-16">
         <h1 className="text-3xl font-semibold">Offers </h1>
-        <button
+        <CustomButton
           onClick={onAddOffer}
-          className="  cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2"
+          className="  cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded-full flex items-center gap-2"
         >
           Add Offers
-        </button>
+        </CustomButton>
       </div>
       <hr />
       <AdminSidebar changeLogin={onlogout} />
