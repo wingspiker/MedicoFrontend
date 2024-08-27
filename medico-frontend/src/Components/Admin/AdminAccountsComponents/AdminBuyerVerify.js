@@ -166,8 +166,7 @@ function BuyerTable({ buyers, isVerified, verifyBuyer, loading }) {
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button onClick={handleVerify}>
-            {loading ? <CircularProgress size={'20px'} /> : "Verify"}
-
+            {loading ? <CircularProgress size={"20px"} /> : "Verify"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -227,35 +226,34 @@ export default function AdminBuyerVerify() {
   const [Loading, setLoading] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-
   useEffect(() => {
     getAllVerifiedBuyers().then(setVerified).catch(console.error);
     getAllUnverifiedBuyers().then(setUnverified).catch(console.error);
   }, [Flag]);
 
   const verifyBuyer = (email) => {
-    setLoading(true)
-    verifyBuyerApi({email})
+    setLoading(true);
+    verifyBuyerApi({ email })
       .then((resp) => {
         console.log("Buyer verified successfully:", resp);
         setOpenSnackbar(true);
         setSnackbarMessage("Buyer verified successfully!");
-        setFlag(f=>!f)
-        setLoading(false)
+        setFlag((f) => !f);
+        setLoading(false);
       })
       .catch((err) => {
         console.error("Error verifying buyer:", err);
         setOpenSnackbar(true);
         setSnackbarMessage("Failed to verify buyer.");
-        setFlag(f=>!f)
-        setLoading(false)
+        setFlag((f) => !f);
+        setLoading(false);
       });
   };
 
   return (
     <>
       <div className="p-2 pb-3  flex justify-between">
-        <h1 className="ms-16 text-3xl font-semibold text-white flex items-center">
+        <h1 className="ms-16 text-3xl font-semibold flex items-center">
           Buyer Accounts
         </h1>
       </div>

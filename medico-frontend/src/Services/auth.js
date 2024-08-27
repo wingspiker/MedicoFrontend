@@ -1,6 +1,6 @@
-import axios from 'axios'
-import {jwtDecode as jwt_decode} from 'jwt-decode';
-import { toast } from 'sonner';
+import axios from "axios";
+import { jwtDecode as jwt_decode } from "jwt-decode";
+import { toast } from "sonner";
 
 const url = "https://crmwe5yxfs.ap-south-1.awsapprunner.com";
 
@@ -71,19 +71,20 @@ export const getMobileOtp = async (otpData) => {
     });
 };
 
-export const verifyMobileOtp = async  (mobileData) => {
-    return axios.post(url + `/api/newuser/phone/verify-otp`, mobileData)
-        .then(response => {
-            // Handle successful response
-            return response.data; // Return data if needed
-        })
-        .catch(error => {
-            // Handle error
-            console.error('Error occurred', error);
-           
-            throw error; // Throw error for further handling if needed
-        });    
-}
+export const verifyMobileOtp = async (mobileData) => {
+  return axios
+    .post(url + `/api/newuser/phone/verify-otp`, mobileData)
+    .then((response) => {
+      // Handle successful response
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred", error);
+
+      throw error; // Throw error for further handling if needed
+    });
+};
 
 // signup
 
@@ -109,15 +110,13 @@ export const signUpService = async (signUpDto) => {
 // signout
 
 export const signOut = () => {
-    if(isAdmin()){
-        window.location.href='/admin'
-    }
-    else{
-        window.location.href='/login'
-    }
-    localStorage.removeItem("token");
-    
-}
+  if (isAdmin()) {
+    window.location.href = "/admin";
+  } else {
+    window.location.href = "/login";
+  }
+  localStorage.removeItem("token");
+};
 
 export const token = () => localStorage.getItem("token");
 
@@ -139,12 +138,11 @@ export const isAdmin = () => {
 };
 
 export const isCompanySelf = () => {
-    const user = decodeToken();
-    if(user){
-        const key = Object.keys(user).find((key)=> key.endsWith('role'))
-        if(user[key]==='Company'){
-            return user['CompanyType']==='SelfSelling'
-        }
+  const user = decodeToken();
+  if (user) {
+    const key = Object.keys(user).find((key) => key.endsWith("role"));
+    if (user[key] === "Company") {
+      return user["CompanyType"] === "SelfSelling";
     }
   }
   return false;
@@ -182,15 +180,15 @@ export const setIsBuyer = (b) => {
 
 // /formdata
 
-export let formdata  = {
-    email: "",
-    emailOtp: "",
-    mobile: "",
-    mobileOtp: "",
-    username: "",
-    role: "",
-    password: "",
-    confirmPassword: "",
+export let formdata = {
+  email: "",
+  emailOtp: "",
+  mobile: "",
+  mobileOtp: "",
+  username: "",
+  role: "",
+  password: "",
+  confirmPassword: "",
 
   //step 3
   companyEmail: "",
@@ -219,41 +217,41 @@ export let formdata  = {
   occupation: "",
 };
 
-export let initialData  = {
-email: "",
-emailOtp: "",
-mobile: "",
-mobileOtp: "",
-username: "",
-role: "",
-password: "",
-confirmPassword: "",
+export let initialData = {
+  email: "",
+  emailOtp: "",
+  mobile: "",
+  mobileOtp: "",
+  username: "",
+  role: "",
+  password: "",
+  confirmPassword: "",
 
-//step 3
-companyEmail: "",
-companyName: "",
-licenseNumber: "",
-gstNumber: "",
-panCardNumber: "",
-displayName: "",
-state: "",
-district: "",
-taluka: "",
-companyAddress1: "",
-companyAddress2: "",
-pincode: "",
-logo: "",
-drugLicenseNumber: "",
-wholesaleLicenseNumber: "",
-companyType: "",
-chargeType: "",
-subscription: "",
+  //step 3
+  companyEmail: "",
+  companyName: "",
+  licenseNumber: "",
+  gstNumber: "",
+  panCardNumber: "",
+  displayName: "",
+  state: "",
+  district: "",
+  taluka: "",
+  companyAddress1: "",
+  companyAddress2: "",
+  pincode: "",
+  logo: "",
+  drugLicenseNumber: "",
+  wholesaleLicenseNumber: "",
+  companyType: "",
+  chargeType: "",
+  subscription: "",
 
-//Buyer
-degree: "",
-firstName: "",
-lastName: "",
-occupation: "",
+  //Buyer
+  degree: "",
+  firstName: "",
+  lastName: "",
+  occupation: "",
 };
 
 export const setFormData = (f) => {
@@ -271,38 +269,38 @@ export const getAllUnverifiedBuyers = async () => {
 
   // console.log(login);
 
-    return axios.get(url + '/api/user/all-unverified-buyers')
-        .then(response => {
-            // Handle successful response
-            console.log(response);
-            return response.data; // Return data if needed
-        })
-        .catch(error => {
-            // Handle error
-            console.error('Error occurred during login:', error);
-            throw error; // Throw error for further handling if needed
-        });
-    
-}
+  return axios
+    .get(url + "/api/user/all-unverified-buyers")
+    .then((response) => {
+      // Handle successful response
+      console.log(response);
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
 
 export const getAllVerifiedBuyers = async () => {
   // const url = development.url + '/api/auth/login';
 
   // console.log(login);
 
-    return axios.get(url + '/api/user/all-verified-buyers')
-        .then(response => {
-            // Handle successful response
-            console.log(response);
-            return response.data; // Return data if needed
-        })
-        .catch(error => {
-            // Handle error
-            console.error('Error occurred during login:', error);
-            throw error; // Throw error for further handling if needed
-        });
-    
-}
+  return axios
+    .get(url + "/api/user/all-verified-buyers")
+    .then((response) => {
+      // Handle successful response
+      console.log(response);
+      return response.data; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
 
 export const getAllUnverifiedCompanies = async () => {
   // const url = development.url + '/api/auth/login';
@@ -347,18 +345,18 @@ export const forceVerify = async (email) => {
 
   const post = { email };
 
-    return axios.post(url+ '/api/user/force-verify', post)
-        .then(response => {
-            // Handle successful response
-            console.log(response);
-            return response; // Return data if needed
-        })
-        .catch(error => {
-            // Handle error
-            console.error('Error occurred during login:', error);
-            throw error; // Throw error for further handling if needed
-        });
-    
-}
-        
+  return axios
+    .post(url + "/api/user/force-verify", post)
+    .then((response) => {
+      // Handle successful response
+      console.log(response);
+      return response; // Return data if needed
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error occurred during login:", error);
+      throw error; // Throw error for further handling if needed
+    });
+};
+
 // export const currChargeType = 0;

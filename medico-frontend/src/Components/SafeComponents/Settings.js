@@ -17,6 +17,7 @@ import { handleImageUpload } from "../../Services/upload";
 import { CircularProgress } from "@mui/material";
 import BillComponent from "../BillComponent";
 import { toast, Toaster } from "sonner";
+import CustomButton from "../Global/Button";
 
 export default function Settings(props) {
   const { changeLogin } = props;

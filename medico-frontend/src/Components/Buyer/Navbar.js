@@ -12,6 +12,7 @@ import { FaSearch } from "react-icons/fa";
 import { cartLength } from "../../Services/cart";
 import { Menu, MenuItem } from "@mui/material";
 import { CircleUserRound } from "lucide-react";
+import { Toaster } from "sonner";
 
 export const NavLinks = [
   {
@@ -35,7 +36,6 @@ export const NavLinks = [
     href: "/Home/About",
   },
 ];
-import { Toaster } from "sonner";
 
 export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
   const [open, setOpen] = useState(false);
@@ -153,7 +153,7 @@ export default function Navbar({ searchTerm, onSearchChange, onSearchSubmit }) {
             <MenuItem onClick={handleCloseMenu}>My account</MenuItem>
             <MenuItem
               onClick={() => {
-                handleClick();
+                handleLogout();
                 // handleCloseMenu()
               }}
             >
