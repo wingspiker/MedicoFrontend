@@ -6,7 +6,11 @@ const ProductCard = ({ product }) => {
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
       <div className="relative">
         <img
-          src={"https://placehold.co/600x400/EEE/31343C"}
+          src={
+            product?.photoUrl
+              ? product?.photoUrl
+              : "https://placehold.co/600x400/EEE/31343C"
+          }
           alt={product.drugName}
           className="w-full h-48 object-cover"
         />

@@ -154,7 +154,7 @@ const ProductFilter = ({
       {/* {console.log(companies)} */}
       <button
         onClick={handleFilter}
-        className="bg-cyan-500 w-[270px] hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-xl fixed bottom-4"
+        className="bg-cyan-500 lg:w-[17%]  hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-xl fixed bottom-4"
       >
         Apply
       </button>

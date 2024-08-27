@@ -453,7 +453,7 @@ export default function AdminAddSalesman(props) {
   }, []);
 
   const SalesmanCard = ({ salesman, onView, onDelete, index }) => (
-    <div className="bg-white text-black rounded-lg shadow-lg p-4 m-2 w-full sm:w-1/2 lg:w-1/4">
+    <div className="bg-white text-black rounded-lg shadow-lg p-4 m-2 w-full sm:w-1/2 lg:w-1/4 flex flex-col">
       <div className="flex items-center">
         <img
           src="/salesman.jpg"
@@ -514,7 +514,7 @@ export default function AdminAddSalesman(props) {
   };
 
   return (
-    <div className=" h-screen bg-cyan-900 text-white">
+    <div className=" h-screen bg-cyan-100 text-slate-700">
       <Toaster
         position="top-center"
         toastOptions={{
@@ -535,7 +535,9 @@ export default function AdminAddSalesman(props) {
           </div>
           <hr></hr>
         </div>
-        <p className=" text-4xl text-white px-8 py-2">Salesman</p>
+        <p className=" text-4xl text-cyan-700 font-semibold px-8 py-2">
+          Salesman
+        </p>
       </div>
 
       <div className=" ms-14 p-8">
