@@ -121,7 +121,9 @@ const Login = (props) => {
             setCurrStep(3);
           } else if (user.isVerified === "False") {
             toast.error("You are not verified. kindly get verified.");
-            signOut();
+            // signOut();
+            localStorage.removeItem('token');
+            // navigate('/login')
           } else {
             
             // console.log('llll');
