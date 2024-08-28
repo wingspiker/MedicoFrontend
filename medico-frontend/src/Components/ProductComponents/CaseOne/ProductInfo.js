@@ -19,27 +19,30 @@ import {
 import { prescriptionEnum, productTypeEnum } from "../../../Models/enums.model";
 import { handleImageUpload } from "../../../Services/upload";
 
-function ProductInformation({ register, watch, errors, prescription, divisions, setValue }) {
-
+function ProductInformation({
+  register,
+  watch,
+  errors,
+  prescription,
+  divisions,
+  setValue,
+}) {
   const handleProductImageFileChange = (e) => {
     handleImageUpload(e)
-    .then((res) => {
-      setValue('productImage',res.data)
-    })
-    .catch((err) => console.log("Error: ", err));
-    
-  }
+      .then((res) => {
+        setValue("productImage", res.data);
+      })
+      .catch((err) => console.log("Error: ", err));
+  };
 
   const handlePrescriptionDocFileChange = (e) => {
     handleImageUpload(e)
-    .then((res) => {
-      console.log(res);
-      setValue('letterPadDocument',res.data)
-    })
-    .catch((err) => console.log("Error: ", err));
-    
-  }
-
+      .then((res) => {
+        console.log(res);
+        setValue("letterPadDocument", res.data);
+      })
+      .catch((err) => console.log("Error: ", err));
+  };
 
   return (
     <fieldset className="p-4 border rounded-md mt-5 max-w-5xl">
@@ -82,8 +85,7 @@ function ProductInformation({ register, watch, errors, prescription, divisions, 
           <CustomInput
             label={"Product Image"}
             placeholder={"Upload"}
-            inputProps={
-              {
+            inputProps={{
               required: "Product Image is required",
               onChange: handleProductImageFileChange,
               type: "file",
@@ -167,7 +169,7 @@ function ProductInformation({ register, watch, errors, prescription, divisions, 
                 required: "letter Pad document is required",
                 type: "file",
                 accept: "image/*",
-                onChange:handlePrescriptionDocFileChange,
+                onChange: handlePrescriptionDocFileChange,
                 className:
                   "file:border file:border-gray-300 file:rounded-md file:text-sm file:font-medium file:bg-white file:text-indigo-500 hover:file:bg-indigo-50",
               }}
@@ -182,6 +184,10 @@ function ProductInformation({ register, watch, errors, prescription, divisions, 
             placeholder="Enter size X"
             inputProps={register("sizeX", {
               required: "Size X is required",
+              pattern: {
+                value: /^[0-9]+$/, // Regular expression to allow only digits
+                message: "Alphabets are not allowed", // Error message for invalid input
+              },
             })}
             error={errors.sizeX}
           />
@@ -193,6 +199,10 @@ function ProductInformation({ register, watch, errors, prescription, divisions, 
             placeholder="Enter size Y"
             inputProps={register("sizeY", {
               required: "Size Y is required",
+              pattern: {
+                value: /^[0-9]+$/, // Regular expression to allow only digits
+                message: "Alphabets are not allowed", // Error message for invalid input
+              },
             })}
             error={errors.sizeY}
           />

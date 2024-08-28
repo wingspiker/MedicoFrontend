@@ -51,11 +51,11 @@ const Register = (props) => {
 
     const setting = location?.state?.setting;
     console.log(location.state);
-    if(setting){
+    if (setting) {
       // console.log(setting);
-      navigate('/login')
+      navigate("/login");
       return;
-    }  
+    }
     setFormData(formdata);
     setCurrStep(1);
     // signOut();
@@ -80,7 +80,11 @@ const Register = (props) => {
 
         setCurrStep(3);
       } else if (user.isVerified === "False") {
-        toast.error("You are not verified. kindly get verified.");
+        setTimeout(() => {
+          toast.error("You are not verified. kindly get verified.", {
+            duration: 3500,
+          });          
+        }, 1000);
         setFormData(formdata);
         setCurrStep(1);
         signOut();
@@ -659,7 +663,7 @@ const Register = (props) => {
         setFormData(initialData);
         setCurrStep(1);
         navigate("/");
-        signOut();
+        // signOut();
         setSubmitLoading(false);
       })
       .catch((err) => {
@@ -749,6 +753,10 @@ const Register = (props) => {
     navigate("/");
   };
 
+  const setFalse = (func) => {
+    func(false);
+  };
+
   const signUp = (registerData) => {
     // nextStep()
 
@@ -764,6 +772,7 @@ const Register = (props) => {
       })
       .catch((err) => {
         toast.error(err.response.data.detail);
+        // set
       });
 
     // nextStep();

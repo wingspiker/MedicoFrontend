@@ -10,10 +10,8 @@ const StepFour = ({
   handleFileChange,
   documents,
   submitLoading,
-  
 }) => {
-
-  return (    
+  return (
     <div className="border p-6 rounded-2xl">
       {documents.map((document, index) => (
         <div key={index} className="mb-4 border-b pb-4">
@@ -26,6 +24,7 @@ const StepFour = ({
           <input
             type="file"
             id={document.id}
+            accept="image/*, .pdf"
             name={document.name}
             onChange={handleFileChange}
             className="inline-block w-3/4 px-3 py-2 rounded focus:outline-none focus:border-green-500"
@@ -36,12 +35,14 @@ const StepFour = ({
         </div>
       ))}
       <div className="mt-4 text-center">
-        <button onClick={handleSubmit} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600">
-          {submitLoading?<Loader/>:'Submit'}
+        <button
+          onClick={handleSubmit}
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600"
+        >
+          {submitLoading ? <Loader /> : "Submit"}
         </button>
       </div>
     </div>
-    
   );
 };
 
