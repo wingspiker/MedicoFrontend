@@ -20,6 +20,8 @@ import {
   formdata,
   isAdmin,
   isBuyer,
+  isCompanyAdmin,
+  isCompanySelf,
   isSalesman,
   setCurrStep,
   setFormData,
@@ -97,32 +99,34 @@ function App() {
   const currUsr = decodeToken();
   const [user, setUser] = useState(currUsr);
   let usrData = {};
+  // const navigate = useNavigate();
+
+  const [f, sF] = useState(false)
 
   useEffect(() => {
-    const user = decodeToken();
-    // console.log('y');
-    if (user) {
-      setIsActive(user);
-      // console.log(isActive);
+    const decodedUser = decodeToken();
+    if (decodedUser) {
+      setUser(decodedUser);
+      setIsActive(decodedUser.isPaymentPending === "False");
     }
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      // console.log('aa');
-      // console.log(user);
-      const keys = Object.keys(user);
-      const role = keys.find((claim) => claim.endsWith("role"));
-      const email = keys.find((claim) => claim.endsWith("emailaddress"));
-      usrData.role = role;
-      usrData.email = email;
-      setIsActive(user.isPaymentPending == "False");
-    }
-  }, [user]);
+  }, [f]);
 
   const logout = () => {
-    signOut();
     setIsLoggedIn(false);
+    setUser(null);
+  };
+
+  const renderRedirects = () => {
+    if (isAdmin()) {
+      return <Navigate to="/admin/Home" />;
+    } else if (isSalesman()) {
+      return <Navigate to="/sales" />;
+    } else if (isBuyer()) {
+      return <Navigate to="/Home" />;
+    } else if (isCompanySelf() || isCompanyAdmin()) {
+      return <Navigate to="/company/Home" />;
+    }
+    return <Navigate to="/" />;
   };
 
   // useEffect(() => {
@@ -140,95 +144,47 @@ function App() {
           {/* {(isLoggedIn && showSidebar) ? <Sidebar changeLogin={logout}  /> : ""} */}
 
           <Routes>
-            {isLoggedIn && user?.isComplete === "True" && (
-              <>
-                <Route
-                  path="/"
-                  element={
-                    isAdmin() ? (
-                      <Navigate to="/admin/Home" />
-                    ) : isSalesman() ? (
-                      <Navigate to="/sales" />
-                    ) : isBuyer() ? (
-                      <Navigate to="/Home" />
-                    ) : (
-                      <Navigate to="/login" />
-                    )
-                  }
-                />
-                <Route
-                  path="/login"
-                  element={
-                    isAdmin() ? (
-                      <Navigate to="/admin/Home" />
-                    ) : isSalesman() ? (
-                      <Navigate to="/sales" />
-                    ) : isBuyer() ? (
-                      <Navigate to="/Home" />
-                    ) : (
-                      <Navigate to="/login" />
-                    )
-                  }
-                />
-                <Route
-                  path="/register"
-                  element={<Navigate to="/company/Home" />}
-                />
-              </>
-            )}
-            <Route path="/" element={<Home />} />
-            {isLoggedIn ? (
-              <>
-                {setCurrStep(3)}
-                {usrData.role &&
-                  setFormData({ ...formdata, role: user[usrData.role] })}
-                {usrData.email &&
-                  setFormData({ ...formdata, email: user[usrData.email] })}
-
-                <Route
-                  path="/register"
-                  element={
-                    <Register
-                      changeLogin={setIsLoggedIn}
-                      setShowSidebar={setShowSidebar}
-                      setIsComplete={setIsComplete}
-                    />
-                  }
-                />
-              </>
-            ) : (
-              <Route
-                path="/register"
-                element={
-                  <Register
-                    changeLogin={setIsLoggedIn}
-                    setShowSidebar={setShowSidebar}
-                    setIsComplete={setIsComplete}
-                  />
-                }
-              />
-            )}
+            <Route
+              path="/"
+              element={
+                isLoggedIn && user?.isComplete === "True" ? (
+                  renderRedirects()
+                ) : (
+                  <Home />
+                )
+              }
+            />
             <Route
               path="/login"
               element={
-                <Login
-                  changeLogin={setIsLoggedIn}
-                  setShowSidebar={setShowSidebar}
-                />
+                isLoggedIn && user?.isComplete === "True" ? (
+                  renderRedirects()
+                ) : (
+                  <Login changeLogin={setIsLoggedIn} sF={sF} />
+                )
               }
             />
-            {/* Protected Route: Only logged-in users can access the Welcome page */}
+            <Route
+              path="/register"
+              element={
+                isLoggedIn ? (
+                  <Navigate to="/company/Home" />
+                ) : (
+                  <Register changeLogin={setIsLoggedIn} />
+                )
+              }
+            />
             <Route
               path="/company/CompletePayment"
-              exact
               element={
                 isLoggedIn ? (
                   <CompletePayment changeLogin={setIsLoggedIn} />
                 ) : (
-                  <Navigate to="/login" replace />
+                  <Navigate to="/login" />
                 )
               }
             />
+
             {isActive && (
               <>
                 <Route

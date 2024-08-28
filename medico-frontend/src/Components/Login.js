@@ -27,7 +27,7 @@ const Login = (props) => {
   //   console.log("useEffect");
   // }, [])
 
-  const { changeLogin, setShowSidebar } = props;
+  const { changeLogin, setShowSidebar, sF } = props;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -90,6 +90,7 @@ const Login = (props) => {
           localStorage.setItem("token", response.accessToken);
           setMessage(true);
           const user = decodeToken();
+          sF(f=>!f)
           if (user?.userType === "Salesman") {
             changeLogin(true);
             navigate("/sales");
@@ -122,6 +123,8 @@ const Login = (props) => {
             toast.error("You are not verified. kindly get verified.");
             signOut();
           } else {
+            
+            // console.log('llll');
             // if(user[role]==="Buyer"){
             //   signOut()
             //   navigate('/');
@@ -129,6 +132,8 @@ const Login = (props) => {
             //   setCurrStep(1)
             //   return
             // }
+            console.log(user);
+            // debugger;
 
             if (user[role] === "Buyer") {
               navigate(0);
@@ -138,7 +143,7 @@ const Login = (props) => {
               return;
             }
             changeLogin(true);
-            setShowSidebar(true);
+            // setShowSidebar(true);
             console.log(user);
             // navigate(0)
             // debugger;
@@ -146,11 +151,12 @@ const Login = (props) => {
               navigate("/company/CompletePayment");
               return;
             } else {
-              setTimeout(() => {
-                navigate("/company/Home");
-                navigate(0);
-                setLoading(false); // Set loading to false after API response
-              }, 2500);
+              // debugger;
+              navigate("/company/Home");
+              // navigate(0);
+              setLoading(false); // Set loading to false after API response
+              // setTimeout(() => {
+              // }, 2500);
             }
           }
         })
@@ -158,8 +164,8 @@ const Login = (props) => {
           console.error(error);
           setLoading(false); // Set loading to false after API response
           // Handle error response
-          setErrors({ ...errors, common: error.response.data.detail });
-          toast.error(error.response.data.detail);
+          setErrors({ ...errors, common: error.response?.data.detail });
+          toast.error(error.response?.data.detail??'Something went wrong.');
           setEmail("");
           setPassword("");
         });

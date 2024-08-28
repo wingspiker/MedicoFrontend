@@ -74,7 +74,7 @@ function ProductInformation({
               pattern: {
                 value: /^[A-Za-z]+[A-Za-z0-9]*$/,
                 message:
-                  "Brand name must start with a letter and can contain letters and numbers.",
+                  "Brand name must start with letter and can contain letters and numbers and not specialc characters.",
               },
             })}
             error={errors.brandName}
@@ -186,7 +186,7 @@ function ProductInformation({
               required: "Size X is required",
               pattern: {
                 value: /^[0-9]+$/, // Regular expression to allow only digits
-                message: "Alphabets are not allowed", // Error message for invalid input
+                message: "Only Integer values are allowed", // Error message for invalid input
               },
             })}
             error={errors.sizeX}
@@ -201,7 +201,7 @@ function ProductInformation({
               required: "Size Y is required",
               pattern: {
                 value: /^[0-9]+$/, // Regular expression to allow only digits
-                message: "Alphabets are not allowed", // Error message for invalid input
+                message: "Only Integer values are allowed", // Error message for invalid input
               },
             })}
             error={errors.sizeY}

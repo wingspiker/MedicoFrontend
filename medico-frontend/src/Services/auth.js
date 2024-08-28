@@ -148,6 +148,17 @@ export const isCompanySelf = () => {
   return false;
 };
 
+export const isCompanyAdmin = () => {
+  const user = decodeToken();
+  if (user) {
+    const key = Object.keys(user).find((key) => key.endsWith("role"));
+    if (user[key] === "Company") {
+      return user["CompanyType"] === "AdminSelling";
+    }
+  }
+  return false;
+};
+
 export const isBuyer = () => {
   const user = decodeToken();
   if (user) {
