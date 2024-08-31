@@ -2,6 +2,7 @@ import React from "react";
 import Loader from "../../Loader";
 import { MdVerified } from "react-icons/md";
 import { Link } from "react-router-dom";
+import CustomButton from "../Global/Button";
 
 const StepOne = ({
   formData,
@@ -31,12 +32,14 @@ const StepOne = ({
           value={formData.email}
           onChange={handleChange}
           readOnly={emailVerified || E}
-          className="text-gray-900 flex-1 w-full px-3 py-2 rounded-l border border-gray-300 focus:outline-none focus:border-green-500"
+          className="text-gray-900 flex-1 w-full px-3 py-2  rounded-l-lg border border-gray-300 focus:outline-none focus:border-green-500"
         />
         <button
           onClick={verifyEmail}
-          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none ${
-            E ? "disabled:bg-green-600" : "disabled:bg-[#72d3a6]"
+          className={` px-4 py-2 bg-cyan-600 text-white rounded-r-lg hover:bg-green-600 focus:outline-none ${
+            E
+              ? "disabled:bg-green-600"
+              : "disabled:bg-cyan-200 disabled:text-cyan-700 disabled:cursor-not-allowed"
           } `}
           disabled={errors.email || formData.email === "" || emailVerified || E}
         >
@@ -58,7 +61,7 @@ const StepOne = ({
             disabled={
               formData.emailOtp.length !== 6 || isNaN(formData.emailOtp)
             }
-            className={` px-4 py-2 bg-green-500 text-white  hover:bg-green-600 focus:outline-none disabled:bg-green-300`}
+            className={` px-4 py-2 bg-green-500 text-white   hover:bg-green-600 focus:outline-none disabled:bg-green-300`}
           >
             Verify Email
           </button>
@@ -79,12 +82,14 @@ const StepOne = ({
           value={formData.mobile}
           onChange={handleChange}
           readOnly={mobileVerified || M}
-          className="text-gray-900 flex-1 w-full px-3 py-2 rounded-l border border-gray-300 focus:outline-none focus:border-green-500"
+          className="text-gray-900 flex-1 w-full px-3 py-2  rounded-l-lg border border-gray-300 focus:outline-none focus:border-green-500"
         />
         <button
           onClick={verifyMobile}
-          className={` px-4 py-2 bg-[#3e9a6f] text-white rounded-r hover:bg-green-600 focus:outline-none ${
-            M ? "disabled:bg-green-600" : "disabled:bg-[#72d3a6]"
+          className={` px-4 py-2 bg-cyan-600 text-white  rounded-r-lg hover:bg-green-600 focus:outline-none ${
+            M
+              ? "disabled:bg-green-600"
+              : "disabled:bg-cyan-200 disabled:text-cyan-700 disabled:cursor-not-allowed"
           }`}
           disabled={
             errors.mobile || formData.mobile === "" || mobileVerified || M
@@ -121,15 +126,18 @@ const StepOne = ({
         </div>
       )}
       {errors.mobile && <span className="text-red-500">{errors.mobile}</span>}
-      <button
+      <CustomButton
         onClick={nextStep}
         disabled={!(E && M)}
-        className="w-full mt-4 px-4 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 disabled:bg-[#72d3a6] focus:outline-none focus:bg-green-600"
+        className="w-full mt-4 px-4 py-2 disabled:bg-cyan-200 disabled:text-cyan-700 disabled:cursor-not-allowed"
       >
         Next
-      </button>
-      <p className=" text-center mt-2 text-cyan-800">
-        Already an User? <Link className=" font-semibold hover:text-cyan-600" to={'/login'}>Login</Link> 
+      </CustomButton>
+      <p className=" text-center mt-4 text-cyan-800">
+        Already an User?{" "}
+        <Link className=" font-semibold hover:text-cyan-600" to={"/login"}>
+          Login
+        </Link>
       </p>
     </>
   );

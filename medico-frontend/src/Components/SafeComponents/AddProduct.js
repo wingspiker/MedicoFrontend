@@ -9,7 +9,12 @@ import Occupation from "../ProductComponents/CaseFour/Occupation";
 import SelectLocation from "../ProductComponents/CaseThree/SelectLocation";
 import { decodeToken, isAdmin, isCompanySelf } from "../../Services/auth";
 import { addProduct } from "../../Services/product";
-import { addGroup, addProductToGroup, getGroupById, getGroups } from "../../Services/group";
+import {
+  addGroup,
+  addProductToGroup,
+  getGroupById,
+  getGroups,
+} from "../../Services/group";
 import { addBuyerGroup, addBuyers, filterBuyrs } from "../../Services/buyer";
 import { Toaster, toast } from "sonner";
 import Loader from "../../Loader";
@@ -31,17 +36,16 @@ function AddProduct() {
 
   const navigate = useNavigate();
 
-  const location = useLocation()
+  const location = useLocation();
 
   useEffect(() => {
-    if(location.state){
+    if (location.state) {
       setCurrentProdId(location.state.pid);
       setCurrentStep(location.state.step);
-      setSp(location.state.sp)
-      setIsAdminLocal(true)
+      setSp(location.state.sp);
+      setIsAdminLocal(true);
     }
-  
-  }, [])
+  }, []);
 
   const showToast = (message, isRed) => {
     setIsRed(isRed);
@@ -134,20 +138,19 @@ function AddProduct() {
           console.log(data.existingGroupNo);
           getGroupById(data.existingGroupNo)
             .then((g) => {
-
               const addData = {
-                groupId:g.id,
-                productIds:[currentProdId]
-              }
+                groupId: g.id,
+                productIds: [currentProdId],
+              };
 
               addProductToGroup(addData)
-              .then(r=>{
-                console.log('group added to this product');
-                console.log(r);
-              })
-              .catch(err=>{
-                console.log(err);
-              })
+                .then((r) => {
+                  console.log("group added to this product");
+                  console.log(r);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
               // console.log("ss");
               // console.log(g);
               // setBuyers(g.buyers);
@@ -273,11 +276,9 @@ function AddProduct() {
         console.log(response);
         setCurrentProdId(response.id);
         showToast("Product Added  Successfully", false);
-        if(isAdminLocal){
+        if (isAdminLocal) {
           navigate("/admin/Product");
-          
-        }
-        else if (!isCompanySelf()) {
+        } else if (!isCompanySelf()) {
           navigate("/company/Product");
         }
         setCurrentStep(currentStep + 1);
@@ -377,11 +378,10 @@ function AddProduct() {
         setIsRed(false);
         toast.success("Added Successfully!");
         setTimeout(() => {
-          if(isAdminLocal){
+          if (isAdminLocal) {
             navigate("/admin/Product");
-          }else{
+          } else {
             navigate("/company/Product");
-
           }
           setIsRed(true);
         }, 3000);
@@ -464,9 +464,11 @@ function AddProduct() {
     switch (currentStep) {
       case 1:
         return (
-          <div className="flex justify-center items-center min-h-screen bg-cyan-900 ps-16">
+          <div className="flex justify-center items-center min-h-screen ps-16 text-cyan-700 bg-white">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <h1 className=" text-4xl text-white">Product</h1>
+              <h1 className="text-4xl text-black font-bold pt-10">
+                Add Product
+              </h1>
               <ProductInformation
                 register={register}
                 watch={watch}
@@ -492,7 +494,7 @@ function AddProduct() {
               <div className=" p-2 flex justify-end">
                 <button
                   type="submit"
-                  className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+                  className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-full flex items-center gap-2`}
                 >
                   {loading ? <Loader /> : "Next"}
                 </button>
@@ -516,7 +518,7 @@ function AddProduct() {
                 />
                 <button
                   type="submit"
-                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded-full w-20 text-center py-2 px-6`} // Added py-2 class to increase the height
                 >
                   {loading ? <Loader /> : "Next"}
                 </button>
@@ -540,7 +542,7 @@ function AddProduct() {
               <button
                 disabled={sTaluka.length === 0}
                 type="submit"
-                className={`cursor-pointer bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 disabled:cursor-auto text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+                className={`cursor-pointer bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 disabled:cursor-auto text-white font-bold ml-3 rounded-full w-20 text-center py-2 px-6`} // Added py-2 class to increase the height
               >
                 {loading ? <Loader /> : "Next"}
               </button>
@@ -561,7 +563,7 @@ function AddProduct() {
                 <div className="mt-4">
                   <button
                     type="submit"
-                    className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+                    className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded-full w-20 text-center py-2 px-6`} // Added py-2 class to increase the height
                   >
                     {loading ? <Loader /> : "Next"}
                   </button>
@@ -583,7 +585,7 @@ function AddProduct() {
               <div className="flex mt-4 flex-row-reverse">
                 <button
                   type="submit"
-                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
+                  className={`cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold ml-3 rounded w-20 text-center py-2 px-6`} // Added py-2 class to increase the height
                 >
                   {loading ? <Loader /> : "Next"}
                 </button>
@@ -636,10 +638,8 @@ function AddProduct() {
             // style: { color: `red` },
           }}
         />
-        {
-         isAdmin() && <AdminSidebar changeLogin={onlogout} />
-        }
-        
+        {isAdmin() && <AdminSidebar changeLogin={onlogout} />}
+
         {renderStep()}
         {/* {console.log(currentProdId)} */}
       </div>

@@ -1,7 +1,8 @@
 import axios from "axios";
 import { token } from "./auth";
+import { url } from "../constants";
 
-const url = process.env.REACT_APP_API_BASE_URL;
+// const url = "https://crmwe5yxfs.ap-south-1.awsapprunner.com";
 
 export const addArticle = async (articleData) => {
   const t = localStorage.getItem("token");

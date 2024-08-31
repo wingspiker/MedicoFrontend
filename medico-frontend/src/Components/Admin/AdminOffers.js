@@ -3,8 +3,19 @@ import { AdminSidebar } from "./AdminSidebar";
 import { decodeToken, signOut } from "../../Services/auth";
 
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { deleteOfferbyId, getOffers } from "../../Services/offer";
+import CustomButton from "../Global/Button";
 
 export default function AdminOffers() {
   const navigate = useNavigate();
@@ -55,95 +66,95 @@ export default function AdminOffers() {
   return (
     <>
       <div className=" p-2  flex justify-between ms-16">
-        <h1 className="text-3xl font-semibold text-white">Offers </h1>
-        <button
+        <h1 className="text-3xl font-semibold">Offers </h1>
+        <CustomButton
           onClick={onAddOffer}
-          className="  cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2"
+          className="  cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded-full flex items-center gap-2"
         >
           Add Offers
-        </button>
+        </CustomButton>
       </div>
       <hr />
       <AdminSidebar changeLogin={onlogout} />
 
       <div className=" ms-14 p-4">
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 overflow-y-auto no-scrollbar">
-              {offers.map((offer, index) => (
-                <Card key={offer.id} className="min-h-40 rounded-2xl">
-                  <img
-                    src={offer.offerPhoto}
-                    alt={offer.offerName}
-                    style={{
-                      height: "350px",
-                      width: "90%",
-                      margin: "auto",
-                      borderRadius: "16px",
-                      marginTop: "0.5rem"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 overflow-y-auto no-scrollbar">
+          {offers.map((offer, index) => (
+            <Card key={offer.id} className="min-h-40 rounded-2xl">
+              <img
+                src={offer.offerPhoto}
+                alt={offer.offerName}
+                style={{
+                  height: "350px",
+                  width: "90%",
+                  margin: "auto",
+                  borderRadius: "16px",
+                  marginTop: "0.5rem",
+                }}
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  {offer.offerName}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {offer.offerDescription}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Expires: {new Date(offer.expiryDate).toDateString()}
+                </Typography>
+                <div className="flex justify-between">
+                  <Button
+                    onClick={() => handleView(offer.id, index)}
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      bgcolor: "blue.300",
+                      marginTop: "1rem",
+                      "&:hover": {
+                        bgcolor: "blue.500",
+                      },
                     }}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {offer.offerName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {offer.offerDescription}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Expires: {new Date(offer.expiryDate).toDateString()}
-                    </Typography>
-                    <div className="flex justify-between">
-                      <Button
-                        onClick={() => handleView(offer.id, index)}
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          bgcolor: "blue.300",
-                          marginTop: '1rem',
-                          "&:hover": {
-                            bgcolor: "blue.500",
-                          },
-                        }}
-                      >
-                        View
-                      </Button>
-                      <Button
-                        onClick={() => handleDeleteClick(offer.id)}
-                        variant="contained"
-                        color="error"
-                        sx={{
-                          bgcolor: "red.500",
-                          marginTop: '1rem',
-                          "&:hover": {
-                            bgcolor: "red.700",
-                          },
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-          
-    <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogTitle>Delete Offer</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Are you sure you want to delete this offer? This action cannot be undone.
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => setOpen(false)} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleDeleteConfirm} color="primary">
-          Confirm
-        </Button>
-      </DialogActions>
-    </Dialog>
+                  >
+                    View
+                  </Button>
+                  <Button
+                    onClick={() => handleDeleteClick(offer.id)}
+                    variant="contained"
+                    color="error"
+                    sx={{
+                      bgcolor: "red.500",
+                      marginTop: "1rem",
+                      "&:hover": {
+                        bgcolor: "red.700",
+                      },
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>Delete Offer</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this offer? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

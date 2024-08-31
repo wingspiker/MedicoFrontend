@@ -17,6 +17,7 @@ import { handleImageUpload } from "../../Services/upload";
 import { CircularProgress } from "@mui/material";
 import BillComponent from "../BillComponent";
 import { toast, Toaster } from "sonner";
+import CustomButton from "../Global/Button";
 
 export default function Settings(props) {
   const { changeLogin } = props;
@@ -245,12 +246,12 @@ export default function Settings(props) {
   };
 
   return (
-    <div className="flex h-screen bg-cyan-900 text-white">
+    <div className="flex h-screen bg-white text-slate-700">
       <Sidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
           <div className="p-2 flex justify-between gap-4">
-            <h1 className="text-3xl font-semibold text-white mb-1">Settings</h1>
+            <h1 className="text-3xl font-semibold mb-1">Settings</h1>
           </div>
           <hr />
           <Toaster
@@ -261,7 +262,7 @@ export default function Settings(props) {
           />
           <div className="p-8">
             {user && (
-              <div className="bg-cyan-700 p-6 rounded-lg shadow-lg">
+              <div className="bg-cyan-100 text-cyan-900 p-6 rounded-2xl shadow-lg">
                 <h2 className="text-2xl font-bold mb-4">User Details</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -329,19 +330,33 @@ export default function Settings(props) {
                                 ).toLocaleDateString()}
                               </p>
 
-                              {user.company.charges === "Percentage" && <p>
-                                <strong>Due Payment:</strong>{" "} {(getCurrBill()?.paymentAmount??0).toFixed(2)}/-
-                                {subscription.duePayment
-                                  ? `₹${subscription.lastDuePaymentAmount}`
-                                  : "No due payment"}
-                              </p>}
-                              
-                              {user?.company?.isChargeTypeChangeInProgress ? <p className=" text-yellow-500 font-medium">Your request to change chargetype to subscription is not verified. please wait for verification</p>: <button
-                                onClick={() => setShowModal(true)}
-                                className="px-4 mt-2 me-2 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600"
-                              >
-                                Change Plan
-                              </button>}                              
+                              {user.company.charges === "Percentage" && (
+                                <p>
+                                  <strong>Due Payment:</strong>{" "}
+                                  {(getCurrBill()?.paymentAmount ?? 0).toFixed(
+                                    2
+                                  )}
+                                  /-
+                                  {subscription.duePayment
+                                    ? `₹${subscription.lastDuePaymentAmount}`
+                                    : "No due payment"}
+                                </p>
+                              )}
+
+                              {user?.company?.isChargeTypeChangeInProgress ? (
+                                <p className=" text-yellow-500 font-medium">
+                                  Your request to change chargetype to
+                                  subscription is not verified. please wait for
+                                  verification
+                                </p>
+                              ) : (
+                                <button
+                                  onClick={() => setShowModal(true)}
+                                  className="px-4 mt-2 me-2 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600"
+                                >
+                                  Change Plan
+                                </button>
+                              )}
                             </div>
                           </div>
                         )}
@@ -350,40 +365,49 @@ export default function Settings(props) {
                         <div className="col-span-2 mt-4">
                           <h2 className="text-xl font-bold">Current Plan</h2>
                           <div className="bg-cyan-800 p-4 rounded-lg mt-2">
-                           
-                            {user?.company?.isChargeTypeChangeInProgress ? <p className=" text-yellow-500 font-medium">Your request to change chargetype to percentage is not verified. please wait for verification</p>:<>
-                              <p>
-                              <strong>Charges Type:</strong> Percentage
-                            </p>
+                            {user?.company?.isChargeTypeChangeInProgress ? (
+                              <p className=" text-yellow-500 font-medium">
+                                Your request to change chargetype to percentage
+                                is not verified. please wait for verification
+                              </p>
+                            ) : (
+                              <>
+                                <p>
+                                  <strong>Charges Type:</strong> Percentage
+                                </p>
 
-                            <p>
-                              <strong>Due Payment:</strong> {(getCurrBill()?.paymentAmount??0)}/-
-                            </p><button
-                              onClick={() => setShowModal(true)}
-                              className="px-4 mt-2 me-2 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600"
-                            >
-                              Pay Bill
-                            </button>
-                            <button
-                              onClick={() => {
-                                checkSwitchPossibility(+!charge, 0);
-                              }}
-                              className="px-4 mt-2 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 focus:outline-none focus:bg-orange-600"
-                            >
-                              Switch Chargetype
-                            </button></>}
+                                <p>
+                                  <strong>Due Payment:</strong>{" "}
+                                  {getCurrBill()?.paymentAmount ?? 0}/-
+                                </p>
+                                <button
+                                  onClick={() => setShowModal(true)}
+                                  className="px-4 mt-2 me-2 py-2 bg-[#3e9a6f] text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600"
+                                >
+                                  Pay Bill
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    checkSwitchPossibility(+!charge, 0);
+                                  }}
+                                  className="px-4 mt-2 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 focus:outline-none focus:bg-orange-600"
+                                >
+                                  Switch Chargetype
+                                </button>
+                              </>
+                            )}
                           </div>
                         </div>
                       )}
                     </>
                   )}
                 </div>
-                <button
-                  className="mt-6 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                <CustomButton
+                  className="mt-6 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full"
                   onClick={() => console.log("Reset Password Clicked")}
                 >
                   Reset Password
-                </button>
+                </CustomButton>
 
                 <Modal
                   isOpen={showModal}

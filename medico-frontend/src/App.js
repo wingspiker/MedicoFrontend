@@ -20,6 +20,8 @@ import {
   formdata,
   isAdmin,
   isBuyer,
+  isCompanyAdmin,
+  isCompanySelf,
   isSalesman,
   setCurrStep,
   setFormData,
@@ -75,6 +77,10 @@ import SalesmanCart from "./Components/Salesman/SalesmanCart";
 import SalesmanApplyOffer from "./Components/Salesman/SalesmanApplyOffer";
 import SchemeQR from "./Components/Salesman/SchemeQR";
 import BuyerScanQR from "./Components/Buyer/BuyerScanQR";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import theme from "./lib/theme";
+import BuyerAboutPage from "./Components/Buyer/BuyerAboutPage";
+import BuyerContactPage from "./Components/Buyer/BuyerContactPage";
 import CompletePayment from "./Components/CompletePayment";
 import SubscriptionPercentage from "./Components/Admin/AdminSubscriptionComponents/SubscriptionPercentage";
 import SubscriptionPlan from "./Components/Admin/AdminSubscriptionComponents/SubscriptionPlan";
@@ -93,34 +99,34 @@ function App() {
   const currUsr = decodeToken();
   const [user, setUser] = useState(currUsr);
   let usrData = {};
+  // const navigate = useNavigate();
 
-  useEffect(()=>{
-    const user = decodeToken();
-    // console.log('y');
-    if(user){
-      setIsActive(user);
-      // console.log(isActive);
-    }
-  },[])
-  
+  const [f, sF] = useState(false);
+
   useEffect(() => {
-    if (user) {
-      // console.log('aa');
-      // console.log(user);
-      const keys = Object.keys(user);
-      const role = keys.find((claim) => claim.endsWith("role"));
-      const email = keys.find((claim) => claim.endsWith("emailaddress"));
-      usrData.role = role;
-      usrData.email = email;
-      setIsActive(user.isPaymentPending=='False')
+    const decodedUser = decodeToken();
+    if (decodedUser) {
+      setUser(decodedUser);
+      setIsActive(decodedUser.isPaymentPending === "False");
     }
-  }, [user]);
-  
-
+  }, [f]);
 
   const logout = () => {
-    signOut();
     setIsLoggedIn(false);
+    setUser(null);
+  };
+
+  const renderRedirects = () => {
+    if (isAdmin()) {
+      return <Navigate to="/admin/Home" />;
+    } else if (isSalesman()) {
+      return <Navigate to="/sales" />;
+    } else if (isBuyer()) {
+      return <Navigate to="/Home" />;
+    } else if (isCompanySelf() || isCompanyAdmin()) {
+      return <Navigate to="/company/Home" />;
+    }
+    return <Navigate to="/" />;
   };
 
   // useEffect(() => {
@@ -131,899 +137,846 @@ function App() {
   // }, [isActive]);
 
   return (
-    <Router>
-      <div className="bg-cyan-900 h-screen overflow-auto">
-        {/* {(isLoggedIn && showSidebar) ? <Sidebar changeLogin={logout}  /> : ""} */}
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <div className="bg-cyan-100 h-screen overflow-auto">
+          {/* {(isLoggedIn && showSidebar) ? <Sidebar changeLogin={logout}  /> : ""} */}
 
-        <Routes>
-          {isLoggedIn && user?.isComplete === "True" && (
-            <>
-              <Route
-                path="/"
-                element={
-                  isAdmin() ? (
-                    <Navigate to="/admin/Home" />
-                  ) : isSalesman() ? (
-                    <Navigate to="/sales" />
-                  ) : isBuyer() ? (
-                    <Navigate to="/Home" />
-                  ) : (
-                    <Navigate to="/login" />
-                  )
-                }
-              />
-              <Route
-                path="/login"
-                element={
-                  isAdmin() ? (
-                    <Navigate to="/admin/Home" />
-                  ) : isSalesman() ? (
-                    <Navigate to="/sales" />
-                  ) : isBuyer() ? (
-                    <Navigate to="/Home" />
-                  ) : (
-                    <Navigate to="/login" />
-                  )
-                }
-              />
-              <Route
-                path="/register"
-                element={<Navigate to="/company/Home" />}
-              />
-            </>
-          )}
-          <Route path="/" element={<Home />} />
-          {isLoggedIn ? (
-            <>
-              {setCurrStep(3)}
-              {usrData.role &&
-                setFormData({ ...formdata, role: user[usrData.role] })}
-              {usrData.email &&
-                setFormData({ ...formdata, email: user[usrData.email] })}
-
-              <Route
-                path="/register"
-                element={
-                  <Register
-                    changeLogin={setIsLoggedIn}
-                    setShowSidebar={setShowSidebar}
-                    setIsComplete={setIsComplete}
-                  />
-                }
-              />
-            </>
-          ) : (
+          <Routes>
+            <Route
+              path="/"
+              element={
+                isLoggedIn && user?.isComplete === "True" ? (
+                  renderRedirects()
+                ) : (
+                  <Home />
+                )
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                isLoggedIn && user?.isComplete === "True" ? (
+                  renderRedirects()
+                ) : (
+                  <Login changeLogin={setIsLoggedIn} sF={sF} />
+                )
+              }
+            />
             <Route
               path="/register"
               element={
-                <Register
-                  changeLogin={setIsLoggedIn}
-                  setShowSidebar={setShowSidebar}
-                  setIsComplete={setIsComplete}
-                />
+                isLoggedIn ? (
+                  <Navigate to="/company/Home" />
+                ) : (
+                  <Register changeLogin={setIsLoggedIn} />
+                )
               }
             />
-          )}
-          <Route
-            path="/login"
-            element={
-              <Login
-                changeLogin={setIsLoggedIn}
-                setShowSidebar={setShowSidebar}
-              />
-            }
-          />
-          {/* Protected Route: Only logged-in users can access the Welcome page */}
-          <Route
-            path="/company/CompletePayment"
-            exact
-            element={
-              isLoggedIn ? (
-                <CompletePayment changeLogin={setIsLoggedIn} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          {isActive && <>
-          <Route
-            path="/company/Home"
-            element={
-              isLoggedIn ? (
-                <Welcome
-                  changeLogin={setIsLoggedIn}
-                  setShowSidebar={setShowSidebar}
+            <Route
+              path="/company/CompletePayment"
+              element={
+                isLoggedIn ? (
+                  <CompletePayment changeLogin={setIsLoggedIn} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+
+            {isActive && (
+              <>
+                <Route
+                  path="/company/Home"
+                  element={
+                    isLoggedIn ? (
+                      <Welcome
+                        changeLogin={setIsLoggedIn}
+                        setShowSidebar={setShowSidebar}
+                      />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
                 />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/complete-details"
-            element={
-              isLoggedIn ? (
-                <CompleteDetails
-                  changeLogin={setIsLoggedIn}
-                  setShowSidebar={setShowSidebar}
+                <Route
+                  path="/complete-details"
+                  element={
+                    isLoggedIn ? (
+                      <CompleteDetails
+                        changeLogin={setIsLoggedIn}
+                        setShowSidebar={setShowSidebar}
+                      />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
                 />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          
-          <Route
-            path="/company/Product"
-            exact
-            element={
-              isLoggedIn ? (
-                <Product changeLogin={setIsLoggedIn} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Product/:id"
-            exact
-            element={
-              isLoggedIn ? (
-                <ProductDetails changeLogin={setIsLoggedIn} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Product/add"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <Sidebar changeLogin={logout} />
-                  <AddProduct changeLogin={setIsLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Offer"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <Sidebar changeLogin={logout} />
-                  <Offer changeLogin={setIsLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Offer/add"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <Sidebar changeLogin={logout} />
-                  <AddOffer changeLogin={setIsLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Offer/:id"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <Sidebar changeLogin={logout} />
-                  <OfferDetails changeLogin={setIsLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Order"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <Sidebar changeLogin={logout} />
-                  <Orders changeLogin={setIsLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Order/:id"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <Sidebar changeLogin={logout} />
-                  <OrderDetails changeLogin={setIsLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Division"
-            exact
-            element={
-              isLoggedIn ? (
-                <Division changeLogin={setIsLoggedIn} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Group"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <Sidebar changeLogin={logout} />
-                  <Group changeLogin={setIsLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Group/add"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <Sidebar changeLogin={logout} />
-                  <AddGroup changeLogin={setIsLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Article"
-            exact
-            element={
-              isLoggedIn ? (
-                <Article changeLogin={setIsLoggedIn} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Salesman"
-            exact
-            element={
-              isLoggedIn ? (
-                <Salesman changeLogin={setIsLoggedIn} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Salesman/:id"
-            exact
-            element={
-              isLoggedIn ? (
-                <SalesmanDetail changeLogin={setIsLoggedIn} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/company/Settings"
-            exact
-            element={
-              isLoggedIn ? (
-                <Settings changeLogin={setIsLoggedIn} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          </>
-  }
-          <Route
-            path="/admin"
-            exact
-            element={<AdminPage setIsAdminLoggedIn={setIsAdminLoggedIn} />}
-          />
-          <Route
-            path="/admin/dashboard"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminLanding />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Company"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminCompanyVerify />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Company/:id"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <CompanyDetails />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Buyer"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminBuyerVerify />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Buyer/:id"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <BuyerDetails />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Product"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminProduct />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Product/:id"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminSellingProducts />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Product/:id/AddGroups"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AddProduct changeLogin={setIsAdminLoggedIn} />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Product/:id/View"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <ProductDetails changeLogin={setIsAdminLoggedIn} />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Groups"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminGroups />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="admin/Groups/add"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <AdminAddGroup changeLogin={setIsAdminLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Orders"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <>
-                  <AdminSidebar changeLogin={logout} />
-                  <Orders changeLogin={setIsAdminLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Orders/:id"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <>
-                  <AdminSidebar changeLogin={logout} />
-                  <OrderDetails changeLogin={setIsAdminLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Article"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminArticles />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Offers"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminOffers />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Offers/add"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminAddOffers />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="admin/Offers/:id"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <>
-                  <AdminSidebar changeLogin={logout} />
-                  <OfferDetails changeLogin={setIsAdminLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Salesman"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminAddSalesman changeLogin={setIsAdminLoggedIn} />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Salesman/:id"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <SalesmanDetail changeLogin={setIsAdminLoggedIn} />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/Settings"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <AdminSettings changeLogin={setIsAdminLoggedIn} />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/SubscriptionPercentage"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <SubscriptionPercentage changeLogin={setIsAdminLoggedIn} />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/SubscriptionPercentageBills"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <SubscriptionPercentageBills changeLogin={setIsAdminLoggedIn} />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/SubscriptionPlan"
-            exact
-            element={
-              isAdminLoggedIn ? (
-                <SubscriptionPlan changeLogin={setIsAdminLoggedIn} />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            }
-          />
-          <Route
-            path="/sales"
-            exact
-            element={
-              isLoggedIn ? (
-                <div className=" flex ">
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <SalesmanLanding />
-                </div>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route
-            path="/sales/Product"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <SalesmanProducts />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route
-            path="/sales/Product/:id"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <ProductDetails changeLogin={setIsLoggedIn} />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
 
-          <Route
-            path="/sales/Company"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <SalesmanCompany />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            path="/sales/Offers"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <SalesmanOffers />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            path="/sales/Scheme"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <CreateScheme />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            path="/sales/Scheme/:id"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <SalesmanProductDetails />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            path="/sales/Cart"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <SalesmanCart />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            path="/sales/Applyoffer"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <SalesmanApplyOffer />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            path="/sales/schemeQR"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <SchemeQR />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            path="/sales/Offers/:id"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <OfferDetails />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            path="/sales/Settings"
-            exact
-            element={
-              isLoggedIn ? (
-                <>
-                  <SalesmanSidebar changeLogin={setIsLoggedIn} />
-                  <SalesmanSettings />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          {isBuyer() && <>
-          <Route
-            path="/Home"
-            exact
-            element={
-              (() => isBuyer()) ? (
-                <>
-                  <BuyerHome />
-                </>
-              ) : (
-                <>
+                <Route
+                  path="/company/Product"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <Product changeLogin={setIsLoggedIn} />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Product/:id"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <ProductDetails changeLogin={setIsLoggedIn} />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Product/add"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <>
+                        <Sidebar changeLogin={logout} />
+                        <AddProduct changeLogin={setIsLoggedIn} />
+                      </>
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Offer"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <>
+                        <Sidebar changeLogin={logout} />
+                        <Offer changeLogin={setIsLoggedIn} />
+                      </>
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Offer/add"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <>
+                        <Sidebar changeLogin={logout} />
+                        <AddOffer changeLogin={setIsLoggedIn} />
+                      </>
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Offer/:id"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <>
+                        <Sidebar changeLogin={logout} />
+                        <OfferDetails changeLogin={setIsLoggedIn} />
+                      </>
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Order"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <>
+                        <Sidebar changeLogin={logout} />
+                        <Orders changeLogin={setIsLoggedIn} />
+                      </>
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Order/:id"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <>
+                        <Sidebar changeLogin={logout} />
+                        <OrderDetails changeLogin={setIsLoggedIn} />
+                      </>
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Division"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <Division changeLogin={setIsLoggedIn} />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Group"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <>
+                        <Sidebar changeLogin={logout} />
+                        <Group changeLogin={setIsLoggedIn} />
+                      </>
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Group/add"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <>
+                        <Sidebar changeLogin={logout} />
+                        <AddGroup changeLogin={setIsLoggedIn} />
+                      </>
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Article"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <Article changeLogin={setIsLoggedIn} />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Salesman"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <Salesman changeLogin={setIsLoggedIn} />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Salesman/:id"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <SalesmanDetail changeLogin={setIsLoggedIn} />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/company/Settings"
+                  exact
+                  element={
+                    isLoggedIn ? (
+                      <Settings changeLogin={setIsLoggedIn} />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+              </>
+            )}
+            <Route
+              path="/admin"
+              exact
+              element={<AdminPage setIsAdminLoggedIn={setIsAdminLoggedIn} />}
+            />
+            <Route
+              path="/admin/dashboard"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminLanding />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Company"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminCompanyVerify />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Company/:id"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <CompanyDetails />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Buyer"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminBuyerVerify />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Buyer/:id"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <BuyerDetails />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Product"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminProduct />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Product/:id"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminSellingProducts />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Product/:id/AddGroups"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AddProduct changeLogin={setIsAdminLoggedIn} />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Product/:id/View"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <ProductDetails changeLogin={setIsAdminLoggedIn} />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Groups"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminGroups />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="admin/Groups/add"
+              exact
+              element={
+                isLoggedIn ? (
+                  <>
+                    <AdminAddGroup changeLogin={setIsAdminLoggedIn} />
+                  </>
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Orders"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <>
+                    <AdminSidebar changeLogin={logout} />
+                    <Orders changeLogin={setIsAdminLoggedIn} />
+                  </>
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Orders/:id"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <>
+                    <AdminSidebar changeLogin={logout} />
+                    <OrderDetails changeLogin={setIsAdminLoggedIn} />
+                  </>
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Article"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminArticles />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Offers"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminOffers />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Offers/add"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminAddOffers />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="admin/Offers/:id"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <>
+                    <AdminSidebar changeLogin={logout} />
+                    <OfferDetails changeLogin={setIsAdminLoggedIn} />
+                  </>
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Salesman"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminAddSalesman changeLogin={setIsAdminLoggedIn} />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Salesman/:id"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <SalesmanDetail changeLogin={setIsAdminLoggedIn} />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/Settings"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <AdminSettings changeLogin={setIsAdminLoggedIn} />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/SubscriptionPercentage"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <SubscriptionPercentage changeLogin={setIsAdminLoggedIn} />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/SubscriptionPercentageBills"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <SubscriptionPercentageBills
+                    changeLogin={setIsAdminLoggedIn}
+                  />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/SubscriptionPlan"
+              exact
+              element={
+                isAdminLoggedIn ? (
+                  <SubscriptionPlan changeLogin={setIsAdminLoggedIn} />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/sales"
+              exact
+              element={
+                isLoggedIn ? (
+                  <div className=" flex ">
+                    <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                    <SalesmanLanding />
+                  </div>
+                ) : (
                   <Navigate to="/login" />
-                </>
-              )
-            }
-          />
-
-          <Route
-            path="/Home/Scan"
-            exact
-            element={
-              (() => isBuyer()) ? (
-                <>
-                  <BuyerScanQR />
-                </>
-              ) : (
-                <>
+                )
+              }
+            />
+            <Route
+              path="/sales/Product"
+              exact
+              element={
+                isLoggedIn ? (
+                  <>
+                    <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                    <SalesmanProducts />
+                  </>
+                ) : (
                   <Navigate to="/login" />
-                </>
-              )
-            }
-          />
-
-          <Route
-            path="/Home/Products"
-            exact
-            element={
-              (() => isBuyer()) ? (
-                <>
-                  <BuyerListing />
-                </>
-              ) : (
-                <>
+                )
+              }
+            />
+            <Route
+              path="/sales/Product/:id"
+              exact
+              element={
+                isLoggedIn ? (
+                  <>
+                    <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                    <ProductDetails changeLogin={setIsLoggedIn} />
+                  </>
+                ) : (
                   <Navigate to="/login" />
-                </>
-              )
-            }
-          />
-
-          <Route
-            path="/Home/Products/:id"
-            exact
-            element={
-              (() => isBuyer()) ? (
-                <>
-                  <BuyerProductDetails />
-                </>
-              ) : (
-                <>
+                )
+              }
+            />
+            <Route
+              path="/sales/Company"
+              exact
+              element={
+                isLoggedIn ? (
+                  <>
+                    <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                    <SalesmanCompany />
+                  </>
+                ) : (
                   <Navigate to="/login" />
-                </>
-              )
-            }
-          />
-
-          <Route
-            path="/Home/Cart"
-            exact
-            element={
-              (() => isBuyer()) ? (
-                <>
-                  <BuyerCart />
-                </>
-              ) : (
-                <>
+                )
+              }
+            />
+            <Route
+              path="/sales/Offers"
+              exact
+              element={
+                isLoggedIn ? (
+                  <>
+                    <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                    <SalesmanOffers />
+                  </>
+                ) : (
                   <Navigate to="/login" />
-                </>
-              )
-            }
-          />
-
-          <Route
-            path="/Home/Applyoffer"
-            exact
-            element={
-              (() => isBuyer()) ? (
-                <>
-                  <BuyerApplyOffer />
-                </>
-              ) : (
-                <>
+                )
+              }
+            />
+            <Route
+              path="/sales/Scheme"
+              exact
+              element={
+                isLoggedIn ? (
+                  <>
+                    <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                    <CreateScheme />
+                  </>
+                ) : (
                   <Navigate to="/login" />
-                </>
-              )
-            }
-          />
-
-          <Route
-            path="/Home/OrderFromScheme"
-            exact
-            element={
-              (() => isBuyer()) ? (
-                <>
-                  <BuyerApplyOffer />
-                </>
-              ) : (
-                <>
+                )
+              }
+            />
+            <Route
+              path="/sales/Scheme/:id"
+              exact
+              element={
+                isLoggedIn ? (
+                  <>
+                    <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                    <SalesmanProductDetails />
+                  </>
+                ) : (
                   <Navigate to="/login" />
-                </>
-              )
-            }
-          />
-
-          <Route
-            path="/Home/Checkout"
-            exact
-            element={
-              (() => isBuyer()) ? (
-                <>
-                  <BuyerShippingandPayment />
-                </>
-              ) : (
-                <>
+                )
+              }
+            />
+            <Route
+              path="/sales/Offers/:id"
+              exact
+              element={
+                isLoggedIn ? (
+                  <>
+                    <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                    <OfferDetails />
+                  </>
+                ) : (
                   <Navigate to="/login" />
-                </>
-              )
-            }
-          />
-          </>}
-
-          <Route path="*" exact element={<PageNotFound />} />
-        </Routes>
-      </div>
-    </Router>
+                )
+              }
+            />
+            <Route
+              path="/sales/Settings"
+              exact
+              element={
+                isLoggedIn ? (
+                  <>
+                    <SalesmanSidebar changeLogin={setIsLoggedIn} />
+                    <SalesmanSettings />
+                  </>
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            {/* <Route
+              path="/Home"
+              exact
+              element={
+                (() => isBuyer()) ? (
+                  <>
+                    <BuyerHome />
+                  </>
+                ) : (
+                  <>
+                    <Navigate to="/login" />
+                  </>
+                )
+              }
+            /> */}
+            {isBuyer() && (
+              <>
+                {" "}
+                <Route
+                  path="/Home"
+                  exact
+                  element={
+                    (() => isBuyer()) ? (
+                      <>
+                        <BuyerHome />
+                      </>
+                    ) : (
+                      <>
+                        <Navigate to="/login" />
+                      </>
+                    )
+                  }
+                />
+                <Route
+                  path="/Home/Scan"
+                  exact
+                  element={
+                    (() => isBuyer()) ? (
+                      <>
+                        <BuyerScanQR />
+                      </>
+                    ) : (
+                      <>
+                        <Navigate to="/login" />
+                      </>
+                    )
+                  }
+                />
+                <Route
+                  path="/Home/About"
+                  exact
+                  element={
+                    (() => isBuyer()) ? (
+                      <>
+                        <BuyerAboutPage />
+                      </>
+                    ) : (
+                      <>
+                        <Navigate to="/login" />
+                      </>
+                    )
+                  }
+                />
+                <Route
+                  path="/Home/Contact"
+                  exact
+                  element={
+                    (() => isBuyer()) ? (
+                      <>
+                        <BuyerContactPage />
+                      </>
+                    ) : (
+                      <>
+                        <Navigate to="/login" />
+                      </>
+                    )
+                  }
+                />
+                <Route
+                  path="/Home/Products"
+                  exact
+                  element={
+                    (() => isBuyer()) ? (
+                      <>
+                        <BuyerListing />
+                      </>
+                    ) : (
+                      <>
+                        <Navigate to="/login" />
+                      </>
+                    )
+                  }
+                />
+                <Route
+                  path="/Home/Products/:id"
+                  exact
+                  element={
+                    (() => isBuyer()) ? (
+                      <>
+                        <BuyerProductDetails />
+                      </>
+                    ) : (
+                      <>
+                        <Navigate to="/login" />
+                      </>
+                    )
+                  }
+                />
+                <Route
+                  path="/Home/Cart"
+                  exact
+                  element={
+                    (() => isBuyer()) ? (
+                      <>
+                        <BuyerCart />
+                      </>
+                    ) : (
+                      <>
+                        <Navigate to="/login" />
+                      </>
+                    )
+                  }
+                />
+                <Route
+                  path="/Home/Applyoffer"
+                  exact
+                  element={
+                    (() => isBuyer()) ? (
+                      <>
+                        <BuyerApplyOffer />
+                      </>
+                    ) : (
+                      <>
+                        <Navigate to="/login" />
+                      </>
+                    )
+                  }
+                />
+                <Route
+                  path="/Home/OrderFromScheme"
+                  exact
+                  element={
+                    (() => isBuyer()) ? (
+                      <>
+                        <BuyerApplyOffer />
+                      </>
+                    ) : (
+                      <>
+                        <Navigate to="/login" />
+                      </>
+                    )
+                  }
+                />
+                <Route
+                  path="/Home/Checkout"
+                  exact
+                  element={
+                    (() => isBuyer()) ? (
+                      <>
+                        <BuyerShippingandPayment />
+                      </>
+                    ) : (
+                      <>
+                        <Navigate to="/login" />
+                      </>
+                    )
+                  }
+                />
+              </>
+            )}
+            <Route path="*" exact element={<PageNotFound />} />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

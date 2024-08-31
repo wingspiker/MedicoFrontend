@@ -5,7 +5,6 @@ import { signOut, decodeToken, isCompanySelf } from "../../Services/auth";
 import { Toaster, toast } from "sonner";
 import { deleteProductById, getProducts } from "../../Services/product";
 import "react-tabulator/lib/styles.css";
-import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -20,6 +19,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Button from "../Global/Button";
+import { Eye, Trash2 } from "lucide-react";
 
 export default function Product(props) {
   const navigate = useNavigate();
@@ -93,8 +94,6 @@ export default function Product(props) {
     },
   ];
 
-
-
   useEffect(() => {
     const user = decodeToken();
     const keys = Object.keys(user);
@@ -105,7 +104,6 @@ export default function Product(props) {
         setProducts(res);
       })
       .catch((err) => console.log(err));
-
   }, [eff]);
 
   const onAddProduct = () => {
@@ -134,22 +132,22 @@ export default function Product(props) {
       .then((res) => {
         console.log(res);
         setOpen(false);
-        setEff(e=>!e)
-        showToast('Product Deleted Successfully', false)
+        setEff((e) => !e);
+        showToast("Product Deleted Successfully", false);
       })
       .catch((err) => {
         console.log(err);
         setOpen(false);
-        setEff(e=>!e)
-        showToast('Error Deleting Product', true)
+        setEff((e) => !e);
+        showToast("Error Deleting Product", true);
       });
   };
   return (
-    <div className="flex h-screen bg-cyan-900 text-white">
+    <div className="flex min-h-screen bg-white text-slate-600">
       <Toaster
         position="top-center"
         toastOptions={{
-          style: { color: `${isRed?'red':'green'}`},
+          style: { color: `${isRed ? "red" : "green"}` },
         }}
       />
       {/* <Sidebar /> Add the Sidebar component */}
@@ -157,17 +155,17 @@ export default function Product(props) {
       <div className="flex-1 ms-14">
         <div>
           <div className=" p-2 flex justify-end gap-4">
-            <button
+            <Button
               onClick={onAddProduct}
-              className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+              className={"rounded-full bg-orange-500"}
             >
               Add Product
-            </button>
+            </Button>
           </div>
           <hr></hr>
         </div>
-        <p className=" text-4xl text-white px-8 py-2">Products</p>
-        <div className=" h-[90vh] overflow-y-auto no-scrollbar">
+        <p className=" text-4xl text-slate-600 font-bold px-8 py-2">Products</p>
+        <div className=" min-h-[90vh] overflow-y-auto no-scrollbar">
           <div className=" p-8 grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* <DataGrid
             rows={products}
@@ -178,57 +176,61 @@ export default function Product(props) {
             className="w-full h-full bg-cyan-100"
           /> */}
 
-            {products.map((p, i) => {
-              return (
-                <Card sx={{ maxWidth: 345, padding: "8px" }} key={p.id}>
-                  <CardHeader
-                    title={p.drugName}
-                    subheader={p.brandName}
-                    action={
-                      <>
-                        <Link to={`/company/Product/${i}`} state={{ pid: p.id }}>
-                          <IconButton aria-label="view">
-                            <VisibilityIcon sx={{ color: "blue" }} />
-                          </IconButton>
-                        </Link>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => handleClickOpen(p.id)}
-                        >
-                          <DeleteIcon sx={{ color: "red" }} />
-                        </IconButton>
-                      </>
-                    }
+            {products.map((product, index) => (
+              <div
+                key={product.id}
+                className="bg-cyan-50 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+              >
+                <div className="relative">
+                  <img
+                    src={product.photoUrl}
+                    alt={product.drugName}
+                    className="w-full h-48 object-cover"
                   />
-                  <CardMedia
-                    component="img"
-                    image={p.photoUrl}
-                    alt={p.drugName}
-                    style={{ height: "250px" }}
-                  />
-                  <CardContent>
-                    <Typography variant="body2" color="text.secondary">
-                      {p.manufacturerName}
-                    </Typography>
-                    <Typography variant="body2" color="text.primary">
-                      MRP:{" "}
-                      <span className="text-green-500 font-bold">
-                        ₹ {p.mrp}
-                      </span>
-                    </Typography>
-                    <Typography variant="body2" color="text.primary">
-                      Dimension:
-                      <span className="ms-2">
-                        X: <span className="font-bold">{p.packSize.x}</span>
-                      </span>
-                      <span className="ms-2">
-                        Y: <span className="font-bold">{p.packSize.y}</span>
-                      </span>
-                    </Typography>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                  <div className="absolute top-2 right-2 flex space-x-2">
+                    <Link
+                      to={`/company/Product/${index}`}
+                      state={{ pid: product.id }}
+                      className="bg-cyan-600 p-2 rounded-full hover:bg-cyan-700 transition-colors duration-300"
+                    >
+                      <Eye size={20} className="text-white" />
+                    </Link>
+                    <button
+                      onClick={() => handleClickOpen(product.id)}
+                      className="bg-red-600 p-2 rounded-full hover:bg-red-700 transition-colors duration-300"
+                    >
+                      <Trash2 size={20} className="text-white" />
+                    </button>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h2 className="text-xl font-semibold text-cyan-900 mb-1">
+                    {product.drugName}
+                  </h2>
+                  <p className="text-cyan-700 text-sm mb-2">
+                    {product.brandName}
+                  </p>
+                  <p className="text-gray-600 text-sm mb-2">
+                    {product.manufacturerName}
+                  </p>
+                  <p className="text-cyan-800 font-medium mb-2">
+                    MRP:{" "}
+                    <span className="text-green-600 font-bold">
+                      ₹ {product.mrp}
+                    </span>
+                  </p>
+                  <p className="text-cyan-800 text-sm">
+                    Dimension:
+                    <span className="ml-2">
+                      X: <span className="font-bold">{product.packSize.x}</span>
+                    </span>
+                    <span className="ml-2">
+                      Y: <span className="font-bold">{product.packSize.y}</span>
+                    </span>
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
