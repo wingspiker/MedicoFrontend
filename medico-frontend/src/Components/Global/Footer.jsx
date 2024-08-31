@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="py-12  text-blue-900 px-32  rounded-2xl bg-gradient-to-b from-cyan-200 to-cyan-50 shadow-[inset_-12px_-8px_40px_#46464620]">
+    <footer className="py-12  text-blue-900 px-32 rounded-2xl bg-cyan-200 shadow-[inset_-12px_-8px_40px_#46464620]">
       <div className="container mx-auto flex flex-col lg:flex-row justify-between ">
         <div className="flex flex-col items-center lg:items-start mb-6 lg:mb-0">
           <h2 className="text-3xl font-bold text-blue-900 mb-2">{"Medico"}</h2>

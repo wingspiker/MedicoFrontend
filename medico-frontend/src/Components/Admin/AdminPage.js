@@ -19,11 +19,11 @@ export default function AdminPage(props) {
   const location = useLocation();
   useEffect(() => {
     const setting = location?.state?.setting;
-    if(setting){
-      console.log('main yaha');
-      navigate('')
-    }  
-  }, [])
+    if (setting) {
+      console.log("main yaha");
+      navigate("");
+    }
+  }, []);
 
   const validateForm = () => {
     let errors = {};
@@ -63,7 +63,6 @@ export default function AdminPage(props) {
           }
           setEmail("");
           setPassword("");
-          
         })
         .catch((err) => {
           console.log(err);
@@ -71,9 +70,7 @@ export default function AdminPage(props) {
           setloading(false);
           setEmail("");
           setPassword("");
-                
         });
-      
     }
   };
 
@@ -90,7 +87,7 @@ export default function AdminPage(props) {
   };
 
   return (
-    <div className="bg-gradient-to-t from-cyan-50 to-cyan-300 h-screen text-black flex flex-col justify-center items-center">
+    <div className="h-screen text-black flex flex-col justify-center items-center">
       <Toaster
         position="top-center"
         toastOptions={{

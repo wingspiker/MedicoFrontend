@@ -45,8 +45,10 @@ function ProductInformation({
   };
 
   return (
-    <fieldset className="p-4 border rounded-md mt-5 max-w-5xl">
-      <legend className="text-2xl text-white">Product Information</legend>
+    <div className="p-4 border rounded-2xl mt-5 max-w-5xl bg-cyan-50">
+      <div className="text-2xl text-cyan-700  mb-4 font-medium">
+        Product Information
+      </div>
 
       <div className="flex flex-wrap -mx-2 items-center gap-y-6">
         <div className="w-full md:w-1/4 px-2 md:mb-0">
@@ -220,7 +222,7 @@ function ProductInformation({
           />
         </div>
       </div>
-    </fieldset>
+    </div>
   );
 }
 
