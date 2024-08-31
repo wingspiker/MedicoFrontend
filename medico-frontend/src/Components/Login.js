@@ -90,7 +90,7 @@ const Login = (props) => {
           localStorage.setItem("token", response.accessToken);
           setMessage(true);
           const user = decodeToken();
-          sF(f=>!f)
+          sF((f) => !f);
           if (user?.userType === "Salesman") {
             changeLogin(true);
             navigate("/sales");
@@ -122,10 +122,9 @@ const Login = (props) => {
           } else if (user.isVerified === "False") {
             toast.error("You are not verified. kindly get verified.");
             // signOut();
-            localStorage.removeItem('token');
+            localStorage.removeItem("token");
             // navigate('/login')
           } else {
-            
             // console.log('llll');
             // if(user[role]==="Buyer"){
             //   signOut()
@@ -167,7 +166,7 @@ const Login = (props) => {
           setLoading(false); // Set loading to false after API response
           // Handle error response
           setErrors({ ...errors, common: error.response?.data.detail });
-          toast.error(error.response?.data.detail??'Something went wrong.');
+          toast.error(error.response?.data.detail ?? "Something went wrong.");
           setEmail("");
           setPassword("");
         });
@@ -183,7 +182,7 @@ const Login = (props) => {
   };
 
   return (
-    <section className="h-screen flex items-center justify-center bg-gradient-to-b from-cyan-300 via-cyan-50 to-cyan-50">
+    <section className="h-screen flex items-center justify-center">
       <div className="max-w-2xl md:w-full mx-auto">
         <div className="bg-white p-8 rounded-2xl shadow-md relative">
           <button

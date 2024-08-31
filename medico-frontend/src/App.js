@@ -101,7 +101,7 @@ function App() {
   let usrData = {};
   // const navigate = useNavigate();
 
-  const [f, sF] = useState(false)
+  const [f, sF] = useState(false);
 
   useEffect(() => {
     const decodedUser = decodeToken();
