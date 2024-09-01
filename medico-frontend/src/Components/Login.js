@@ -18,6 +18,7 @@ import Loader from "../Loader";
 import { IoClose } from "react-icons/io5";
 import Textv1 from "./Global/Textv1";
 import CustomButton from "./Global/Button";
+import MedicoLoader from "./Global/MedicoLoader";
 // import env from 'react-dotenv'
 
 const Login = (props) => {
@@ -181,6 +182,9 @@ const Login = (props) => {
   const handleClose = () => {
     navigate("/");
   };
+  if (loading) {
+    return <MedicoLoader />;
+  }
 
   return (
     <section className="h-screen flex items-center justify-center">

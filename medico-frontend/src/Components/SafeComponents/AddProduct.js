@@ -23,6 +23,7 @@ import AddPricing from "../ProductComponents/CaseSix/AddPricing";
 import { getDivisions } from "../../Services/division";
 import { AdminSidebar } from "../Admin/AdminSidebar";
 import { signOut } from "../../Services/auth";
+import MedicoLoader from "../Global/MedicoLoader";
 
 function AddProduct() {
   const [currentStep, setCurrentStep] = React.useState(1);
@@ -612,7 +613,7 @@ function AddProduct() {
                   disabled={errSix}
                   className={`cursor-pointer bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white font-bold ml-3 rounded w-20 text-center py-2`} // Added py-2 class to increase the height
                 >
-                  {loading ? <Loader /> : "Submit"}
+                  {loading ? <MedicoLoader /> : "Submit"}
                 </button>
               </div>
             </form>
