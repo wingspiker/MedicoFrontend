@@ -43,6 +43,7 @@ export default function OrderDetails(props) {
   const location = useLocation();
   useEffect(() => {
     const order = location?.state?.order;
+    console.log(order);
     setOrder(order);
   }, []);
 

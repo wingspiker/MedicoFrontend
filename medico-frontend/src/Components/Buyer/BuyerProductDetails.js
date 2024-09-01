@@ -19,7 +19,7 @@ export default function BuyerProductDetails() {
   const [quantity, setQuantity] = useState(1);
 
   const handleQuantityChange = (e) => {
-    setQuantity(e.target.value);
+    setQuantity(+e.target.value);
   };
 
   const incrementQuantity = () => {
@@ -51,14 +51,14 @@ export default function BuyerProductDetails() {
   };
 
   const handleAddtocart = () => {
-    console.log(product);
-    console.log(selectedBatchId);
+    // console.log(product);
+    // console.log(selectedBatchId);
 
     const selectedBatch = product.productBatches.find(
       (b) => b.id === selectedBatchId
     );
 
-    console.log(selectedBatch);
+    // console.log(selectedBatch);
     const cartObj = {
       prodId: product.id,
       batchId: selectedBatchId,

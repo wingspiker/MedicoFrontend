@@ -117,7 +117,9 @@ function App() {
   };
 
   const renderRedirects = () => {
+    // console.log('kaha');
     if (isAdmin()) {
+      // console.log('yaha');
       return <Navigate to="/admin/Home" />;
     } else if (isSalesman()) {
       return <Navigate to="/sales" />;
@@ -142,12 +144,12 @@ function App() {
       <Router>
         <div className="bg-cyan-100 h-screen overflow-auto">
           {/* {(isLoggedIn && showSidebar) ? <Sidebar changeLogin={logout}  /> : ""} */}
-
+          {/* {console.log(user?.isComplete === "True")} */}
           <Routes>
             <Route
               path="/"
               element={
-                isLoggedIn && user?.isComplete === "True" ? (
+                (isLoggedIn && user?.isComplete === "True") ? (
                   renderRedirects()
                 ) : (
                   <Home />

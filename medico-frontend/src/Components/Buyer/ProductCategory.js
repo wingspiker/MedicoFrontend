@@ -3,7 +3,7 @@ import React from "react";
 export default function ProductCategory({ category, onClick }) {
   return (
     <div
-      className="group relative overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+      className="group cursor-pointer relative overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
       onClick={onClick}
     >
       <div className="aspect-w-16 aspect-h-9">

@@ -40,7 +40,7 @@ const StepTwo = (props) => {
     };
     console.log(fD);
     setFormData(formData);
-    signUp(fD);
+    signUp(fD, setLoading);
     // setLoading(false)
   };
   return (

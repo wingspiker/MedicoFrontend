@@ -123,6 +123,7 @@ const Login = (props) => {
             toast.error("You are not verified. kindly get verified.");
             // signOut();
             localStorage.removeItem("token");
+            setLoading(false);
             // navigate('/login')
           } else {
             // console.log('llll');

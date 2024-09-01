@@ -6,6 +6,7 @@ const keys = Object.keys(user??{});
 let email = ''
 if(keys.length)
 email = user[keys.find((k) => k.endsWith("emailaddress"))];
+console.log(email);
 
 const CART_KEY = btoa(email);
 
@@ -18,29 +19,32 @@ export const cartLength = () => {
 };
 
 export const addProductToCart = (product) => {
-    const ifExists = cart.findIndex(
+    const ifExists = loadCart().findIndex(
         (c) => c.prodId === product.prodId && c.batchId === product.batchId
     );
+    let crt = []
     if (ifExists === -1) {
-        cart.push(product);
+        crt = loadCart();
+        crt.push(product);
     } else {
-        cart[ifExists].quantity += product.quantity;
+        crt[ifExists].quantity += product.quantity;
     }
-    saveCart();
+    saveMyCart(crt);
 };
 
 export const deleteProductFromCart = (prodId, batchId) => {
-    const index = cart.findIndex(c => (c.batchId === batchId && c.prodId === prodId));
+    let crt = loadCart();
+    const index = crt.findIndex(c => (c.batchId === batchId && c.prodId === prodId));
     if (index !== -1) {
-        cart.splice(index, 1);
+        crt.splice(index, 1);
     }
-    saveCart();
+    saveMyCart(crt);
 };
 
-function saveCart() {
-    const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(cart), SECRET_KEY).toString();
-    localStorage.setItem(CART_KEY, encryptedData);
-}
+// function saveCart() {
+//     const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(loadCart()), SECRET_KEY).toString();
+//     localStorage.setItem(CART_KEY, encryptedData);
+// }
 
 export function saveMyCart(myCart) {
     // console.log(myCart);

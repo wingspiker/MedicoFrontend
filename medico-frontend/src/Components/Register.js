@@ -47,7 +47,7 @@ const Register = (props) => {
   const location = useLocation();
   useEffect(() => {
     // console.log('jjjj');
-    debugger;
+    // debugger;
 
     const setting = location?.state?.setting;
     console.log(location.state);
@@ -317,8 +317,8 @@ const Register = (props) => {
         setEmailVerified(true);
         setOtpEmailLoading(false);
       })
-      .catch(() => {
-        toast.error("Invalid Email");
+      .catch((err) => {
+        toast.error(err?.response?.data?.detail??'Invalid Email');
         setOtpEmailLoading(false);
       });
   };
@@ -335,13 +335,13 @@ const Register = (props) => {
       setOtpMobileLoading(true);
       getMobileOtp({ email, mobile })
         .then((res) => {
-          console.log("OTP: ", res);
+          // console.log("OTP: ", res);
           setMobileVerified(true);
           setOtpMobileLoading(false);
         })
         .catch((e) => {
-          console.log(e);
-          toast.error("Invalid Mobile");
+          // console.log(e);
+          toast.error(e?.response?.data?.detail);
           setOtpMobileLoading(false);
         });
     }
@@ -359,7 +359,6 @@ const Register = (props) => {
       .then((resp) => {
         const urlData = resp.data;
         // console.log(urlData);
-
         const doc = {
           name: e.target.name,
           link: urlData,
@@ -600,12 +599,12 @@ const Register = (props) => {
           const { subscription } = formData;
           submitData.subscriptionPlanType = Number(subscription);
         }
-        console.log(submitData);
+        // console.log(submitData);
         // console.log('company');
         saveCompanyData(submitData);
         // console.log(formData.role);
       } else if (formData.role == 0) {
-        console.log("bbbyyysss");
+        // console.log("bbbyyysss");
         const {
           email,
           firstName,
@@ -644,8 +643,13 @@ const Register = (props) => {
     registerCompany(cData)
       .then((resp) => {
         console.log(resp);
-        navigate("/Login");
+        isRed(false);
+        toast.success('Account Created Successfully. you can login after is gets verified.')
+        signOut();
+        setTimeout(() => {
+          navigate("/Login");
         setSubmitLoading(false);
+        }, 2500);
       })
       .catch((err) => {
         console.log(err);
@@ -659,10 +663,16 @@ const Register = (props) => {
 
     registerBuyer(bData)
       .then((resp) => {
-        console.log(resp);
+        // console.log(resp);
+        isRed(false);
+        toast.success('Account Created Successfully. you can login after is gets verified.')
+        setTimeout(() => {
+          navigate("/Login");
+        setSubmitLoading(false);
+        }, 2500);
         setFormData(initialData);
         setCurrStep(1);
-        navigate("/");
+        // navigate("/");
         // signOut();
         setSubmitLoading(false);
       })
@@ -679,6 +689,7 @@ const Register = (props) => {
   }, []);
 
   const nextStep = () => {
+    // debugger;
     if (formData.role == 0) {
       setIsBuyer(true);
     } else {
@@ -753,12 +764,13 @@ const Register = (props) => {
     navigate("/");
   };
 
-  const setFalse = (func) => {
-    func(false);
-  };
+  // const setFalse = (func) => {
+  //   func(false);
+  // };
 
-  const signUp = (registerData) => {
+  const signUp = (registerData, setLoading) => {
     // nextStep()
+    setLoading(true)
 
     signUpService(registerData)
       .then((res) => {
@@ -768,11 +780,14 @@ const Register = (props) => {
           isRed(true);
         }, 6000);
         localStorage.setItem("token", res.accessToken);
+        setLoading(false);
         nextStep();
       })
       .catch((err) => {
         toast.error(err.response.data.detail);
         // set
+        // setSubmitLoading(false);
+        setLoading(false);
       });
 
     // nextStep();

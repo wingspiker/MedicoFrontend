@@ -82,12 +82,12 @@ export const filterProducts = async (buyerEmail, searchStr) => {
       Authorization: `Bearer ${t}`,
     },
   };
-  console.log(searchStr);
+  // console.log(searchStr);
   let s = searchStr;
   if(searchStr[0]==='&'){
     s = '?'+ searchStr.substring(1);
   }
-  console.log(s);
+  // console.log(s);
   return axios
     .post(
       url + `/api/product/buyer/${buyerEmail}/search${s}`,

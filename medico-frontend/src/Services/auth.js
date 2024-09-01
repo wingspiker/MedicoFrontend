@@ -121,7 +121,8 @@ export const signOut = () => {
 export const token = () => localStorage.getItem("token");
 
 export const decodeToken = () => {
-  const currUser = token() ? jwt_decode(token()) : null;
+  const t = token();
+  const currUser = t ? jwt_decode(t) : null;
   if (currUser && currUser.exp * 1000 < Date.now()) {
     signOut();
   }
@@ -131,7 +132,8 @@ export const decodeToken = () => {
 export const isAdmin = () => {
   const user = decodeToken();
   if (user) {
-    const key = Object.keys(user).find((key) => key.endsWith("role"));
+    const key = Object.keys(user).find((key) => key.endsWith("userType"));
+    // console.log(user[key] === "Admin");
     return user[key] === "Admin";
   }
   return false;
@@ -140,7 +142,7 @@ export const isAdmin = () => {
 export const isCompanySelf = () => {
   const user = decodeToken();
   if (user) {
-    const key = Object.keys(user).find((key) => key.endsWith("role"));
+    const key = Object.keys(user).find((key) => key.endsWith("userType"));
     if (user[key] === "Company") {
       return user["CompanyType"] === "SelfSelling";
     }
@@ -151,7 +153,7 @@ export const isCompanySelf = () => {
 export const isCompanyAdmin = () => {
   const user = decodeToken();
   if (user) {
-    const key = Object.keys(user).find((key) => key.endsWith("role"));
+    const key = Object.keys(user).find((key) => key.endsWith("userType"));
     if (user[key] === "Company") {
       return user["CompanyType"] === "AdminSelling";
     }

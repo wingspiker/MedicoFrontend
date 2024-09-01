@@ -48,16 +48,20 @@ const ProductFilter = ({
     setPriceRange(newValue);
   };
 
-  const handleCompanyCheckboxChange = (companyEmail) => {
+  const handleCompanyCheckboxChange = (id) => {
+    console.log(id);
+    // console.log(selectedCompanies);
     setSelectedCompanies((prev) => {
-      if (prev.includes(companyEmail)) {
+      if (prev.includes(id)) {
         // Remove the company from the array if it is already selected
-        return prev.filter((email) => email !== companyEmail);
+        return prev.filter((p) => p !== id);
       } else {
         // Add the company to the array if it is not already selected
-        return [...prev, companyEmail];
+        return [...prev, id];
       }
     });
+    // console.log(selectedCompanies);
+    // console.log(companies);
   };
 
   const handleCheckboxChange = (index) => {
@@ -81,7 +85,6 @@ const ProductFilter = ({
     });
 
     str += `&minSellingPrice=${priceRange[0]}&maxSellingPrice=${priceRange[1]}`;
-
     setFilterSearch(str);
     setCompanyFilter(selectedCompanies);
   };
@@ -136,6 +139,7 @@ const ProductFilter = ({
       <Box sx={{ mt: 4, display: "flex", flexDirection: "column", mb: 6 }}>
         <Typography gutterBottom>Company Names</Typography>
         {companies.map((company) => (
+          <>
           <FormControlLabel
             key={company.companyEmail}
             control={
@@ -149,6 +153,8 @@ const ProductFilter = ({
             }
             label={company.name}
           />
+          {/* {console.log(company)} */}
+          </>
         ))}
       </Box>
       {/* {console.log(companies)} */}
