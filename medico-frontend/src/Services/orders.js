@@ -22,3 +22,24 @@ export const getOrdersByEmail = async (companyEmail) => {
       throw error;
     });
 };
+
+export const updateOrderStatus = async (orderId, orderStatus) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+
+  return axios
+    .post(url + `/api/order/update-status/${orderId}`,{orderStatus}, config)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+};

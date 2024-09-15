@@ -64,7 +64,7 @@ export default function Offer(props) {
   };
 
   return (
-    <div className="flex h-screen bg-white text-slate-700">
+    <div className="flex h-screen bg-white text-slate-700 overflow-y-auto no-scrollbar">
       <Sidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
@@ -80,7 +80,7 @@ export default function Offer(props) {
           <div className="p-4">
             <p className="mb-4 text-3xl font-bold">Offers</p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 overflow-y-auto no-scrollbar">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 ">
               {offers.map((offer, index) => (
                 <Card key={offer.id} className="min-h-40 rounded-2xl">
                   <img
@@ -107,7 +107,7 @@ export default function Offer(props) {
                     <div className="flex justify-between">
                       {/* {console.log(offer)} */}
                       <Button
-                        onClick={() => handleView(offer.id, index)}
+                        onClick={() => handleView(offer.offerCode, index)}
                         variant="contained"
                         color="primary"
                         sx={{
