@@ -125,8 +125,9 @@ export const decodeToken = () => {
   const currUser = t ? jwt_decode(t) : null;
   if (currUser && currUser.exp * 1000 < Date.now()) {
     signOut();
+    return null;
   }
-  return token() ? jwt_decode(token()) : null;
+  return t ? jwt_decode(token()) : null;
 };
 
 export const isAdmin = () => {
