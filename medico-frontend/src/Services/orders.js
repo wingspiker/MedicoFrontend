@@ -43,3 +43,24 @@ export const updateOrderStatus = async (orderId, orderStatus) => {
       throw error;
     });
 };
+
+export const getOrdersById = async (orderId) => {
+  const t = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${t}`,
+    },
+  };
+
+  return axios
+    .get(url + `/api/order/${orderId}`, config)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+};

@@ -145,9 +145,9 @@ export default function Orders(props) {
   const navigate = useNavigate();
   const handleViewClick = (order, index) => {
     if (isAdmin()) {
-      navigate(`/admin/Order/${index}`, { state: { order } });
+      navigate(`/admin/Order/${index}`, { state: { id:order.id } });
     } else {
-      navigate(`/company/Order/${index}`, { state: { order } });
+      navigate(`/company/Order/${index}`, { state: { id:order.id } });
     }
   };
 

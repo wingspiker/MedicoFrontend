@@ -120,11 +120,24 @@ export const signOut = () => {
 
 export const token = () => localStorage.getItem("token");
 
-export const decodeToken = () => {
+export const checkToken = () => {
+  console.log('here');
   const t = token();
   const currUser = t ? jwt_decode(t) : null;
   if (currUser && currUser.exp * 1000 < Date.now()) {
-    signOut();
+    localStorage.removeItem('token');
+  }  
+}
+
+export const decodeToken = () => {
+  // debugger;
+  // console.log('here');
+  const t = token();
+  const currUser = t ? jwt_decode(t) : null;
+  console.log(currUser);
+  if (currUser && currUser.exp * 1000 < Date.now()) {
+    localStorage.removeItem('token')
+    window.location.href = "/";    
     return null;
   }
   return t ? jwt_decode(token()) : null;

@@ -35,7 +35,7 @@ export default function BuyerCart() {
   };
 
   const validateCompanyNames = () => {
-    if (cart.length < 1) return false;
+    if (loadCart().length < 1) return false;
     const companyName = currCart[0]?.companyName; // Get the companyName of the first item
     return currCart.every((item) => item.companyName === companyName);
   };
@@ -44,6 +44,7 @@ export default function BuyerCart() {
 
     // saveMyCart(currCart)
     setFlag(f=>!f)
+    // debugger;
     if (validateCompanyNames()) {
       navigate("/Home/Applyoffer", {
         state: { ownerEmail: cart[0].ownerEmail },

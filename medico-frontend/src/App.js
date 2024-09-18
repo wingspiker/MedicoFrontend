@@ -16,6 +16,7 @@ import Welcome from "./Components/Welcome";
 import Product from "./Components/SafeComponents/Product";
 import AddProduct from "./Components/SafeComponents/AddProduct";
 import {
+  checkToken,
   decodeToken,
   formdata,
   isAdmin,
@@ -104,6 +105,7 @@ function App() {
   const [f, sF] = useState(false);
 
   useEffect(() => {
+    checkToken();
     const decodedUser = decodeToken();
     if (decodedUser) {
       setUser(decodedUser);
