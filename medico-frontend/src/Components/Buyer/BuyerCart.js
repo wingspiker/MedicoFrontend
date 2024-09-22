@@ -46,8 +46,9 @@ export default function BuyerCart() {
     setFlag(f=>!f)
     // debugger;
     if (validateCompanyNames()) {
+      console.log(cart);
       navigate("/Home/Applyoffer", {
-        state: { ownerEmail: cart[0].ownerEmail },
+        state: { ownerEmail: cart[0]?.ownerEmail },
       });
     } else {
       toast.error(

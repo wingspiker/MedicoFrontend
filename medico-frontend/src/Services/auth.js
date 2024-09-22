@@ -134,7 +134,7 @@ export const decodeToken = () => {
   // console.log('here');
   const t = token();
   const currUser = t ? jwt_decode(t) : null;
-  console.log(currUser);
+  // console.log(currUser);
   if (currUser && currUser.exp * 1000 < Date.now()) {
     localStorage.removeItem('token')
     window.location.href = "/";    
