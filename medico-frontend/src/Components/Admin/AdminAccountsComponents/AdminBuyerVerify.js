@@ -32,6 +32,7 @@ import {
 } from "@mui/material";
 import { MdVerified } from "react-icons/md";
 import { verifyBuyerApi } from "../../../Services/buyer";
+import { Logout } from "@mui/icons-material";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -216,7 +217,7 @@ function BuyerTable({ buyers, isVerified, verifyBuyer, loading }) {
   );
 }
 
-export default function AdminBuyerVerify() {
+export default function AdminBuyerVerify({logout}) {
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const [verified, setVerified] = useState([]);
@@ -290,7 +291,7 @@ export default function AdminBuyerVerify() {
           </TabPanel>
         </Box>
       </div>
-      <AdminSidebar />
+      <AdminSidebar changeLogin={logout} />
     </>
   );
 }

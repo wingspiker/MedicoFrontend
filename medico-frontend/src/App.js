@@ -452,7 +452,7 @@ function App() {
               exact
               element={
                 isAdminLoggedIn ? (
-                  <AdminBuyerVerify />
+                  <AdminBuyerVerify logout={logout} />
                 ) : (
                   <Navigate to="/admin" replace />
                 )
