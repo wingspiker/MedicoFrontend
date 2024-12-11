@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { isAdmin, loginService } from "../../Services/auth";
 import Loader from "../../Loader";
 import { Toaster, toast } from "sonner";
+import Button from "../Global/Button";
+import { FaLock } from "react-icons/fa";
 
 export default function AdminPage(props) {
   const { setIsAdminLoggedIn } = props;
@@ -17,11 +19,11 @@ export default function AdminPage(props) {
   const location = useLocation();
   useEffect(() => {
     const setting = location?.state?.setting;
-    if(setting){
-      console.log('main yaha');
-      navigate('')
-    }  
-  }, [])
+    if (setting) {
+      console.log("main yaha");
+      navigate("");
+    }
+  }, []);
 
   const validateForm = () => {
     let errors = {};
@@ -61,17 +63,14 @@ export default function AdminPage(props) {
           }
           setEmail("");
           setPassword("");
-          
         })
         .catch((err) => {
           console.log(err);
-          showErr(err.response.data.detail)
+          showErr(err.response.data.detail);
           setloading(false);
           setEmail("");
           setPassword("");
-                
         });
-      
     }
   };
 
@@ -79,33 +78,42 @@ export default function AdminPage(props) {
 
   const showSucc = (message) => {
     setIsRed(false);
-    toast.success(message)
+    toast.success(message);
   };
 
   const showErr = (message) => {
     setIsRed(true);
-    toast.error(message)
+    toast.error(message);
   };
 
   return (
-    <div className="bg-cyan-900 h-screen text-white flex flex-col justify-center items-center">
+    <div className="h-screen text-black flex flex-col justify-center items-center">
       <Toaster
-            position="top-center"
-            toastOptions={{
-              style: { color: `${isRed ? "red" : "green"}` },
-            }}
-          />
-        
+        position="top-center"
+        toastOptions={{
+          style: { color: `${isRed ? "red" : "green"}` },
+        }}
+      />
+
       <header className="flex justify-between items-center w-full px-8 py-4 absolute top-0">
-        <h1 className="text-3xl font-bold">
-          Medico{" "}
-          <span className="text-sm absolute bottom-2 text-red-500">Admin</span>{" "}
-        </h1>
-        
+        <div className="flex gap-2">
+          <h1 className="text-2xl font-bold text-cyan-700">Medico </h1>
+          <span className="text-2xl font-bold text-slate-600">admin</span>{" "}
+        </div>
       </header>
-      <div className="flex justify-center items-center flex-grow">
-        <div className="bg-white p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl mb-4 font-bold text-gray-800">Admin Login</h2>
+      <div className=" flex justify-center items-center bg-white p-8 rounded-2xl shadow-lg  gap-5">
+        <div className="h-full w-[300px] flex justify-between flex-col gap-4">
+          <h2 className="text-2xl font-bold text-gray-800">Admin Login</h2>
+          <div className="flex justify-center items-center h-full">
+            <div className="bg-cyan-200 rounded-3xl p-5 flex justify-center items-center gap-4 h-full">
+              <FaLock className="text-6xl text-cyan-600" />
+              <p>
+                Welcome to the admin panel. Please login with your credentials
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
@@ -121,7 +129,7 @@ export default function AdminPage(props) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
-                className="block w-full px-4 py-2 border text-gray-900 border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                className="block w-[300px] px-4 py-2 border text-gray-900 border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
               />
               {errors.email && <p className="text-red-500">{errors.email}</p>}
             </div>
@@ -139,18 +147,18 @@ export default function AdminPage(props) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter Password"
-                className="block w-full px-4 py-2 border text-gray-900 border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                className="block w-[300px] px-4 py-2 border text-gray-900 border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
               />
               {errors.password && (
                 <p className="text-red-500">{errors.password}</p>
               )}
             </div>
-            <button
+            <Button
               type="submit"
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-indigo-600"
+              className="w-full text-center bg-cyan-200 text-cyan-600 font-semibold hover:bg-cyan-300"
             >
               {loading ? <Loader /> : "Login"}
-            </button>
+            </Button>
           </form>
         </div>
       </div>

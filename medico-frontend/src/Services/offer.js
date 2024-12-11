@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_API_BASE_URL;
+const url = "https://crmwe5yxfs.ap-south-1.awsapprunner.com";
 
 export const addOffer = async (offerDetails) => {
   const t = localStorage.getItem("token");
@@ -205,7 +205,11 @@ export const applyOffer = async (buyerEmail, applyOfferObj) => {
   };
 
   return axios
-    .post(url + `/api/buyer/${buyerEmail}/getofferbenefit`, applyOfferObj, config)
+    .post(
+      url + `/api/buyer/${buyerEmail}/getofferbenefit`,
+      applyOfferObj,
+      config
+    )
     .then((response) => {
       // Handle successful response
       return response.data; // Return data if needed

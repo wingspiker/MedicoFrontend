@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
-import {AdminSidebar } from "./AdminSidebar";
+import { AdminSidebar } from "./AdminSidebar";
 import { signOut, decodeToken } from "../../Services/auth";
 import {
   CustomInput,
@@ -13,6 +13,7 @@ import { getDistricts, getStates, getTalukas } from "../../Services/location";
 import { registerSalesman } from "../../Services/user";
 import { getAdminByEmail, getCompanyByEmail } from "../../Services/company";
 import { useNavigate } from "react-router-dom";
+import CustomButton from "../Global/Button";
 
 const AddSalesmanModal = ({
   isOpen,
@@ -51,7 +52,9 @@ const AddSalesmanModal = ({
     const add = {
       state: states.find((s) => s.id == state).name,
       district: districts.find((d) => d.id == district).name,
-      taluka: talukasSelected.map((t) => talukas.find((tk) => tk.id == t).name)[0],
+      taluka: talukasSelected.map(
+        (t) => talukas.find((tk) => tk.id == t).name
+      )[0],
     };
     data.addressRequest = add;
 
@@ -75,7 +78,7 @@ const AddSalesmanModal = ({
       email,
       addressRequest,
       areaAssignedTalukaIds,
-      ownerEmail
+      ownerEmail,
     };
     console.log(salesmanData);
 
@@ -285,7 +288,8 @@ const AddSalesmanModal = ({
                     value={option.value}
                     {...register("talukas", {
                       validate: (value) =>
-                        value.length > 0 || "At least one Taluka must be selected",
+                        value.length > 0 ||
+                        "At least one Taluka must be selected",
                     })}
                     onChange={handleTalukaChange}
                     className="form-checkbox"
@@ -432,24 +436,24 @@ export default function AdminAddSalesman(props) {
     setIsModalOpen2(false);
   };
 
-  const [allsalesman, setAllsalesman] = useState([])
+  const [allsalesman, setAllsalesman] = useState([]);
   useEffect(() => {
     const user = decodeToken();
     const keys = Object.keys(user);
     const ownerEmail = user[keys.find((k) => k.endsWith("emailaddress"))];
     // console.log(ownerEmail);
     getAdminByEmail(ownerEmail)
-    .then(resp=>{
-      // console.log(resp);
-      setAllsalesman(resp.assignedSalesmen??[])
-    })
-    .catch(err=>{
-      console.log(err);
-    })
-  }, [])
+      .then((resp) => {
+        // console.log(resp);
+        setAllsalesman(resp.assignedSalesmen ?? []);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const SalesmanCard = ({ salesman, onView, onDelete, index }) => (
-    <div className="bg-white text-black rounded-lg shadow-lg p-4 m-2 w-full sm:w-1/2 lg:w-1/4">
+    <div className="bg-white text-black rounded-lg shadow-lg p-4 m-2 w-full sm:w-1/2 lg:w-1/4 flex flex-col">
       <div className="flex items-center">
         <img
           src="/salesman.jpg"
@@ -457,7 +461,9 @@ export default function AdminAddSalesman(props) {
           className="rounded-full h-24 w-24"
         />
         <div className="ml-4 flex-grow">
-          <h2 className="text-xl font-semibold">{salesman.firstName} {salesman.lastName}</h2>
+          <h2 className="text-xl font-semibold">
+            {salesman.firstName} {salesman.lastName}
+          </h2>
           <p>{salesman.email}</p>
           <p>{salesman.mobileNumber}</p>
           <p>ID: {salesman.salesmanId}</p>
@@ -479,29 +485,36 @@ export default function AdminAddSalesman(props) {
       </div>
     </div>
   );
-  
-  
+
   const SalesmanList = ({ salesmen }) => (
     <div className="flex flex-wrap">
       {salesmen.map((salesman, index) => (
-        <SalesmanCard key={salesman.id} salesman={salesman} onView={handleSalesmanView} onDelete={handleSalesmanDelete} index={index} />
+        <SalesmanCard
+          key={salesman.id}
+          salesman={salesman}
+          onView={handleSalesmanView}
+          onDelete={handleSalesmanDelete}
+          index={index}
+        />
       ))}
     </div>
   );
 
   const handleSalesmanView = (salesman, index) => {
     console.log(salesman);
-    navigate(`/admin/Salesman/${index}`,{state:{sid:salesman.id, salesmanEmail:salesman.email}})    
-  }
+    navigate(`/admin/Salesman/${index}`, {
+      state: { sid: salesman.id, salesmanEmail: salesman.email },
+    });
+  };
 
   const handleSalesmanDelete = (salesman) => {
     console.log(salesman);
-    setcurrSalesman(salesman)
+    setcurrSalesman(salesman);
     openModal2();
-  }
+  };
 
   return (
-    <div className=" h-screen bg-cyan-900 text-white">
+    <div className=" h-screen bg-cyan-100 text-slate-700">
       <Toaster
         position="top-center"
         toastOptions={{
@@ -513,24 +526,23 @@ export default function AdminAddSalesman(props) {
       <div className="flex-1 ms-14">
         <div>
           <div className=" p-5 flex justify-end gap-4">
-            <button
+            <CustomButton
               onClick={openModal}
-              className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2`}
+              className={` cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded-full flex items-center gap-2`}
             >
               Add Salesman
-            </button>
+            </CustomButton>
           </div>
           <hr></hr>
         </div>
-        <p className=" text-4xl text-white px-8 py-2">Salesman</p>
+        <p className=" text-4xl text-cyan-700 font-semibold px-8 py-2">
+          Salesman
+        </p>
       </div>
 
       <div className=" ms-14 p-8">
         <SalesmanList salesmen={allsalesman} />
       </div>
-
-
-
 
       <AddSalesmanModal
         isOpen={isModalOpen}

@@ -26,6 +26,7 @@ import { getDistricts, getStates, getTalukas } from "../Services/location";
 import { handleImageUpload } from "../Services/upload";
 import { registerBuyer, registerCompany } from "../Services/user";
 import Loader from "../Loader";
+import Textv1 from "./Global/Textv1";
 
 const Register = (props) => {
   const { changeLogin, setShowSidebar, setIsComplete } = props;
@@ -46,15 +47,15 @@ const Register = (props) => {
   const location = useLocation();
   useEffect(() => {
     // console.log('jjjj');
-    debugger;
+    // debugger;
 
     const setting = location?.state?.setting;
     console.log(location.state);
-    if(setting){
+    if (setting) {
       // console.log(setting);
-      navigate('/login')
+      navigate("/login");
       return;
-    }  
+    }
     setFormData(formdata);
     setCurrStep(1);
     // signOut();
@@ -79,7 +80,11 @@ const Register = (props) => {
 
         setCurrStep(3);
       } else if (user.isVerified === "False") {
-        toast.error("You are not verified. kindly get verified.");
+        setTimeout(() => {
+          toast.error("You are not verified. kindly get verified.", {
+            duration: 3500,
+          });
+        }, 1000);
         setFormData(formdata);
         setCurrStep(1);
         signOut();
@@ -99,7 +104,7 @@ const Register = (props) => {
 
   const navigate = useNavigate();
   const currSt = currStep;
-  const [step, setStep] = useState(currSt);
+  const [step, setStep] = useState(1);
   const [red, isRed] = useState(true);
   const [formData, setFormData] = useState(initialData);
 
@@ -312,8 +317,8 @@ const Register = (props) => {
         setEmailVerified(true);
         setOtpEmailLoading(false);
       })
-      .catch(() => {
-        toast.error("Invalid Email");
+      .catch((err) => {
+        toast.error(err?.response?.data?.detail??'Invalid Email');
         setOtpEmailLoading(false);
       });
   };
@@ -330,13 +335,13 @@ const Register = (props) => {
       setOtpMobileLoading(true);
       getMobileOtp({ email, mobile })
         .then((res) => {
-          console.log("OTP: ", res);
+          // console.log("OTP: ", res);
           setMobileVerified(true);
           setOtpMobileLoading(false);
         })
         .catch((e) => {
-          console.log(e);
-          toast.error("Invalid Mobile");
+          // console.log(e);
+          toast.error(e?.response?.data?.detail);
           setOtpMobileLoading(false);
         });
     }
@@ -344,7 +349,7 @@ const Register = (props) => {
 
   const [loadingstate, setloadingstate] = useState(false);
   const handleFileChange = (e) => {
-    setloadingstate(true)
+    setloadingstate(true);
     // console.log("tttt");
     // const file = e.target.files[0];
     // const name = e.target.name;
@@ -354,25 +359,22 @@ const Register = (props) => {
       .then((resp) => {
         const urlData = resp.data;
         // console.log(urlData);
-
         const doc = {
           name: e.target.name,
           link: urlData,
         };
-        console.log('doc',doc);
-        const existingDocIndex = documentLinks.findIndex(
-          (item) => {
-            console.log(item);
-            return item.name == doc.name
-          }
-        );
+        console.log("doc", doc);
+        const existingDocIndex = documentLinks.findIndex((item) => {
+          console.log(item);
+          return item.name == doc.name;
+        });
         console.log(existingDocIndex);
 
         if (existingDocIndex !== -1) {
-          console.log('hum yaha',existingDocIndex);
+          console.log("hum yaha", existingDocIndex);
           documentLinks[existingDocIndex].link = doc.link;
         } else {
-          console.log('aa gaya');
+          console.log("aa gaya");
           documentLinks.push(doc);
           console.log(documentLinks);
         }
@@ -597,12 +599,12 @@ const Register = (props) => {
           const { subscription } = formData;
           submitData.subscriptionPlanType = Number(subscription);
         }
-        console.log(submitData);
+        // console.log(submitData);
         // console.log('company');
         saveCompanyData(submitData);
         // console.log(formData.role);
       } else if (formData.role == 0) {
-        console.log("bbbyyysss");
+        // console.log("bbbyyysss");
         const {
           email,
           firstName,
@@ -641,8 +643,13 @@ const Register = (props) => {
     registerCompany(cData)
       .then((resp) => {
         console.log(resp);
-        navigate("/Login");
+        isRed(false);
+        toast.success('Account Created Successfully. you can login after is gets verified.')
+        signOut();
+        setTimeout(() => {
+          navigate("/Login");
         setSubmitLoading(false);
+        }, 2500);
       })
       .catch((err) => {
         console.log(err);
@@ -652,15 +659,21 @@ const Register = (props) => {
 
   const saveBuyerData = (bData) => {
     setSubmitLoading(true);
-    console.log("hhhhhhh",bData);
+    console.log("hhhhhhh", bData);
 
     registerBuyer(bData)
       .then((resp) => {
-        console.log(resp);
+        // console.log(resp);
+        isRed(false);
+        toast.success('Account Created Successfully. you can login after is gets verified.')
+        setTimeout(() => {
+          navigate("/Login");
+        setSubmitLoading(false);
+        }, 2500);
         setFormData(initialData);
         setCurrStep(1);
-        navigate("/");
-        signOut();
+        // navigate("/");
+        // signOut();
         setSubmitLoading(false);
       })
       .catch((err) => {
@@ -676,6 +689,7 @@ const Register = (props) => {
   }, []);
 
   const nextStep = () => {
+    // debugger;
     if (formData.role == 0) {
       setIsBuyer(true);
     } else {
@@ -750,8 +764,13 @@ const Register = (props) => {
     navigate("/");
   };
 
-  const signUp = (registerData) => {
+  // const setFalse = (func) => {
+  //   func(false);
+  // };
+
+  const signUp = (registerData, setLoading) => {
     // nextStep()
+    setLoading(true)
 
     signUpService(registerData)
       .then((res) => {
@@ -761,17 +780,21 @@ const Register = (props) => {
           isRed(true);
         }, 6000);
         localStorage.setItem("token", res.accessToken);
+        setLoading(false);
         nextStep();
       })
       .catch((err) => {
         toast.error(err.response.data.detail);
+        // set
+        // setSubmitLoading(false);
+        setLoading(false);
       });
 
     // nextStep();
   };
 
   return (
-    <div className="min-h-screen bg-cyan-900 flex flex-col justify-center items-center">
+    <div className="min-h-screen  flex flex-col justify-center items-center">
       {loadingstate && (
         <div className="fixed h-screen w-screen bg-black bg-opacity-35">
           <div className=" absolute top-1/2 left-1/2 text-white">
@@ -808,7 +831,9 @@ const Register = (props) => {
           }  text-4xl mb-4`}
         >
           {/* Add back button */}
-          <p className=" text-center w-full mb-4">Register</p>
+          <p className=" text-center w-full mb-4 ">
+            <Textv1>Register</Textv1>
+          </p>
         </h2>
 
         {step === 1 && (

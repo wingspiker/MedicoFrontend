@@ -13,49 +13,43 @@ export default function BuyerListing() {
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [search, setSearch] = useState(location?.state?.search ?? "");
   const [companyFilter, setCompanyFilter] = useState([]);
-
-  const [filterSearch, setFilterSearch] = useState('')
-
+  const [filterSearch, setFilterSearch] = useState("");
   const navigate = useNavigate();
-
 
   const user = decodeToken();
   const keys = Object.keys(user);
   const email = user[keys.find((k) => k.endsWith("emailaddress"))];
 
   useEffect(() => {
-    filterProducts(email, search+filterSearch, priceRange).then((resp) => {
-      // console.log(resp);
+    filterProducts(email, search + filterSearch, priceRange).then((resp) => {
       setProducts(resp);
     });
-  }, [search, filterSearch, companyFilter]);
-
-  // console.log(products);
+  }, [search, filterSearch, companyFilter, email, priceRange]);
 
   const handleClick = (index, id) => {
-    // console.log('kkk',id);
-    navigate(`/Home/Products/${index}`, { state: { pid:id } });
+    navigate(`/Home/Products/${index}`, { state: { pid: id } });
   };
 
   return (
     <div className="h-screen flex flex-col bg-white">
       <Navbar />
-      <div className="flex flex-1">
-        <ProductFilter
-          setSearchProduct={setSearchProduct}
-          setPriceRange={setPriceRange}
-          setFilterSearch={setFilterSearch}
-          setCompanyFilter={setCompanyFilter}
-        />
-        <div className="w-3/4 p-4 overflow-y-auto">
-          <div className="grid grid-cols-3 gap-4">
+      <div className="flex flex-1 overflow-hidden">
+        <div className="w-1/5 overflow-y-auto border-r border-gray-200">
+          <ProductFilter
+            setSearchProduct={setSearchProduct}
+            setPriceRange={setPriceRange}
+            setFilterSearch={setFilterSearch}
+            setCompanyFilter={setCompanyFilter}
+          />
+        </div>
+        <div className="w-4/5 overflow-y-auto p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {products.map((product, index) => (
               <div
-                role='button'
-                type="button"
+                role="button"
                 key={product.id}
                 onClick={() => handleClick(index, product.id)}
-                className=" cursor-pointer"
+                className="cursor-pointer"
               >
                 <ProductCard product={product} />
               </div>

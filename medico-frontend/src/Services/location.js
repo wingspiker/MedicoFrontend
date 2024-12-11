@@ -1,7 +1,7 @@
 import { development } from "../Environment/environment";
 import axios from "axios";
 
-const url = process.env.REACT_APP_API_BASE_URL;
+const url = "https://crmwe5yxfs.ap-south-1.awsapprunner.com";
 
 export const getStates = async () => {
   // const url = development.url + '/api/auth/login';

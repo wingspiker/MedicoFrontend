@@ -20,6 +20,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { handleImageUpload } from "../../Services/upload";
 import { useNavigate } from "react-router-dom";
+import CustomButton from "../Global/Button";
 
 const AddArticleModal = ({ isOpen, onClose, setArticles, changeEffect }) => {
   const {
@@ -243,21 +244,19 @@ export default function AdminArticles(props) {
         <div className="flex-1 ms-14">
           <div>
             <div className=" p-2 flex justify-end gap-4">
-              <button
+              <CustomButton
                 onClick={openModal}
-                className="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2"
+                className="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded-full flex items-center gap-2"
               >
                 Add Article
-              </button>
+              </CustomButton>
             </div>
             <hr></hr>
           </div>
           <div className=" p-8 flex gap-6">
             {articles.map((a) => (
               <Card className=" flex-1" sx={{ maxWidth: 345 }} key={a.id}>
-                <CardHeader
-                  title={a.articleName}
-                />
+                <CardHeader title={a.articleName} />
                 <CardMedia
                   component="img"
                   image={a.articlePhoto}
@@ -274,7 +273,11 @@ export default function AdminArticles(props) {
                       setCurrArt(a.id);
                       openModal2();
                     }}
-                    style={{ backgroundColor: "#f44336", color: "#ffffff", marginTop: '1rem' }}
+                    style={{
+                      backgroundColor: "#f44336",
+                      color: "#ffffff",
+                      marginTop: "1rem",
+                    }}
                   >
                     Delete
                   </Button>

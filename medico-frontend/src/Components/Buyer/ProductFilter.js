@@ -9,8 +9,14 @@ import {
 } from "@mui/material";
 import { prescriptionEnum } from "../../Models/enums.model";
 import { getAllCompanies } from "../../Services/company";
+import PriceRangeSlider from "../Global/PriceRangeSlider";
 
-const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCompanyFilter }) => {
+const ProductFilter = ({
+  setSearchProduct,
+  setPriceRange,
+  setFilterSearch,
+  setCompanyFilter,
+}) => {
   const [searchItem, setSearchItem] = useState("");
   const [priceRange, setPriceRangeState] = useState([0, 10000]);
   const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
@@ -42,16 +48,20 @@ const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCo
     setPriceRange(newValue);
   };
 
-  const handleCompanyCheckboxChange = (companyEmail) => {
+  const handleCompanyCheckboxChange = (id) => {
+    console.log(id);
+    // console.log(selectedCompanies);
     setSelectedCompanies((prev) => {
-      if (prev.includes(companyEmail)) {
+      if (prev.includes(id)) {
         // Remove the company from the array if it is already selected
-        return prev.filter((email) => email !== companyEmail);
+        return prev.filter((p) => p !== id);
       } else {
         // Add the company to the array if it is not already selected
-        return [...prev, companyEmail];
+        return [...prev, id];
       }
     });
+    // console.log(selectedCompanies);
+    // console.log(companies);
   };
 
   const handleCheckboxChange = (index) => {
@@ -69,19 +79,18 @@ const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCo
     // console.log(selectedPrescriptions);
     // console.log(selectedCompanies);
     // console.log(priceRange);
-    let str = ''
-    selectedPrescriptions.forEach(p=>{
-      str += `&prescriptionTypes=${p}`
-    })
+    let str = "";
+    selectedPrescriptions.forEach((p) => {
+      str += `&prescriptionTypes=${p}`;
+    });
 
-    str+=`&minSellingPrice=${priceRange[0]}&maxSellingPrice=${priceRange[1]}`
-
+    str += `&minSellingPrice=${priceRange[0]}&maxSellingPrice=${priceRange[1]}`;
     setFilterSearch(str);
     setCompanyFilter(selectedCompanies);
   };
 
   return (
-    <div className="w-1/4 p-4 bg-gray-100 h-[92vh] overflow-x-auto no-scrollbar">
+    <div className="p-4 bg-cyan-100 h-[92vh] overflow-x-auto no-scrollbar">
       <h2 className="text-lg font-bold">Filters</h2>
       <div className="flex items-center mt-2">
         <input
@@ -89,11 +98,11 @@ const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCo
           value={searchItem}
           onChange={handleSearchProductName}
           placeholder="Search..."
-          className="flex-grow p-2 border border-gray-300 rounded-l"
+          className="flex-grow p-2 border border-gray-300 rounded-xl focus:outline-cyan-600 focus:text-cyan-800"
         />
         <button
           onClick={handleSearch}
-          className="bg-blue-500 text-white mx-2 p-2 rounded-r"
+          className="bg-cyan-500 text-white mx-2 p-3 rounded-xl"
         >
           <FaSearch />
         </button>
@@ -102,13 +111,9 @@ const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCo
         Price Range
       </Typography>
       <Box sx={{ px: 2 }}>
-        <Slider
+        <PriceRangeSlider
           value={priceRange}
           onChange={handlePriceRangeChange}
-          valueLabelDisplay="auto"
-          min={0}
-          max={10000}
-          sx={{ color: "primary.main" }}
         />
         <Box display="flex" justifyContent="space-between">
           <Typography variant="body2">₹ {priceRange[0]}</Typography>
@@ -131,9 +136,10 @@ const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCo
           />
         ))}
       </Box>
-      <Box sx={{ mt: 4, display: "flex", flexDirection: "column" }}>
+      <Box sx={{ mt: 4, display: "flex", flexDirection: "column", mb: 6 }}>
         <Typography gutterBottom>Company Names</Typography>
         {companies.map((company) => (
+          <>
           <FormControlLabel
             key={company.companyEmail}
             control={
@@ -147,12 +153,14 @@ const ProductFilter = ({ setSearchProduct, setPriceRange, setFilterSearch, setCo
             }
             label={company.name}
           />
+          {/* {console.log(company)} */}
+          </>
         ))}
       </Box>
       {/* {console.log(companies)} */}
       <button
         onClick={handleFilter}
-        className="bg-blue-500 w-full hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-cyan-500 lg:w-[17%]  hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-xl fixed bottom-4"
       >
         Apply
       </button>

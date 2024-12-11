@@ -260,9 +260,9 @@ function AddOffer() {
                 setOfferId(res.id);
                 setLoading(false);
                 setTimeout(() => {
-                  if(isAdmin()){  
+                  if (isAdmin()) {
                     navigate("/admin/Offer");
-                  }else{
+                  } else {
                     navigate("/company/Offer");
                   }
                   setCurrentStep(1);
@@ -354,9 +354,9 @@ function AddOffer() {
                   inputProps={register("offerName", {
                     required: "Offer name is required",
                     pattern: {
-                      value: /^[A-Za-z\s]+$/,
+                      value: /^[A-Za-z0-9\s]+$/,
                       message:
-                        "Offer name can only contain alphabets and spaces",
+                        "Offer name can only contain alphabets, numbers, and spaces",
                     },
                   })}
                   error={errors?.offerName}
@@ -384,9 +384,15 @@ function AddOffer() {
                   placeholder={"Enter offer code"}
                   inputProps={register("offerCode", {
                     required: "Offer code is required",
+                    pattern: {
+                      value: /^[A-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]+$/,
+                      message:
+                        "Offer code can only contain capital letters, special characters, and numbers",
+                    },
                   })}
                   error={errors?.offerCode}
                 />
+
                 <CustomInput
                   label={"Offer Description"}
                   placeholder={"Enter offer description"}

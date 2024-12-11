@@ -35,20 +35,20 @@ export default function BuyerCart() {
   };
 
   const validateCompanyNames = () => {
-    if (cart.length < 1) return false;
+    if (loadCart().length < 1) return false;
     const companyName = currCart[0]?.companyName; // Get the companyName of the first item
     return currCart.every((item) => item.companyName === companyName);
   };
 
   const handleCheckout = () => {
-    // console.log(currCart);
-    // setCart(currCart);
-    // console.log("fff");
-    saveMyCart(currCart)
+
+    // saveMyCart(currCart)
     setFlag(f=>!f)
+    // debugger;
     if (validateCompanyNames()) {
+      console.log(cart);
       navigate("/Home/Applyoffer", {
-        state: { ownerEmail: cart[0].ownerEmail },
+        state: { ownerEmail: cart[0]?.ownerEmail },
       });
     } else {
       toast.error(
@@ -124,7 +124,7 @@ export default function BuyerCart() {
             {currCart.map((item) => (
               <div
                 key={item.prodId}
-                className="p-4 bg-slate-100 relative shadow rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between"
+                className="p-4 bg-slate-100 relative shadow rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between my-4 "
               >
                 <span className=" absolute z-50 -top-8 right-0 rounded-full cursor-pointer hover:text-red-500" onClick={()=>handleDelete(item.prodId, item.batchId)}>
                   <MdDelete className=" text-red-400 text-2xl"/>
@@ -197,7 +197,7 @@ export default function BuyerCart() {
               onClick={handleCheckout}
               className="mt-4 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded w-full"
             >
-              Apply Offers
+              Proceed
             </button>
           </div>
         ) : (

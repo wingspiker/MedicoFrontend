@@ -16,6 +16,8 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+
+import CustomButton from "../Global/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { prescriptionEnum } from "../../Models/enums.model";
 
@@ -45,7 +47,7 @@ export default function Group(props) {
     getGroups(email)
       .then((g) => {
         setGroups(g);
-        setSelectedGroup(g[0])
+        setSelectedGroup(g[0]);
       })
       .catch((err) => {
         console.log(err);
@@ -74,28 +76,26 @@ export default function Group(props) {
         setEff((e) => !e);
         setDelLoad(false);
         setOpen(false);
-        
       })
       .catch((err) => {
         console.log(err);
         setDelLoad(false);
         setOpen(false);
-        
       });
   };
 
   return (
-    <div className="flex h-screen bg-cyan-900 text-white">
+    <div className="flex h-screen bg-white text-white">
       <Sidebar changeLogin={logout} />
       <div className="flex-1 ms-14">
         <div>
           <div className="p-2 flex justify-end gap-4">
-            <button
+            <CustomButton
               onClick={onAddGroup}
-              className="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-2 rounded flex items-center gap-2"
+              className="rounded-full bg-orange-500"
             >
               Add Group
-            </button>
+            </CustomButton>
           </div>
           <hr />
         </div>
@@ -106,7 +106,7 @@ export default function Group(props) {
                 key={group.id}
                 className={`text-black rounded-lg shadow-md p-6 cursor-pointer flex justify-between items-center ${
                   selectedGroup && group.id === selectedGroup.id
-                    ? "bg-cyan-500"
+                    ? "bg-cyan-100"
                     : "bg-white"
                 }`} // This line applies conditional styling
                 onClick={() => handleGroup(group)}

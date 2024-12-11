@@ -32,6 +32,7 @@ import {
 } from "@mui/material";
 import { MdVerified } from "react-icons/md";
 import { verifyBuyerApi } from "../../../Services/buyer";
+import { Logout } from "@mui/icons-material";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -166,8 +167,7 @@ function BuyerTable({ buyers, isVerified, verifyBuyer, loading }) {
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button onClick={handleVerify}>
-            {loading ? <CircularProgress size={'20px'} /> : "Verify"}
-
+            {loading ? <CircularProgress size={"20px"} /> : "Verify"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -217,7 +217,7 @@ function BuyerTable({ buyers, isVerified, verifyBuyer, loading }) {
   );
 }
 
-export default function AdminBuyerVerify() {
+export default function AdminBuyerVerify({logout}) {
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const [verified, setVerified] = useState([]);
@@ -227,35 +227,34 @@ export default function AdminBuyerVerify() {
   const [Loading, setLoading] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-
   useEffect(() => {
     getAllVerifiedBuyers().then(setVerified).catch(console.error);
     getAllUnverifiedBuyers().then(setUnverified).catch(console.error);
   }, [Flag]);
 
   const verifyBuyer = (email) => {
-    setLoading(true)
-    verifyBuyerApi({email})
+    setLoading(true);
+    verifyBuyerApi({ email })
       .then((resp) => {
         console.log("Buyer verified successfully:", resp);
         setOpenSnackbar(true);
         setSnackbarMessage("Buyer verified successfully!");
-        setFlag(f=>!f)
-        setLoading(false)
+        setFlag((f) => !f);
+        setLoading(false);
       })
       .catch((err) => {
         console.error("Error verifying buyer:", err);
         setOpenSnackbar(true);
         setSnackbarMessage("Failed to verify buyer.");
-        setFlag(f=>!f)
-        setLoading(false)
+        setFlag((f) => !f);
+        setLoading(false);
       });
   };
 
   return (
     <>
       <div className="p-2 pb-3  flex justify-between">
-        <h1 className="ms-16 text-3xl font-semibold text-white flex items-center">
+        <h1 className="ms-16 text-3xl font-semibold flex items-center">
           Buyer Accounts
         </h1>
       </div>
@@ -292,7 +291,7 @@ export default function AdminBuyerVerify() {
           </TabPanel>
         </Box>
       </div>
-      <AdminSidebar />
+      <AdminSidebar changeLogin={logout} />
     </>
   );
 }
